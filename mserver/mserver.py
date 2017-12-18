@@ -17,3 +17,11 @@ def create_api(app=None):
 
 app = create_app()
 api = create_api(app)
+
+
+def do_setup():
+    from .database import init_db
+    init_db()
+
+
+do_setup()
