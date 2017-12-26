@@ -17,7 +17,7 @@ VIDEO_DURATION = 'any'
 ISO8601_TIMEDUR_EX = re.compile(r'PT((\d{1,3})H)?((\d{1,3})M)?((\d{1,2})S)?')
 
 
-def generate_search_query(term, category=MUSIC_CATEGORYID, order=ORDER, duration=VIDEO_DURATION, max_results=30):
+def generate_search_query(term, category=MUSIC_CATEGORYID, order=ORDER, duration=VIDEO_DURATION, max_results=15):
     qs = {
         'q': term,
         'maxResults': max_results,
@@ -116,7 +116,7 @@ def get_songs_from_result(yresult):
     return songs
 
 
-def youtubbe_search(query):
+def youtube_search(query):
     """
     Searchs songs on youtube.
     """
@@ -128,4 +128,4 @@ def youtubbe_search(query):
     return get_songs_from_result(yresult)
 
 
-register(youtubbe_search, name=THIS_SOURCE)
+register(youtube_search, name=THIS_SOURCE)

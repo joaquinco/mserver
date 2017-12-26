@@ -29,7 +29,7 @@ def do_setup(app):
     # db.init_app(app)
 
     import mserver.resources
-    mserver.resources.SongResource
+    mserver.resources.SongSearchResource
 
     import mserver.apiurls
     mserver.apiurls.urls

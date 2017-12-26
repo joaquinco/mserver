@@ -1,12 +1,13 @@
+from urllib import parse as urlparse
+
 from mserver import resources
 from mserver.mserver import api
 
+API_PREFIX = '/api/'
 
 urls = [
-    (resources.SongResource, '/song'),
-    (resources.SongDetailResource, '/song/<song_id>'),
-    (resources.SongSearchResource, '/search')
+    (resources.SongSearchResource, 'search')
 ]
 
-for url in urls:
-    api.add_resource(*url)
+for resource, path in urls:
+    api.add_resource(resource, urlparse.urljoin(API_PREFIX, path))
