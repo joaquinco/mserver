@@ -16,6 +16,8 @@ class User(Base):
 
     added_songs = relationship('Song', back_populates='user')
 
+    repr_fields = ['name', 'is_superuser']
+
 
 class SongPlayList(Base):
     __tablename__ = 'song_playlist'
@@ -43,6 +45,8 @@ class Song(Base):
     source = ''
     search_id = ''
 
+    repr_fields = ['title', 'source', 'available']
+
 
 class PlayList(Base):
     __tablename__ = 'playlist'
@@ -51,3 +55,5 @@ class PlayList(Base):
     created = Column(DateTime(), default=datetime.datetime.now)
 
     songs = relationship('Song', secondary=SongPlayList.__tablename__, back_populates='playlists')
+
+    repr_fields = ['name',]

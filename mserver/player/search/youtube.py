@@ -5,6 +5,7 @@ from string import Template
 
 import pafy
 
+from mserver import settings
 from mserver.models import Song
 from .api import register
 from .exceptions import DownloadError
@@ -21,7 +22,7 @@ AUDIO_FORMAT = 'mp3'
 
 ISO8601_TIMEDUR_EX = re.compile(r'PT((\d{1,3})H)?((\d{1,3})M)?((\d{1,2})S)?')
 
-DOWNLOAD_CMD_TEMPLATE = Template('youtube-dl -x --audio-format :format -o :filename http://www.youtube.com/?w=:ytid')
+VIDEO_URL_TEMPLATE = Template('https://www.youtube.com/watch?v=$ytid')
 
 
 def generate_search_query(term, category=MUSIC_CATEGORYID, order=ORDER, duration=VIDEO_DURATION, max_results=15):
@@ -134,14 +135,15 @@ def youtube_search(query):
     return get_songs_from_result(yresult)
 
 
-def _get_download_cmd(ytid, filename, audio_format=AUDIO_FORMAT):
+def get_download_cmd(ytid, filename, audio_format=AUDIO_FORMAT):
     """
     Returns download command
     """
-    return DOWNLOAD_CMD_TEMPLATE.substitute(ytid=ytid, filename=filename, format=audio_format)
+    url = VIDEO_URL_TEMPLATE.substitute(ytid=ytid)
+    return ['youtube-dl', '-x', '--audio-format', audio_format, '-o', filename, url]
 
 
-def _get_item_info(ytid):
+def get_item_info(ytid):
     """
     Fetchs data from single item from youtube
     """
@@ -158,9 +160,9 @@ def youtube_download(search_id):
     """
     Download content from youtube.
     """
-    download_dir = '/tmp'
+    download_dir = settings.MUSIC_DIR
 
-    item = _get_item_info(search_id)
+    item = get_item_info(search_id)
 
     snippet = item.get('snippet', {})
     title = snippet.get('title', '').strip()
@@ -168,7 +170,7 @@ def youtube_download(search_id):
     filename = os.path.join(download_dir, '{0}.{1}'.format(title, AUDIO_FORMAT))
 
     if not os.path.exists(filename):
-        cmd = _get_download_cmd(search_id, filename, audio_format=AUDIO_FORMAT)
+        cmd = get_download_cmd(search_id, filename, audio_format=AUDIO_FORMAT)
         exitcode = subprocess.call(cmd)
         if exitcode != 0:
             raise DownloadError('Error downloading search_id={0} from source {1}'.format(search_id, THIS_SOURCE))

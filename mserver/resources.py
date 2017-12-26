@@ -36,3 +36,24 @@ class SongSearchResource(Resource):
             backend = search.get_default()
 
         return backend.search(query)
+
+
+addsong_args = reqparse.RequestParser()
+addsong_args.add_argument('search_id', help='Search id', required=True, location='json')
+addsong_args.add_argument('source', required=False, location='json')
+
+
+class PlayListResource(Resource):
+
+    def post(self, playlist_id=None):
+        args = addsong_args.parse_args()
+
+        search_id = args.get('search_id')
+        source = args.get('source')
+
+        if source:
+            backend = search.get(source)
+        else:
+            backend = search.get_default()
+
+        return backend.get_file(search_id)

@@ -17,7 +17,17 @@ Base.query = db_session.query_property()
 
 
 def base_model_repr(self):
-    return '<{classname} {string}>'.format(classname=self.__class__.__name__, string=str(self))
+    """
+    Allow objects to define repr_fields to show upon object representation.
+    """
+    if hasattr(self, 'repr_fields'):
+        extra = '({})'.format(', '.join(['{key}={value}'.format(key=k, value=v) for (k, v) in {
+            k: getattr(self, k)
+            for k in self.repr_fields
+        }.items()]))
+    else:
+        extra = str(id(self))
+    return '<{classname} {extra}>'.format(classname=self.__class__.__name__, extra=extra)
 
 
 Base.__repr__ = base_model_repr

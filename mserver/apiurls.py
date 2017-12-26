@@ -1,13 +1,19 @@
-from urllib import parse as urlparse
-
 from mserver import resources
 from mserver.mserver import api
 
 API_PREFIX = '/api/'
 
 urls = [
-    (resources.SongSearchResource, 'search')
+    (resources.SongSearchResource, 'search'),
+    (resources.PlayListResource, 'playlist/<int:playlist_id>', 'playlist')
 ]
 
-for resource, path in urls:
-    api.add_resource(resource, urlparse.urljoin(API_PREFIX, path))
+
+def join_path(prefix, path):
+    return '/{}'.format('/'.join([s.strip('/') for s in [prefix, path]]))
+
+
+for params in urls:
+    resource = params[0]
+    paths = params[1:]
+    api.add_resource(resource, *[join_path(API_PREFIX, path) for path in paths])
