@@ -1,0 +1,4 @@
+class MServerException(Exception):
+    pass
+
+

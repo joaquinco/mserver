@@ -16,4 +16,4 @@ def local_search(query):
     )).all()
 
 
-register(local_search, 'local', set_default=True)
+register(search=local_search, name='local', set_default=True)

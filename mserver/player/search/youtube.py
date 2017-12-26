@@ -1,9 +1,13 @@
+import os
 import re
+import subprocess
+from string import Template
 
 import pafy
-from mserver.models import Song
 
+from mserver.models import Song
 from .api import register
+from .exceptions import DownloadError
 
 # TODO: get own api key
 api_key = 'AIzaSyCIM4EzNqi1in22f4Z3Ru3iYvLaY8tc3bo'
@@ -13,8 +17,11 @@ THIS_SOURCE = 'youtube'
 MUSIC_CATEGORYID = 10
 ORDER = 'relevance'
 VIDEO_DURATION = 'any'
+AUDIO_FORMAT = 'mp3'
 
 ISO8601_TIMEDUR_EX = re.compile(r'PT((\d{1,3})H)?((\d{1,3})M)?((\d{1,2})S)?')
+
+DOWNLOAD_CMD_TEMPLATE = Template('youtube-dl -x --audio-format :format -o :filename http://www.youtube.com/?w=:ytid')
 
 
 def generate_search_query(term, category=MUSIC_CATEGORYID, order=ORDER, duration=VIDEO_DURATION, max_results=15):
@@ -118,9 +125,8 @@ def get_songs_from_result(yresult):
 
 def youtube_search(query):
     """
-    Searchs songs on youtube.
+    Search songs on youtube.
     """
-
     qs = generate_search_query(query)
 
     yresult = pafy.call_gdata('search', qs)
@@ -128,4 +134,46 @@ def youtube_search(query):
     return get_songs_from_result(yresult)
 
 
-register(youtube_search, name=THIS_SOURCE)
+def _get_download_cmd(ytid, filename, audio_format=AUDIO_FORMAT):
+    """
+    Returns download command
+    """
+    return DOWNLOAD_CMD_TEMPLATE.substitute(ytid=ytid, filename=filename, format=audio_format)
+
+
+def _get_item_info(ytid):
+    """
+    Fetchs data from single item from youtube
+    """
+    qs = {'part': 'contentDetails,statistics,snippet',
+          'id': ','.join([ytid])}
+
+    wdata = pafy.call_gdata('videos', qs)
+    items_vidinfo = wdata.get('items', [])
+
+    return items_vidinfo[0] if items_vidinfo else {}
+
+
+def youtube_download(search_id):
+    """
+    Download content from youtube.
+    """
+    download_dir = '/tmp'
+
+    item = _get_item_info(search_id)
+
+    snippet = item.get('snippet', {})
+    title = snippet.get('title', '').strip()
+
+    filename = os.path.join(download_dir, '{0}.{1}'.format(title, AUDIO_FORMAT))
+
+    if not os.path.exists(filename):
+        cmd = _get_download_cmd(search_id, filename, audio_format=AUDIO_FORMAT)
+        exitcode = subprocess.call(cmd)
+        if exitcode != 0:
+            raise DownloadError('Error downloading search_id={0} from source {1}'.format(search_id, THIS_SOURCE))
+
+    return filename
+
+
+register(search=youtube_search, get_file=youtube_download, name=THIS_SOURCE)

@@ -35,10 +35,12 @@ class Song(Base):
     user_id = Column(ForeignKey('user.id'))
     user = relationship(User, back_populates='added_songs')
     playlists = relationship('PlayList', secondary=SongPlayList.__tablename__, back_populates='songs')
+    original_source = Column(String(100))
+    source_song_id = Column(String(500))
+    available = Column(Boolean(), default=False)
 
     # Attributes used in search.
     source = ''
-    available = True
     search_id = ''
 
 
