@@ -1,10 +1,11 @@
 from mserver import resources
-from mserver import api
+from mserver.mserver import api
 
 
 urls = [
     (resources.SongResource, '/song'),
-    (resources.SongDetailResource, '/song/<song_id>')
+    (resources.SongDetailResource, '/song/<song_id>'),
+    (resources.SongSearchResource, '/search')
 ]
 
 for url in urls:

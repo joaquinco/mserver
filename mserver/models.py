@@ -14,6 +14,8 @@ class User(Base):
     is_superuser = Column(Boolean(), default=False)
     is_active = Column(Boolean(), default=True)
 
+    added_songs = relationship('Song', back_populates='user')
+
 
 class SongPlayList(Base):
     __tablename__ = 'song_playlist'
@@ -24,16 +26,20 @@ class SongPlayList(Base):
 class Song(Base):
     __tablename__ = 'song'
     id = Column(Integer(), Sequence('song_id_seq'), primary_key=True)
-    name = Column(String(250), nullable=False)
+    title = Column(String(250), nullable=False)
     artist = Column(String(250), nullable=True)
     album = Column(String(250), nullable=True)
     duration = Column(Time(), nullable=True)
     path = Column(String(500), nullable=True)
     created = Column(DateTime(), default=datetime.datetime.now)
     user_id = Column(ForeignKey('user.id'))
-
     user = relationship(User, back_populates='added_songs')
-    playlists = relationship('PlayList', secondary=SongPlayList, back_populates='songs')
+    playlists = relationship('PlayList', secondary=SongPlayList.__tablename__, back_populates='songs')
+
+    # Attributes used in search.
+    source = ''
+    available = True
+    search_id = ''
 
 
 class PlayList(Base):
@@ -42,4 +48,4 @@ class PlayList(Base):
     name = Column(String(50))
     created = Column(DateTime(), default=datetime.datetime.now)
 
-    songs = relationship('Song', secondary=SongPlayList, back_populates='playlists')
+    songs = relationship('Song', secondary=SongPlayList.__tablename__, back_populates='playlists')

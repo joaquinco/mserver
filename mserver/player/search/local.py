@@ -10,10 +10,10 @@ def local_search(query):
     """
     like_query = '%{0}%'.format(query)
     return Song.query.filter(or_(
-        Song.name.ilike(like_query),
+        Song.title.ilike(like_query),
         Song.artist.ilike(like_query),
         Song.album.ilike(like_query)
-    ))
+    )).all()
 
 
-register(local_search, set_default=True)
+register(local_search, 'local', set_default=True)

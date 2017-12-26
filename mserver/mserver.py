@@ -27,10 +27,12 @@ def do_setup(app):
     # global db
     # db = SQLAlchemy()
     # db.init_app(app)
-    import mserver.player.search
 
     import mserver.resources
     mserver.resources.SongResource
+
+    import mserver.apiurls
+    mserver.apiurls.urls
 
 
 app = create_app()
