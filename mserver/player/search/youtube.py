@@ -156,6 +156,21 @@ def get_item_info(ytid):
     return items_vidinfo[0] if items_vidinfo else {}
 
 
+def get_song_from_ytid(ytid):
+    """
+    Returns Song instance from ytid with basic fields filed
+    """
+    item = get_item_info(ytid)
+
+    song = Song.query.filter(original_source=THIS_SOURCE, source_song_id=ytid).scalar()
+    if song:
+        return song
+
+    snippet = item.get('snippet', {})
+    title = snippet.get('title', '').strip()
+    return Song(original_source=THIS_SOURCE, source_song_id=ytid, title=title)
+
+
 def youtube_download(search_id):
     """
     Download content from youtube.

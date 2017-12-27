@@ -5,10 +5,11 @@ _search_backends = {}
 
 
 class _SearchBackend(object):
-    def __init__(self, name=None, search_fn=None, get_file_fn=None):
+    def __init__(self, name=None, search_fn=None, get_file_fn=None, get_song_fn=None):
         self._name = name
         self.search_fn = search_fn
         self.get_file_fn = get_file_fn
+        self.get_song_fn = get_song_fn
 
     def search(self, query, *args, **kwargs):
         if hasattr(self.search_fn, '__call__'):
@@ -19,6 +20,11 @@ class _SearchBackend(object):
         if hasattr(self.get_file_fn, '__call__'):
             return self.get_file_fn(search_id, *args, **kwargs)
         raise Exception('Get file function is not callable')
+
+    def get_song(self, *args, **kwargs):
+        if hasattr(self.get_song_fn, '__call__'):
+            return self.get_song_fn(*args, **kwargs)
+        raise Exception('Get song function is not callable')
 
     @property
     def name(self):

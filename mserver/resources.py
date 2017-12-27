@@ -1,6 +1,7 @@
 from flask_restful import Resource, fields, marshal_with, reqparse
 
 from mserver.player import search
+from flask_jwt import jwt_required, current_identity
 
 song_list_marshal = {
     'id': fields.Integer,
@@ -25,6 +26,7 @@ search_args.add_argument('source', required=False, location='args')
 
 class SongSearchResource(Resource):
     @marshal_with(song_search_marshal)
+    @jwt_required()
     def get(self):
         args = search_args.parse_args()
         query = args.get('query')
@@ -44,16 +46,19 @@ addsong_args.add_argument('source', required=False, location='json')
 
 
 class PlayListResource(Resource):
-
+    @jwt_required()
     def post(self, playlist_id=None):
         args = addsong_args.parse_args()
 
         search_id = args.get('search_id')
         source = args.get('source')
+        user = current_identity
 
         if source:
             backend = search.get(source)
         else:
             backend = search.get_default()
+
+        playlist.add()
 
         return backend.get_file(search_id)
