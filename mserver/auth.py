@@ -1,4 +1,5 @@
 import bcrypt
+from flask import jsonify
 from flask_jwt import JWT
 
 from mserver.models import User
@@ -21,6 +22,12 @@ def identify(payload):
 jwt = JWT(app, authenticate, identify)
 
 
-@jwt.jwt_payload_handler
-def make_payload(identity):
-    return {'user_id': identity.id}
+@jwt.auth_response_handler
+def default_auth_response_handler(access_token, identity):
+    return jsonify({
+        'access_token': access_token.decode('utf-8'),
+        'user': {
+            'username': identity.username,
+            'is_superuser': identity.is_superuser
+        }
+    })

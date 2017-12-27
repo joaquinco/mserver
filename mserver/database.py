@@ -1,19 +1,21 @@
 import os
 
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import scoped_session, sessionmaker
+from flask_sqlalchemy import SQLAlchemy
 
+from mserver.mserver import app
 from .settings import BASE_DIR
+
+#
+# from sqlalchemy import create_engine
+# from sqlalchemy.ext.declarative import declarative_base
+# from sqlalchemy.orm import scoped_session, sessionmaker
 
 sqlite_path = 'sqlite:///{}'.format(os.path.join(BASE_DIR, 'mserver.db'))
 
-engine = create_engine(sqlite_path, convert_unicode=True)
-db_session = scoped_session(sessionmaker(autocommit=False,
-                                         autoflush=False,
-                                         bind=engine))
-Base = declarative_base()
-Base.query = db_session.query_property()
+app.config['SQLALCHEMY_DATABASE_URI'] = sqlite_path
+db = SQLAlchemy(app)
+
+Base = db.Model
 
 
 def base_model_repr(self):
@@ -39,4 +41,4 @@ def init_db():
     # you will have to import them first before calling init_db()
     import mserver.models
     mserver.models.User
-    Base.metadata.create_all(bind=engine)
+    db.create_all()
