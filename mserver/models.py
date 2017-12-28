@@ -17,7 +17,7 @@ class User(Base):
 
     added_songs = relationship('Song', back_populates='user')
 
-    repr_fields = ['name', 'is_superuser']
+    repr_fields = ['username', 'is_superuser']
 
     def set_password(self, password):
         self.password = bcrypt.hashpw(password, bcrypt.gensalt())

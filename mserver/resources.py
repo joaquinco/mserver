@@ -1,7 +1,7 @@
+from flask_jwt import jwt_required, current_identity
 from flask_restful import Resource, fields, marshal_with, reqparse
 
-from mserver.player import search
-from flask_jwt import jwt_required, current_identity
+from mserver.player import search, playlist
 
 song_list_marshal = {
     'id': fields.Integer,
@@ -54,11 +54,6 @@ class PlayListResource(Resource):
         source = args.get('source')
         user = current_identity
 
-        if source:
-            backend = search.get(source)
-        else:
-            backend = search.get_default()
+        playlist.add(source, search_id, user.id, playlist_id)
 
-        playlist.add()
-
-        return backend.get_file(search_id)
+        return {}, 204

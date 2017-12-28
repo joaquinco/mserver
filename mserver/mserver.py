@@ -22,8 +22,9 @@ def create_api(app):
 
 
 def do_setup(app):
+    global db
     from .database import init_db
-    init_db()
+    db = init_db()
 
     # global db
     # db = SQLAlchemy()

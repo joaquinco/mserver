@@ -42,3 +42,4 @@ def init_db():
     import mserver.models
     mserver.models.User
     db.create_all()
+    return db

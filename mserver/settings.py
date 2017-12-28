@@ -1,4 +1,5 @@
 import os
+import datetime
 
 DEBUG = True
 
@@ -11,8 +12,8 @@ MUSIC_DIR = os.path.join(BASE_DIR, 'storage')
 if not os.path.exists(MUSIC_DIR):
     os.mkdir(MUSIC_DIR)
 
-
 JWT_AUTH_URL_RULE = '/api/auth'
 JWT_AUTH_ENDPOINT = 'auth'
 JWT_AUTH_HEADER_PREFIX = 'Bearer'
-JWT_VERIFY_EXPIRATION = 'False'
+JWT_VERIFY_EXPIRATION = False
+JWT_EXPIRATION_DELTA = datetime.timedelta(days=365)

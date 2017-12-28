@@ -39,11 +39,11 @@ def get(backend):
     return _search_backends.get(backend)
 
 
-def register(search=None, get_file=None, name=None, set_default=False):
+def register(search=None, get_song=None, get_file=None, name=None, set_default=False):
     global _default_backend
     global _search_backends
 
-    backend = _SearchBackend(name=name, search_fn=search, get_file_fn=get_file)
+    backend = _SearchBackend(name=name, search_fn=search, get_song_fn=get_song, get_file_fn=get_file)
 
     assert name is not None, 'Must provide a name to serach backend'
     if set_default:

@@ -17,7 +17,7 @@ THIS_SOURCE = 'youtube'
 
 MUSIC_CATEGORYID = 10
 ORDER = 'relevance'
-VIDEO_DURATION = 'any'
+VIDEO_DURATION = 'medium' #('any', 'short', 'medium', 'long')
 AUDIO_FORMAT = 'mp3'
 
 ISO8601_TIMEDUR_EX = re.compile(r'PT((\d{1,3})H)?((\d{1,3})M)?((\d{1,2})S)?')
@@ -162,7 +162,7 @@ def get_song_from_ytid(ytid):
     """
     item = get_item_info(ytid)
 
-    song = Song.query.filter(original_source=THIS_SOURCE, source_song_id=ytid).scalar()
+    song = Song.query.filter_by(original_source=THIS_SOURCE, source_song_id=ytid).scalar()
     if song:
         return song
 
@@ -193,4 +193,4 @@ def youtube_download(search_id):
     return filename
 
 
-register(search=youtube_search, get_file=youtube_download, name=THIS_SOURCE)
+register(search=youtube_search, get_song=get_song_from_ytid, get_file=youtube_download, name=THIS_SOURCE)
