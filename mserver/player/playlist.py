@@ -1,6 +1,6 @@
 import os
 
-from mserver.mserver import db
+from mserver.database import db
 from mserver.models import PlayList, Song
 from mserver.player import search
 

@@ -5,11 +5,6 @@ from flask_sqlalchemy import SQLAlchemy
 from mserver.mserver import app
 from .settings import BASE_DIR
 
-#
-# from sqlalchemy import create_engine
-# from sqlalchemy.ext.declarative import declarative_base
-# from sqlalchemy.orm import scoped_session, sessionmaker
-
 sqlite_path = 'sqlite:///{}'.format(os.path.join(BASE_DIR, 'mserver.db'))
 
 app.config['SQLALCHEMY_DATABASE_URI'] = sqlite_path

@@ -40,6 +40,15 @@ class SongSearchResource(Resource):
         return backend.search(query)
 
 
+
+playlist_detail_marshal = {
+    'id': fields.String,
+    'name': fields.String,
+    'is_playing': fields.Boolean,
+    'is_default': fields.Boolean,
+    'songs_count': fields.Integer,
+}
+
 addsong_args = reqparse.RequestParser()
 addsong_args.add_argument('search_id', help='Search id', required=True, location='json')
 addsong_args.add_argument('source', required=False, location='json')
@@ -57,3 +66,9 @@ class PlayListResource(Resource):
         playlist.add(source, search_id, user.id, playlist_id)
 
         return {}, 204
+
+    @marshal_with(playlist_detail_marshal)
+    @jwt_required()
+    def get(self, playlist_id=None):
+        return playlist.get_playlist(playlist_id)
+        # TODO: should list if playlist_id==None else detail
