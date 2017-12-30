@@ -1,38 +1,47 @@
 from flask_jwt import current_identity
-from flask_socketio import emit
+from flask_jwt import jwt_required
+from flask_socketio import emit, send
 
 from mserver.mserver import socketio
 
-music_player = '/player'
+
+@socketio.on('message')
+def handle_message(message):
+    send(message)
 
 
-@socketio.on('connect', namespace=music_player)
+@socketio.on('connect')
 def on_connect():
     # if current_identity:
     #     emit('user.joined', {'message': '{} connected'.format(current_identity.username)})
     # else:
     #     return False
-    emit('user.joined', {'message': 'User connected'})
+    emit('user.joined', {'message': 'User connected'}, broadcast=True)
 
 
-@socketio.on('disconnect', namespace=music_player)
+@socketio.on('disconnect')
 def on_disconnect():
-    emit('user.joined', {'message': '{} connected'.format(current_identity.username)})
+    emit('user.left', {'message': '{} disconnected'.format(current_identity.username)})
 
 
-@socketio.on('play', namespace=music_player)
+@socketio.on('player.play')
 def on_music_play(data):
     """
     Starts playing music.
     Broadcast player state
     """
-    print('Play button clicked')
+    emit('play', broadcast=True)
 
 
-@socketio.on('pause', namespace=music_player)
+@socketio.on('player.pause')
 def on_music_paused(data):
     """
     Stops playing music.
     Broadcast player state
     """
-    print('Pause button clicked')
+    emit('pause', broadcast=True)
+
+
+@socketio.on_error()
+def error_handler(e):
+    print('Error encountered ' + str(e))
