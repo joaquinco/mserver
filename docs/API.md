@@ -5,7 +5,7 @@
 - `/api/search`:
 
 GET
-```
+```yaml
 - name: query
   type: query
   required: true
@@ -19,7 +19,7 @@ GET
 - `/api/auth`
 
 POST
-```
+```yaml
 - name: username
   type: body
   required: true
@@ -29,3 +29,11 @@ POST
 ```
 
 ## SocketIO Events
+
+- `user.joined`: receive
+- `user.left`: receive
+- `player.play`: send, receive
+- `player.pause`: send, receive
+- `player.add_son`: send
+- `player.song_added`: receive
+- `player.song_available`: receive

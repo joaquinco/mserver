@@ -160,11 +160,11 @@ def get_song_from_ytid(ytid):
     """
     Returns Song instance from ytid with basic fields filed
     """
-    item = get_item_info(ytid)
-
     song = Song.query.filter_by(original_source=THIS_SOURCE, source_song_id=ytid).scalar()
     if song:
         return song
+
+    item = get_item_info(ytid)
 
     snippet = item.get('snippet', {})
     title = snippet.get('title', '').strip()

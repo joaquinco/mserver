@@ -47,8 +47,8 @@ class Song(Base):
     error = Column(Boolean(), default=False)
 
     # Attributes used in search.
-    source = ''
-    search_id = ''
+    source = None
+    search_id = None
 
     repr_fields = ['title', 'source', 'available']
 

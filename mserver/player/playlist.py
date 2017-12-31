@@ -1,7 +1,9 @@
-import os
+from flask_restful import marshal
 
 from mserver.database import db
+from mserver.marshals import playlist_song_marshal
 from mserver.models import PlayList, Song
+from mserver.mserver import socketio
 from mserver.player import search
 
 
@@ -42,9 +44,7 @@ def add(source, search_id, user_id, playlist_id=None):
     db.session.add(playlist)
     db.session.commit()
 
-    if playlist.is_playing:
-        # TODO: broadcast added song
-        pass
+    socketio.emit('player.song_added', marshal(dict(song=song, playlist=playlist), playlist_song_marshal))
 
     if song.available:
         return
@@ -56,6 +56,6 @@ def add(source, search_id, user_id, playlist_id=None):
     db.session.query(Song).filter_by(id=song.id).update({"path": filename, "available": True})
     db.session.commit()
 
-    # TODO: broadcast song is available
+    song = Song.query.filter_by(id=song.id).one()
 
-
+    socketio.emit('player.song_available', marshal(dict(song=song, playlist=playlist), playlist_song_marshal))
