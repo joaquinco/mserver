@@ -15,7 +15,33 @@ def create_app():
 
 
 def setup_cors(app):
-    CORS(app)
+    CORS(app, supports_credentials=True)
+
+
+def _add_support_engineio_preflights():
+    from engineio import Middleware
+
+    Middleware.call_old = Middleware.__call__
+
+    def added_func(instance, environ, start_response):
+        """
+        If HTTP method is OPTIONS dont call engineio request handler.
+        """
+        method = environ['REQUEST_METHOD']
+        if method == 'OPTIONS':
+            return instance.wsgi_app(environ, start_response)
+        return instance.call_old(environ, start_response)
+
+    Middleware.__call__ = added_func
+
+
+def _add_dummy_view_to_expose_socketio_preflights(app):
+    """
+    Add route that is used only to support OPTIONS in socketio.
+    """
+    @app.route('/socket.io/', methods=['GET', 'POST'])
+    def socketio():
+        return ''
 
 
 def do_setup(app):
@@ -52,7 +78,9 @@ def handle_user_exception_again(e):
     return e
 
 
+_add_support_engineio_preflights()
 app = create_app()
+_add_dummy_view_to_expose_socketio_preflights(app)
 api = Api(app)
-socketio = SocketIO(app, cors_allowed_origins='*', cors_credentials=True)
+socketio = SocketIO(app)
 do_setup(app)

@@ -11,12 +11,13 @@ def handle_message(message):
 
 
 @socketio.on('connect')
+@jwt_required()
 def on_connect():
-    # if current_identity:
-    #     emit('user.joined', {'message': '{} connected'.format(current_identity.username)})
-    # else:
-    #     return False
-    emit('user.joined', {'message': 'User connected'}, broadcast=True)
+    if current_identity:
+        emit('user.joined', {'message': '{} connected'.format(current_identity.username)})
+    else:
+        return False
+    # emit('user.joined', {'message': 'User connected'}, broadcast=True)
 
 
 @socketio.on('disconnect')
@@ -25,12 +26,13 @@ def on_disconnect():
 
 
 @socketio.on('player.play')
+@jwt_required()
 def on_music_play(data):
     """
     Starts playing music.
     Broadcast player state
     """
-    emit('play', broadcast=True)
+    emit('player.play', broadcast=True)
 
 
 @socketio.on('player.pause')
@@ -39,7 +41,7 @@ def on_music_paused(data):
     Stops playing music.
     Broadcast player state
     """
-    emit('pause', broadcast=True)
+    emit('player.pause', broadcast=True)
 
 
 @socketio.on_error()
