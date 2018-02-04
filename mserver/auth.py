@@ -2,16 +2,27 @@ import bcrypt
 from flask import jsonify
 from flask_jwt import JWT
 
+from mserver.database import db
 from mserver.models import User
 from mserver.mserver import app
 
 
+def _create_user(username):
+    user = User(username=username)
+    db.session.add(user)
+    db.session.commit()
+    return user
+
+
 def authenticate(username, password):
     user = User.query.filter(User.username == username).scalar()
+
     if user and user.is_superuser:
         if bcrypt.checkpw(password, user.password):
             return user
     else:
+        if not user:
+            return _create_user(username)
         return user
 
 

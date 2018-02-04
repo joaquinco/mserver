@@ -15,15 +15,16 @@ def handle_message(message):
 @jwt_required()
 def on_connect():
     if current_identity:
-        emit('user.joined', {'message': '{} connected'.format(current_identity.username)})
+        emit('user.joined', {'message': '{} connected'.format(current_identity.username)}, broadcast=True)
     else:
         return False
     # emit('user.joined', {'message': 'User connected'}, broadcast=True)
 
 
 @socketio.on('disconnect')
+@jwt_required()
 def on_disconnect():
-    emit('user.left', {'message': '{} disconnected'.format(current_identity.username)})
+    emit('user.left', {'message': '{} disconnected'.format(current_identity.username)}, broadcast=True)
 
 
 @socketio.on('player.play')
