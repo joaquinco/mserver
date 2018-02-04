@@ -58,8 +58,8 @@ def do_setup(app):
     import mserver.auth
     mserver.auth.authenticate
 
-    import mserver.sockets
-    mserver.sockets.on_connect
+    import mserver.socket.sockets
+    mserver.socket.sockets.on_connect
     socketio.run(app)
 
     app.handle_user_exception = handle_user_exception_again

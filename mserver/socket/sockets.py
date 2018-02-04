@@ -1,9 +1,11 @@
+from flask import request
 from flask_jwt import current_identity
 from flask_jwt import jwt_required
 from flask_socketio import emit, send
 
 from mserver.mserver import socketio
-from mserver.player import playlist, decorators
+from mserver.player import playlist
+from .utils import start_background_task
 
 
 @socketio.on('message')
@@ -48,7 +50,6 @@ def on_music_paused(data):
 
 @socketio.on('player.add_song')
 @jwt_required()
-@decorators.handle_exception('player.song_add_error')
 def add_song_to_playlist(data):
     source = data.get('source')
     search_id = data.get('search_id')
@@ -56,7 +57,7 @@ def add_song_to_playlist(data):
 
     user_id = current_identity.id
 
-    socketio.start_background_task(playlist.add, source, search_id, user_id, playlist_id=playlist_id)
+    start_background_task(playlist.add, source, search_id, user_id, playlist_id=playlist_id)
 
 
 @socketio.on_error()

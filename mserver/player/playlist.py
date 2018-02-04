@@ -4,7 +4,7 @@ from mserver.database import db
 from mserver.marshals import playlist_song_marshal
 from mserver.models import PlayList, Song
 from mserver.mserver import socketio
-from mserver.player import search
+from mserver.player import search, decorators
 
 
 def get_playlist(playlist_id=None):
@@ -22,6 +22,7 @@ def get_playlist(playlist_id=None):
     return playlist
 
 
+@decorators.handle_exception('player.song_add_error')
 def add(source, search_id, user_id, playlist_id=None):
     """
     Adds a song to playlist
