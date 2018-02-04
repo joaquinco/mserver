@@ -3,7 +3,7 @@ from flask_jwt import jwt_required
 from flask_socketio import emit, send
 
 from mserver.mserver import socketio
-from mserver.player import playlist
+from mserver.player import playlist, decorators
 
 
 @socketio.on('message')
@@ -47,6 +47,7 @@ def on_music_paused(data):
 
 @socketio.on('player.add_song')
 @jwt_required()
+@decorators.handle_exception('player.song_add_error')
 def add_song_to_playlist(data):
     source = data.get('source')
     search_id = data.get('search_id')

@@ -11,3 +11,7 @@ class SearchError(SearchException):
 
 class DownloadError(SearchException):
     pass
+
+
+class NotFoundError(SearchError):
+    pass

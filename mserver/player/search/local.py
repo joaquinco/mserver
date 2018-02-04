@@ -2,6 +2,7 @@ from sqlalchemy import or_
 
 from mserver.models import Song
 from .api import register
+from .exceptions import NotFoundError
 
 
 def local_search(query):
@@ -16,4 +17,12 @@ def local_search(query):
     )).all()
 
 
-register(search=local_search, name='local', set_default=True)
+def get_song(song_id):
+    song = Song.query.filter_by(id=song_id).scalar()
+
+    if not song:
+        raise NotFoundError('Song not found')
+    return song
+
+
+register(search=local_search, name='local', set_default=True, get_song=get_song)
