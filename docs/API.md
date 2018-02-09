@@ -28,6 +28,36 @@ POST
   required: true
 ```
 
+- `/api/rpc/<rpc_name>`
+
+Calls a method and returns its result.
+
+GET, POST
+```yaml
+- name: rpc_name
+  type: string
+  location: path
+  description: name of RP
+```
+
+POST
+```yaml
+- name: args
+  type: list
+  location: body
+  description: positional arguments
+  required: false
+- name: kwargs
+  type: dict
+  description: key word arguments
+  required: false
+```
+
+Two types of arguments can be sent:
+- args: positional arguments, available only from POST
+- kwargs: key word arguments. Can be sent through the POST body and the
+search arguments.
+
 ## SocketIO Events
 
 - `user.joined`: receive

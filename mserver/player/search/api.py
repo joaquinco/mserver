@@ -1,4 +1,4 @@
-from utils.modules import import_submodules, get_current_module
+from utils.modules import import_current_module_submodules
 
 _default_backend = None
 _search_backends = {}
@@ -52,4 +52,4 @@ def register(search=None, get_song=None, get_file=None, name=None, set_default=F
     _search_backends[name] = backend
 
 
-import_submodules(get_current_module(__name__))
+import_current_module_submodules(__name__)

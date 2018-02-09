@@ -5,7 +5,8 @@ API_PREFIX = '/api/'
 
 urls = [
     (resources.SongSearchResource, 'search'),
-    (resources.PlayListResource, 'playlist/<int:playlist_id>', 'playlist')
+    (resources.PlayListResource, 'playlist/<int:playlist_id>', 'playlist'),
+    (resources.RPCResource, 'rpc/<string:rpc_name>')
 ]
 
 

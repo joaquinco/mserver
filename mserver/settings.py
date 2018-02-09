@@ -17,3 +17,6 @@ JWT_AUTH_ENDPOINT = 'auth'
 JWT_AUTH_HEADER_PREFIX = 'Bearer'
 JWT_VERIFY_EXPIRATION = False
 JWT_EXPIRATION_DELTA = datetime.timedelta(days=365)
+
+
+VERSION = '0.0.1'

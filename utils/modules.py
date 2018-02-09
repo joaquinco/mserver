@@ -1,3 +1,6 @@
+from .functional import compose
+
+
 def import_submodules(package_name):
     import sys
     import importlib
@@ -20,3 +23,6 @@ def get_current_module(name):
     Returns current module if its not called from __init__.
     """
     return '.'.join(name.split('.')[:-1])
+
+
+import_current_module_submodules = compose(get_current_module, import_submodules)

@@ -1,6 +1,8 @@
+from flask import request
 from flask_jwt import jwt_required, current_identity
 from flask_restful import Resource, marshal_with, reqparse
 
+from mserver import rpc
 from mserver.marshals import song_search_marshal, playlist_detail_marshal
 from mserver.player import search, playlist
 
@@ -48,3 +50,25 @@ class PlayListResource(Resource):
     def get(self, playlist_id=None):
         return playlist.get_playlist(playlist_id)
         # TODO: should list if playlist_id==None else detail
+
+
+rpc_post_params = reqparse.RequestParser()
+rpc_post_params.add_argument('args', help='argument list', required=False, location='json', default=lambda: [],
+                             type=list)
+rpc_post_params.add_argument('kwargs', required=False, location='json', default=lambda: {}, type=dict)
+
+
+class RPCResource(Resource):
+    def __init__(self, *args, **kwargs):
+        self.post = self.get = self.call_rpc
+        super().__init__(*args, **kwargs)
+
+    def get(self, rpc_name):
+        return self.call_rpc(rpc_name, **request.args)
+
+    def post(self, rpc_name):
+        args = rpc_post_params.parse_args()
+        return self.call_rpc(rpc_name, *args.get('args', []), **args.get('kwargs', {}))
+
+    def call_rpc(self, rpc_name, *args, **kwargs):
+        return rpc.call(rpc_name, *args, **kwargs)
