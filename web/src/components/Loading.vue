@@ -1,5 +1,5 @@
 <template>
-  <div class="spinner">
+  <div class="spinner" v-if="isLoading">
     <div class="bounce1"></div>
     <div class="bounce2"></div>
     <div class="bounce3"></div>
@@ -9,6 +9,12 @@
 <script>
 export default {
   name: 'Loading',
+  props: {
+    isLoading: {
+      type: Boolean,
+      required: true
+    }
+  },
   data () {
     return {}
   }

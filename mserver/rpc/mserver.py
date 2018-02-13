@@ -12,3 +12,4 @@ def system_status(*args, **kwargs):
 
 
 register('system-status', system_status)
+    

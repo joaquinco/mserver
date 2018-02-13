@@ -1,9 +1,15 @@
+import { initApiEndpoints, getFullUlrs } from './utils'
+
 const endpoints = {
   rpc: {
-    'system-status': '/rpc/system-status'
+    system_status: '/rpc/system-status'
   },
   search: '/search',
   auth: '/auth'
 }
+
+export const urls = getFullUlrs(endpoints)
+
+export const getEndpoints = () => initApiEndpoints(endpoints)
 
 export default endpoints

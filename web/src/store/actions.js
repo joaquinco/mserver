@@ -1,6 +1,14 @@
 const actions = {
-  connectServer (context) {
-
+  updateServerStatus: function ({ state }, success, data) {
+    if (success) {
+      state.server = {
+        checked: true,
+        available: true,
+        version: data.version
+      }
+    } else {
+      state.server.checked = true
+    }
   }
 }
 
