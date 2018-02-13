@@ -1,15 +1,17 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Player from '@/components/Player'
+import Dispatcher from '@/components/Dispatcher'
+import Vuex from 'vuex'
 
 Vue.use(Router)
+Vue.use(Vuex)
 
 export default new Router({
   routes: [
     {
       path: '/',
-      name: 'player',
-      component: Player
+      name: 'Dispatcher',
+      component: Dispatcher
     }
   ]
 })
