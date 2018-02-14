@@ -3,7 +3,7 @@ from flask_jwt import jwt_required, current_identity
 from flask_restful import Resource, marshal_with, reqparse
 
 from mserver import rpc
-from mserver.marshals import song_search_marshal, playlist_detail_marshal
+from mserver.marshals import song_search_marshal, playlist_detail_marshal, user_detail_marshal
 from mserver.player import search, playlist
 
 search_args = reqparse.RequestParser()
@@ -72,3 +72,10 @@ class RPCResource(Resource):
 
     def call_rpc(self, rpc_name, *args, **kwargs):
         return rpc.call(rpc_name, *args, **kwargs)
+
+
+class UserResource(Resource):
+    @marshal_with(user_detail_marshal)
+    @jwt_required()
+    def get(self):
+        return current_identity

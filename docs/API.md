@@ -28,6 +28,12 @@ POST
   required: true
 ```
 
+- `/api/auth/self`
+
+GET
+
+Returns current user information
+
 - `/api/rpc/<rpc_name>`
 
 Calls a method and returns its result.

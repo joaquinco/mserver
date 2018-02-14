@@ -1,12 +1,14 @@
 import axios from 'axios'
+import io from 'socket.io-client'
 
-const BASE_URL = `http://localhost:5000/api`
+const BASE_URL = 'http://localhost:5000'
+const BASE_API_URL = `${BASE_URL}/api`
 
 var RestApi = null
 
 function getApiCaller (token) {
   return axios.create({
-    baseURL: BASE_URL,
+    baseURL: BASE_API_URL,
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -55,3 +57,16 @@ function callRecursiveMap (obj, fun) {
 
 export const initApiEndpoints = (endpoints) => callRecursiveMap(endpoints, value => new Endpoint(value))
 export const getFullUlrs = (endpoints) => callRecursiveMap(endpoints, value => BASE_URL + value)
+
+export function getSocket (token) {
+  var socket = io(BASE_URL, {
+    transportOptions: {
+      polling: {
+        extraHeaders: {
+          'Authorization': 'Bearer ' + token
+        }
+      }
+    }
+  })
+  return socket
+}

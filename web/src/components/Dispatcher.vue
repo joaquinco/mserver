@@ -12,11 +12,15 @@
 import Loading from './Loading'
 import { mapActions } from 'vuex'
 import axios from 'axios'
-import { urls } from '@/api'
+import { urls, getEndpoints, getSocket } from '@/api'
+import storage from '@/storage'
+import router from 'vue-router'
 
 export default {
   name: 'Dispatcher',
-  components: { Loading },
+  components: {
+    Loading
+  },
   data () {
     return {
       loading: true,
@@ -28,24 +32,36 @@ export default {
     this.connectToServer()
   },
   methods: {
-    ...mapActions(['updateServerStatus']),
+    ...mapActions(['updateServerStatus', 'setComm']),
     connectToServer () {
       axios.get(urls.rpc.system_status).then((response) => {
-        this.loading = false
-        this.message = '...'
-        this.updateServerStatus({success: true, data: response.data})
-        this.onConnected()
+        this.updateServerStatus({
+          success: true,
+          data: response.data
+        })
+        this.onServerUp()
       }, (error) => {
         console.log(error)
         this.loading = false
         this.errorMessage = 'No se pudo conectar con el servidor'
-        this.updateServerStatus({success: false})
+        this.updateServerStatus({
+          success: false
+        })
       })
     },
-    onConnected () {
-      
+    onServerUp () {
+      let token = storage.get('token')
+      if (!token) {
+        router.push('login')
+      } else {
+        this.initConections(token)
+      }
+    },
+    initConections (token) {
+      let api = getEndpoints(token)
+      let socket = getSocket(token)
+      this.setComm({api, socket})
     }
-
   }
 }
 </script>

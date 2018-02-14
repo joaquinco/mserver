@@ -13,6 +13,10 @@ const store = new Vuex.Store({
       available: false,
       version: ''
     },
+    user: {
+      username: '',
+      id: ''
+    },
     comm: {
       api: null,
       socket: null

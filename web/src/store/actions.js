@@ -1,5 +1,5 @@
 const actions = {
-  updateServerStatus: function ({ state }, {success, data}) {
+  updateServerStatus ({state}, {success, data}) {
     if (success) {
       state.server = {
         checked: true,
@@ -8,6 +8,11 @@ const actions = {
       }
     } else {
       state.server.checked = true
+    }
+  },
+  setComm ({state}, {api, socket}) {
+    state.comm = {
+      api, socket
     }
   }
 }

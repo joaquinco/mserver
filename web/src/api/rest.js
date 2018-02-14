@@ -1,4 +1,4 @@
-import { initApiEndpoints, getFullUlrs } from './utils'
+import { initApiEndpoints, getFullUlrs, initApiCaller } from './utils'
 
 const endpoints = {
   rpc: {
@@ -10,6 +10,9 @@ const endpoints = {
 
 export const urls = getFullUlrs(endpoints)
 
-export const getEndpoints = () => initApiEndpoints(endpoints)
+export const getEndpoints = (token) => {
+  initApiCaller(token)
+  return initApiEndpoints(endpoints)
+}
 
 export default endpoints
