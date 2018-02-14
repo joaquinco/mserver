@@ -24,23 +24,28 @@ export default {
       errorMessage: ''
     }
   },
-  mounted: function () {
+  mounted () {
     this.connectToServer()
   },
   methods: {
-    connectToServer: function () {
-      var self = this
+    ...mapActions(['updateServerStatus']),
+    connectToServer () {
       axios.get(urls.rpc.system_status).then((response) => {
-        self.loading = false
-        self.updateServerStatus(true, response.data)
+        this.loading = false
+        this.message = '...'
+        this.updateServerStatus({success: true, data: response.data})
+        this.onConnected()
       }, (error) => {
         console.log(error)
-        self.loading = false
-        self.errorMessage = 'No se pudo conectar con el servidor'
-        self.updateServerStatus(false)
+        this.loading = false
+        this.errorMessage = 'No se pudo conectar con el servidor'
+        this.updateServerStatus({success: false})
       })
     },
-    ...mapActions(['updateServerStatus'])
+    onConnected () {
+      
+    }
+
   }
 }
 </script>

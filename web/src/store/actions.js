@@ -1,5 +1,5 @@
 const actions = {
-  updateServerStatus: function ({ state }, success, data) {
+  updateServerStatus: function ({ state }, {success, data}) {
     if (success) {
       state.server = {
         checked: true,
