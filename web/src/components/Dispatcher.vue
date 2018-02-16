@@ -14,7 +14,6 @@ import { mapActions } from 'vuex'
 import axios from 'axios'
 import { urls, getEndpoints, getSocket } from '@/api'
 import storage from '@/storage'
-import router from 'vue-router'
 
 export default {
   name: 'Dispatcher',
@@ -52,7 +51,7 @@ export default {
     onServerUp () {
       let token = storage.get('token')
       if (!token) {
-        router.push('login')
+        this.$router.push('who')
       } else {
         this.initConections(token)
       }

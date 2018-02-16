@@ -56,7 +56,7 @@ function callRecursiveMap (obj, fun) {
 }
 
 export const initApiEndpoints = (endpoints) => callRecursiveMap(endpoints, value => new Endpoint(value))
-export const getFullUlrs = (endpoints) => callRecursiveMap(endpoints, value => BASE_URL + value)
+export const getFullUlrs = (endpoints) => callRecursiveMap(endpoints, value => BASE_API_URL + value)
 
 export function getSocket (token) {
   var socket = io(BASE_URL, {

@@ -6,8 +6,10 @@ import router from './router'
 import { store } from './store'
 // import { anotherStore } from './anotherStore'
 import './assets/skeleton.css'
-import './assets/normalize.css'
 import './assets/site.css'
+// import './assets/normalize.css'
+// import '@/assets/bootstrap.css'
+import '@/assets/bootstrap-grid.css'
 
 Vue.config.productionTip = false
 

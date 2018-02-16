@@ -1,7 +1,7 @@
 const actions = {
   updateServerStatus ({state}, {success, data}) {
     if (success) {
-      state.server = {
+      state.server = {...state.server,
         checked: true,
         available: true,
         version: data.version
