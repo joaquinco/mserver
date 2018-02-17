@@ -28,7 +28,7 @@
 
 /* Grid
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
-.container {
+.container, .container-sm {
   position: relative;
   width: 100%;
   max-width: 960px;
@@ -43,6 +43,10 @@
 
 /* For devices larger than 400px */
 @media (min-width: 400px) {
+  .container-sm {
+    width: 80%;
+    padding: 0;
+  }
   .container {
     width: 85%;
     padding: 0; }
@@ -50,6 +54,9 @@
 
 /* For devices larger than 550px */
 @media (min-width: 550px) {
+  .container-sm {
+    width: 70%;
+  }
   .container {
     width: 80%; }
   .column,
@@ -384,6 +391,7 @@ hr {
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
 /* Self Clearing Goodness */
+.container-sm:after,
 .container:after,
 .row:after,
 .u-cf {
@@ -409,10 +417,25 @@ there.
 @media (min-width: 550px) {}
 
 /* Larger than tablet */
-@media (min-width: 750px) {}
+@media (min-width: 750px) {
+  .container-sm {
+    width: 60%;
+    padding: 0;
+  }
+}
 
 /* Larger than desktop */
-@media (min-width: 1000px) {}
+@media (min-width: 1000px) {
+  .container-sm {
+    width: 50%;
+    padding: 0;
+  }
+}
 
 /* Larger than Desktop HD */
-@media (min-width: 1200px) {}
+@media (min-width: 1200px) {
+  .container-sm {
+    width: 40%;
+    padding: 0;
+  }
+}

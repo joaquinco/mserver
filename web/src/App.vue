@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view class="container"/>
+    <router-view/>
   </div>
 </template>
 
@@ -11,7 +11,4 @@ export default {
 </script>
 
 <style>
-#app {
-  min-height: 100vh
-}
 </style>

@@ -8,7 +8,7 @@
 
 <script>
 export default {
-  name: 'Loading',
+  name: 'LoadingLine',
   props: {
     isLoading: {
       type: Boolean,

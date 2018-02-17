@@ -1,15 +1,13 @@
 <template>
-<div class="row">
-  <div class="column">
-    <Loading :is-loading="loading"></Loading>
-    <h4 v-if="!errorMessage" class="center-text">{{message}}</h4>
-    <h4 v-if="errorMessage" class="error center-text">{{errorMessage}}</h4>
+  <div class="d-flex flex-column container">
+      <LoadingLine :is-loading="loading"></LoadingLine>
+      <h4 v-if="!errorMessage" class="center-text">{{message}}</h4>
+      <h4 v-if="errorMessage" class="error center-text">{{errorMessage}}</h4>
   </div>
-</div>
 </template>
 
 <script>
-import Loading from './Loading'
+import LoadingLine from './LoadingLine'
 import { mapActions } from 'vuex'
 import axios from 'axios'
 import { urls, getEndpoints, getSocket } from '@/api'
@@ -18,7 +16,7 @@ import storage from '@/storage'
 export default {
   name: 'Dispatcher',
   components: {
-    Loading
+    LoadingLine
   },
   data () {
     return {

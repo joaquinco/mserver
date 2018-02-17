@@ -360,3 +360,12 @@
 .position-fixed {
   position: fixed !important;
 }
+
+button:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+
+button:disabled:hover {
+  
+}

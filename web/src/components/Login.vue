@@ -1,11 +1,12 @@
 <template>
-  <div class="flex-d flex-column justify-content-center">
+  <div class="flex-d flex-column justify-content-center container-sm">
     <div class="d-flex flex-column">
       <h1>Quien sos wacho</h1>
-      <input type=text placeholder="Nombre"/>
-      <input v-if="!basicLogin" type=password placeholder="Contraseña"/>
-      <div class="d-flex flex-row justify-content-center mt-10">
-        <button>Dale</button>
+      <input type=text placeholder="Nombre" v-model="username"/>
+      <input v-if="!basicLogin" type=password placeholder="Contraseña" v-model="password"/>
+      <div class="d-flex flex-row justify-content-end">
+        <LoadingCircular :is-loading="isLoading" :in-place="true" size="30"></LoadingCircular>
+        <button class="button-primary ml-1" @click.prevent.stop="submit()" :disabled="isFormInvalid">Dale</button>
       </div>
     </div>
     <div class="position-fixed trigger-password" @click.stop="wantToTriggerPassword()">
@@ -15,40 +16,49 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import axios from 'axios'
+import { urls } from '@/api'
+import LoadingCircular from '@/components/LoadingCircular'
 
 export default {
   name: 'Login',
+  components: {
+    LoadingCircular
+  },
   data () {
     return {
-      basicLogin: true,
       username: '',
       password: '',
+      basicLogin: true,
       triggerPassworClickLimit: 10,
       triggerPasswordCount: 0,
-      timer: null
+      timer: null,
+      isLoading: false
     }
   },
   computed: {
-    ...mapState({
-      auth: state => state.auth
-    })
+    isFormInvalid () {
+      return this.username.length < 5
+    }
   },
   methods: {
     wantToTriggerPassword () {
       if (this.timer) {
         clearTimeout(this.timer)
       }
-      this.triggerPasswordCount += 1;
+      this.triggerPasswordCount += 1
       if (this.triggerPasswordCount >= this.triggerPassworClickLimit) {
-        this.basicLogin = false;
-        this.clearPasswordCount();
+        this.basicLogin = false
+        this.clearPasswordCount()
       } else {
-        this.timer = setTimeout(this.clearPasswordCount, 1000);
+        this.timer = setTimeout(this.clearPasswordCount, 800)
       }
     },
     clearPasswordCount () {
-      this.triggerPasswordCount = 0;
+      this.triggerPasswordCount = 0
+    },
+    submit () {
+
     }
   }
 }
