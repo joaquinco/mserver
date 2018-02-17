@@ -24,14 +24,12 @@ class Endpoint {
     this.endpoint = endpoint
   }
 
-  async post (data) {
-    var response = await RestApi.post(this.endpoint, data)
-    return response
+  post (data) {
+    return RestApi.post(this.endpoint, data)
   }
 
-  async get (params) {
-    var response = await RestApi.get(this.endpoint, params)
-    return response
+  get (params) {
+    return RestApi.get(this.endpoint, params)
   }
 }
 
@@ -59,14 +57,20 @@ export const initApiEndpoints = (endpoints) => callRecursiveMap(endpoints, value
 export const getFullUlrs = (endpoints) => callRecursiveMap(endpoints, value => BASE_API_URL + value)
 
 export function getSocket (token) {
-  var socket = io(BASE_URL, {
-    transportOptions: {
-      polling: {
-        extraHeaders: {
-          'Authorization': 'Bearer ' + token
+  return new Promise((resolve, reject) => {
+    try {
+      var socket = io(BASE_URL, {
+        transportOptions: {
+          polling: {
+            extraHeaders: {
+              'Authorization': 'Bearer ' + token
+            }
+          }
         }
-      }
+      })
+      resolve(socket)
+    } catch (error) {
+      reject(error)
     }
   })
-  return socket
 }

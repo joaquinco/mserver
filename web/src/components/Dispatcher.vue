@@ -8,7 +8,7 @@
 
 <script>
 import LoadingLine from './LoadingLine'
-import { mapActions } from 'vuex'
+import { mapActions, mapMutations } from 'vuex'
 import axios from 'axios'
 import { urls, getEndpoints, getSocket } from '@/api'
 import storage from '@/storage'
@@ -29,7 +29,8 @@ export default {
     this.connectToServer()
   },
   methods: {
-    ...mapActions(['updateServerStatus', 'setComm']),
+    ...mapActions(['updateServerStatus']),
+    ...mapMutations(['setComm']),
     connectToServer () {
       axios.get(urls.rpc.system_status).then((response) => {
         this.updateServerStatus({
@@ -40,24 +41,24 @@ export default {
       }, (error) => {
         console.log(error)
         this.loading = false
-        this.errorMessage = 'No se pudo conectar con el servidor'
         this.updateServerStatus({
           success: false
         })
       })
+    },
+    onConnectionError () {
+      this.errorMessage = 'No se pudo conectar con el servidor'
     },
     onServerUp () {
       let token = storage.get('token')
       if (!token) {
         this.$router.push('who')
       } else {
-        this.initConections(token)
+        var api = getEndpoints(token)
+        getSocket(token).then((socket) => {
+          this.setComm({api, socket})
+        }, this.onConnectionError)
       }
-    },
-    initConections (token) {
-      let api = getEndpoints(token)
-      let socket = getSocket(token)
-      this.setComm({api, socket})
     }
   }
 }

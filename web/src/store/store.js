@@ -15,15 +15,14 @@ const store = new Vuex.Store({
     },
     user: {
       username: '',
-      id: ''
+      is_superuser: false
     },
     comm: {
       api: null,
       socket: null
     },
     auth: {
-      token: null,
-      user: null
+      access_token: null
     },
     playlist: {
       songs: [],

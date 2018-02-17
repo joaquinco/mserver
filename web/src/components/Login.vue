@@ -2,10 +2,11 @@
   <div class="flex-d flex-column justify-content-center container-sm">
     <div class="d-flex flex-column">
       <h1>Quien sos wacho</h1>
+      <ApiError :errorResponse='apiError'/>
       <input type=text placeholder="Nombre" v-model="username"/>
       <input v-if="!basicLogin" type=password placeholder="Contraseña" v-model="password"/>
       <div class="d-flex flex-row justify-content-end">
-        <LoadingCircular :is-loading="isLoading" :in-place="true" size="30"></LoadingCircular>
+        <LoadingCircular :is-loading="isLoading" :in-place="true" :size="30"></LoadingCircular>
         <button class="button-primary ml-1" @click.prevent.stop="submit()" :disabled="isFormInvalid">Dale</button>
       </div>
     </div>
@@ -17,13 +18,16 @@
 
 <script>
 import axios from 'axios'
+import { mapActions } from 'vuex'
 import { urls } from '@/api'
 import LoadingCircular from '@/components/LoadingCircular'
+import ApiError from './ApiError'
 
 export default {
   name: 'Login',
   components: {
-    LoadingCircular
+    LoadingCircular,
+    ApiError
   },
   data () {
     return {
@@ -33,7 +37,8 @@ export default {
       triggerPassworClickLimit: 10,
       triggerPasswordCount: 0,
       timer: null,
-      isLoading: false
+      isLoading: false,
+      apiError: null
     }
   },
   computed: {
@@ -42,6 +47,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['setUser']),
     wantToTriggerPassword () {
       if (this.timer) {
         clearTimeout(this.timer)
@@ -58,7 +64,21 @@ export default {
       this.triggerPasswordCount = 0
     },
     submit () {
+      this.isLoading = true
 
+      let stopLoading = (fn) => (params) => {
+        this.isLoading = false
+        return fn(params)
+      }
+
+      axios.post(urls.auth, {
+        username: this.username,
+        password: this.password
+      }).then(stopLoading(this.onLoginSuccess), stopLoading((error) => { this.apiError = error }))
+    },
+    onLoginSuccess (response) {
+      this.setUser(response.data)
+      this.$router.push('/')
     }
   }
 }

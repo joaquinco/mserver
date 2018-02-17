@@ -1,3 +1,6 @@
+import storage from '@/storage'
+
+/* eslint-disable camelcase */
 const actions = {
   updateServerStatus ({state}, {success, data}) {
     if (success) {
@@ -10,10 +13,10 @@ const actions = {
       state.server.checked = true
     }
   },
-  setComm ({state}, {api, socket}) {
-    state.comm = {
-      api, socket
-    }
+  setUser ({state}, {username, is_superuser, access_token}) {
+    state.auth.access_token = access_token
+    state.user = {...state.user, username, is_superuser}
+    storage.set('token', access_token)
   }
 }
 

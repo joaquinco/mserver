@@ -11,9 +11,16 @@ const actualStorage = {
 }
 
 const dummyStorage = {
-  set (key, value) {},
+  _store: {},
+  set (key, value) {
+    this._store[key] = value
+  },
   get (key) {
-    return null
+    try {
+      return this._store[key]
+    } catch (error) {
+      return null
+    }
   }
 }
 
