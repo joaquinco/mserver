@@ -38,5 +38,6 @@ playlist_song_marshal = {
 
 user_detail_marshal = {
     'id': fields.String,
-    'username': fields.String
+    'username': fields.String,
+    'is_superuser': fields.Boolean,
 }

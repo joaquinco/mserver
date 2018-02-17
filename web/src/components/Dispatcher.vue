@@ -29,7 +29,7 @@ export default {
     this.connectToServer()
   },
   methods: {
-    ...mapActions(['updateServerStatus']),
+    ...mapActions(['updateServerStatus', 'setUser']),
     ...mapMutations(['setComm']),
     connectToServer () {
       axios.get(urls.rpc.system_status).then((response) => {
@@ -52,11 +52,15 @@ export default {
     onServerUp () {
       let token = storage.get('token')
       if (!token) {
-        this.$router.push('who')
+        this.$router.push('/who')
       } else {
         var api = getEndpoints(token)
-        getSocket(token).then((socket) => {
-          this.setComm({api, socket})
+        api.auth.self.get().then((response) => {
+          this.setUser({...response.data, access_token: token})
+          getSocket(token).then((socket) => {
+            this.setComm({api, socket})
+            this.$router.push('player')
+          }, this.onConnectionError)
         }, this.onConnectionError)
       }
     }

@@ -47,7 +47,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setUser']),
+    ...mapActions(['setToken']),
     wantToTriggerPassword () {
       if (this.timer) {
         clearTimeout(this.timer)
@@ -71,13 +71,13 @@ export default {
         return fn(params)
       }
 
-      axios.post(urls.auth, {
+      axios.post(urls.auth.login, {
         username: this.username,
         password: this.password
       }).then(stopLoading(this.onLoginSuccess), stopLoading((error) => { this.apiError = error }))
     },
     onLoginSuccess (response) {
-      this.setUser(response.data)
+      this.setToken(response.data.access_token)
       this.$router.push('/')
     }
   }

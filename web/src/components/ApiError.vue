@@ -13,10 +13,9 @@ export default {
       let message = ''
       if (this.errorResponse) {
         let error = this.errorResponse
-
         if (error.response) {
           let status = error.response.status
-          switch(status) {
+          switch (status) {
             case 401: case 403: {
               message = 'Mira no te puedo dejar pasar con esos datos'
               break

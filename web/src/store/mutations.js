@@ -1,5 +1,5 @@
 const mutations = {
-  setComm ({state}, {api, socket}) {
+  setComm (state, {api, socket}) {
     state.comm = {
       api, socket
     }

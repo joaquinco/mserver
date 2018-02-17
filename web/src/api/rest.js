@@ -5,7 +5,10 @@ const endpoints = {
     system_status: '/rpc/system-status'
   },
   search: '/search',
-  auth: '/auth'
+  auth: {
+    login: '/auth',
+    self: '/auth/self'
+  }
 }
 
 export const urls = getFullUlrs(endpoints)
