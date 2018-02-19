@@ -8,7 +8,7 @@
 
 <script>
 import LoadingLine from './LoadingLine'
-import { mapActions, mapMutations, mapState } from 'vuex'
+import { mapActions, mapMutations } from 'vuex'
 import axios from 'axios'
 import { urls, getEndpoints, getSocket } from '@/api'
 import storage from '@/storage'
@@ -26,14 +26,11 @@ export default {
     }
   },
   mounted () {
-    if (this.status.checked) {
+    if (!this.$store.state.server.checked) {
       this.connectToServer()
     } else {
       this.onServerUp()
     }
-  },
-  computed: {
-    ...mapState['status']
   },
   methods: {
     ...mapActions(['updateServerStatus', 'setUser']),

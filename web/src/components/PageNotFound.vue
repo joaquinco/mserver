@@ -3,7 +3,7 @@
     <h1 class="color-error not-found">404 Not found :(</h1>
     <p>La ruta {{$route.path}} no es válida</p>
     <div class="d-flex flex-row justify-content-end">
-      <router-link :to="{ name: 'dispatcher'}">Sasenme de aquí</router-link>
+      <router-link :to="{ name: 'dispatch'}">Sasenme de aquí</router-link>
     </div>
   </div>
 </template>
@@ -17,5 +17,9 @@ export default {
 .not-found {
   font-size: 3em;
   font-weight: bold;
+}
+
+a {
+  text-decoration: none;
 }
 </style>

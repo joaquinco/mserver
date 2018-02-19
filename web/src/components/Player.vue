@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div>Acá va el player</div>
 </template>
 
 <script>

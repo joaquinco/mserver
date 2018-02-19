@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Dispatcher from '@/components/Dispatcher'
 import Login from '@/components/Login'
 import PageNotFound from '@/components/PageNotFound'
+import Player from '@/components/Player'
 
 Vue.use(Router)
 
@@ -21,6 +22,11 @@ export default new Router({
       path: '/who',
       name: 'login',
       component: Login
+    },
+    {
+      path: '/player',
+      name: 'player',
+      component: Player
     },
     {
       path: '*',
