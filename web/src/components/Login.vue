@@ -1,6 +1,6 @@
 <template>
   <div class="flex-d flex-column justify-content-center container-sm">
-    <div class="d-flex flex-column">
+    <form class="d-flex flex-column">
       <h1>Quien sos wacho</h1>
       <ApiError :errorResponse='apiError'/>
       <input type=text placeholder="Nombre" v-model="username"/>
@@ -9,7 +9,7 @@
         <LoadingCircular :is-loading="isLoading" :in-place="true" :size="30"></LoadingCircular>
         <button class="button-primary ml-1" @click.prevent.stop="submit()" :disabled="isFormInvalid">Dale</button>
       </div>
-    </div>
+    </form>
     <div class="position-fixed trigger-password" @click.stop="wantToTriggerPassword()">
       <h4 v-show="triggerPasswordCount > 3">{{triggerPassworClickLimit - triggerPasswordCount}}</h4>
     </div>
@@ -78,7 +78,7 @@ export default {
     },
     onLoginSuccess (response) {
       this.setToken(response.data.access_token)
-      this.$router.push('/')
+      this.$router.push({name: 'dispatch'})
     }
   }
 }

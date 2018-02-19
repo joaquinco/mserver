@@ -21,3 +21,11 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+
+// router.beforeEach((to, from, next) => {
+//   if (!store.state.status.checked) {
+//     next('/')
+//   } else {
+//     next()
+//   }
+// })

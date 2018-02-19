@@ -1,6 +1,6 @@
 <template>
   <div v-if="show">
-    <span class="error">{{message}}</span>
+    <span class="color-error error">{{message}}</span>
   </div>
 </template>
 
@@ -54,6 +54,5 @@ export default {
 <style scoped>
 .error {
   font-size: 1.1em;
-  color: #ffa93a
 }
 </style>

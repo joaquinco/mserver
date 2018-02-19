@@ -8,7 +8,7 @@
 
 <script>
 import LoadingLine from './LoadingLine'
-import { mapActions, mapMutations } from 'vuex'
+import { mapActions, mapMutations, mapState } from 'vuex'
 import axios from 'axios'
 import { urls, getEndpoints, getSocket } from '@/api'
 import storage from '@/storage'
@@ -26,7 +26,14 @@ export default {
     }
   },
   mounted () {
-    this.connectToServer()
+    if (this.status.checked) {
+      this.connectToServer()
+    } else {
+      this.onServerUp()
+    }
+  },
+  computed: {
+    ...mapState['status']
   },
   methods: {
     ...mapActions(['updateServerStatus', 'setUser']),
@@ -52,14 +59,14 @@ export default {
     onServerUp () {
       let token = storage.get('token')
       if (!token) {
-        this.$router.push('/who')
+        this.$router.push({name: 'login'})
       } else {
         var api = getEndpoints(token)
         api.auth.self.get().then((response) => {
           this.setUser({...response.data, access_token: token})
           getSocket(token).then((socket) => {
             this.setComm({api, socket})
-            this.$router.push('player')
+            this.$router.push({name: 'player'})
           }, this.onConnectionError)
         }, this.onConnectionError)
       }
