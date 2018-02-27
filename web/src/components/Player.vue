@@ -1,10 +1,18 @@
 <template>
-  <div>Acá va el player</div>
+  <div class='container d-flex flex-column justfy-content-around h-100vh'>
+    <SearchToggle/>
+    <Playlist class="player-content"/>
+    <PlayerControls/>
+  </div>
 </template>
-
 <script>
+import PlayerControls from '@/components/PlayerControls'
+import SearchToggle from '@/components/SearchToggle'
+import Playlist from '@/components/Playlist'
+
 export default {
   name: 'Player',
+  components: { PlayerControls, SearchToggle, Playlist },
   data () {
     return {
     }
@@ -12,4 +20,8 @@ export default {
 }
 </script>
 
-<style></style>
+<style scoped>
+.player-content {
+  flex: 1;
+}
+</style>

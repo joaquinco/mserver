@@ -41,6 +41,11 @@ export default {
       apiError: null
     }
   },
+  mounted () {
+    if (!this.$store.state.server.checked) {
+      this.$router.push({name: 'dispatch'})
+    }
+  },
   computed: {
     isFormInvalid () {
       return this.username.length < 5

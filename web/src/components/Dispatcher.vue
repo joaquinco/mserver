@@ -1,13 +1,14 @@
 <template>
-  <div class="d-flex flex-column container">
+  <div class="d-flex flex-column container align-items-center">
       <LoadingLine :is-loading="loading"></LoadingLine>
-      <h4 v-if="!errorMessage" class="center-text">{{message}}</h4>
-      <h4 v-if="errorMessage" class="error center-text">{{errorMessage}}</h4>
+      <h4 v-if="!error" class="center-text">{{message}}</h4>
+      <ApiError :errorResponse="error"/>
   </div>
 </template>
 
 <script>
-import LoadingLine from './LoadingLine'
+import LoadingLine from '@/components/LoadingLine'
+import ApiError from '@/components/ApiError'
 import { mapActions, mapMutations } from 'vuex'
 import axios from 'axios'
 import { urls, getEndpoints, getSocket } from '@/api'
@@ -16,13 +17,14 @@ import storage from '@/storage'
 export default {
   name: 'Dispatcher',
   components: {
-    LoadingLine
+    LoadingLine,
+    ApiError
   },
   data () {
     return {
       loading: true,
       message: 'Conectando',
-      errorMessage: ''
+      error: ''
     }
   },
   mounted () {
@@ -36,6 +38,7 @@ export default {
     ...mapActions(['updateServerStatus', 'setUser']),
     ...mapMutations(['setComm']),
     connectToServer () {
+      var self = this
       axios.get(urls.rpc.system_status).then((response) => {
         this.updateServerStatus({
           success: true,
@@ -48,10 +51,15 @@ export default {
         this.updateServerStatus({
           success: false
         })
+        self.onConnectionError(error)
       })
     },
-    onConnectionError () {
-      this.errorMessage = 'No se pudo conectar con el servidor'
+    onConnectionError (error) {
+      if (!error) {
+        error = 'No se pudo conectar con el servidor'
+      }
+      this.error = error
+      this.loading = false
     },
     onServerUp () {
       let token = storage.get('token')
