@@ -1,5 +1,5 @@
 <template>
-  <div class='container d-flex flex-column justfy-content-around h-100vh'>
+  <div class='container-sm d-flex flex-column justfy-content-around h-100vh'>
     <SearchToggle/>
     <Playlist class="player-content"/>
     <PlayerControls/>
