@@ -6,7 +6,12 @@ const actualStorage = {
     localStorage.setItem(key, value)
   },
   get (key) {
-    return localStorage.getItem(key)
+    let ret = localStorage.getItem(key)
+    try {
+      return JSON.parse(ret)
+    } catch (error) {
+      return ret
+    }
   }
 }
 

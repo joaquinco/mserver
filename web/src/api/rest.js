@@ -4,6 +4,9 @@ const endpoints = {
   rpc: {
     system_status: '/rpc/system-status'
   },
+  srpc: {
+    search_sources: '/srpc/player-sources'
+  },
   search: '/search',
   auth: {
     login: '/auth',

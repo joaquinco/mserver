@@ -7,6 +7,7 @@ urls = [
     (resources.SongSearchResource, 'search'),
     (resources.PlayListResource, 'playlist/<int:playlist_id>', 'playlist'),
     (resources.RPCResource, 'rpc/<string:rpc_name>'),
+    (resources.SecureRPCResource, 'srpc/<string:rpc_name>'),
     (resources.UserResource, 'auth/self'),
 ]
 

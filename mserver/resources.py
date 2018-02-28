@@ -74,6 +74,15 @@ class RPCResource(Resource):
         return rpc.call(rpc_name, *args, **kwargs)
 
 
+class SecureRPCResource(RPCResource):
+    def __init__(self):
+        get = jwt_required(super().get)
+        post = jwt_required(super().post)
+
+    def call_rpc(self, rpc_name, *args, **kwargs):
+        return rpc.call(rpc_name, *args, secure=True, **kwargs)
+
+
 class UserResource(Resource):
     @marshal_with(user_detail_marshal)
     @jwt_required()

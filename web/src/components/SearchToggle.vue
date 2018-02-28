@@ -11,15 +11,32 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
+import { executeAlso } from '@/utils'
+
 export default {
   name: 'SearchToggle',
   data () {
     return {
       query: '',
-      searchActive: false
+      searchActive: false,
+      loadingSources: false,
+      error: null
+    }
+  },
+  computed: {
+    ...mapState({
+      searchSources: state => state.search.sources,
+      api: state => state.comm.api
+    })
+  },
+  mounted () {
+    if (!this.searchSources.length) {
+      this.fetchSearchSources()
     }
   },
   methods: {
+    ...mapMutations(['setSearchSources']),
     search () {
       alert('Buscando.')
     },
@@ -29,6 +46,20 @@ export default {
     cancelSearch () {
       this.searchActive = false
       this.query = ''
+    },
+    fetchSearchSources () {
+      this.loadingSources = true
+
+      let always = () => { this.loadingSources = false }
+
+      var self = this
+      this.api.srpc.search_sources.get().then(
+        executeAlso((response) => self.setSearchSources(response.sources), always),
+        executeAlso(self.onApiError, always))
+    },
+    onApiError (error) {
+      this.error = error
+      alert(error)
     }
   }
 }

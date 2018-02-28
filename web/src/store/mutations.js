@@ -7,6 +7,9 @@ const mutations = {
   },
   setToken (state, access_token) {
     state.auth.access_token = access_token
+  },
+  setSearchSources (state, sources) {
+    state.search.sources = sources
   }
 }
 

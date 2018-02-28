@@ -36,7 +36,26 @@ def get_default():
 
 
 def get(backend):
+    """
+    Retrieves music source backend.
+    """
     return _search_backends.get(backend)
+
+
+def list_info():
+    """
+    Return list of available sources
+    """
+    global _search_backends
+    global _default_backend
+
+    if _default_backend:
+        default_name = _default_backend.name
+    else:
+        default_name = None
+
+    return [{'name': s.name, 'is_default': s.name == default_name} for s in _search_backends.values()]
+
 
 
 def register(search=None, get_song=None, get_file=None, name=None, set_default=False):
