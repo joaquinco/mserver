@@ -36,7 +36,7 @@ export default {
   },
   methods: {
     ...mapActions(['updateServerStatus', 'setUser']),
-    ...mapMutations(['setComm']),
+    ...mapMutations(['setComm', 'setToken']),
     connectToServer () {
       var self = this
       axios.get(urls.rpc.system_status).then((response) => {
@@ -66,9 +66,10 @@ export default {
       if (!token) {
         this.$router.push({name: 'login'})
       } else {
+        this.setToken(token)
         var api = getEndpoints(token)
         api.auth.self.get().then((response) => {
-          this.setUser({...response.data, access_token: token})
+          this.setUser({...response.data})
           getSocket(token).then((socket) => {
             this.setComm({api, socket})
             this.$router.push({name: 'player'})

@@ -18,10 +18,10 @@
 
 <script>
 import axios from 'axios'
-import { mapActions } from 'vuex'
 import { urls } from '@/api'
 import LoadingCircular from '@/components/LoadingCircular'
-import ApiError from './ApiError'
+import ApiError from '@/components/ApiError'
+import storage from '@/storage'
 
 export default {
   name: 'Login',
@@ -41,18 +41,12 @@ export default {
       apiError: null
     }
   },
-  mounted () {
-    if (!this.$store.state.server.checked) {
-      this.$router.push({name: 'dispatch'})
-    }
-  },
   computed: {
     isFormInvalid () {
       return this.username.length < 5
     }
   },
   methods: {
-    ...mapActions(['setToken']),
     wantToTriggerPassword () {
       if (this.timer) {
         clearTimeout(this.timer)
@@ -82,7 +76,7 @@ export default {
       }).then(stopLoading(this.onLoginSuccess), stopLoading((error) => { this.apiError = error }))
     },
     onLoginSuccess (response) {
-      this.setToken(response.data.access_token)
+      storage.set('token', response.data.access_token)
       this.$router.push({name: 'dispatch'})
     }
   }

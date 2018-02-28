@@ -13,6 +13,15 @@ import '@/assets/bootstrap-grid.css'
 
 Vue.config.productionTip = false
 
+router.beforeEach((to, from, next) => {
+  // hooks must be set before mounting the app
+  if (!store.state.server.checked && to.name !== 'dispatch') {
+    next({name: 'dispatch'})
+  } else {
+    next()
+  }
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -21,11 +30,3 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
-
-// router.beforeEach((to, from, next) => {
-//   if (!store.state.status.checked) {
-//     next('/')
-//   } else {
-//     next()
-//   }
-// })
