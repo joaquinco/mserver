@@ -10,6 +10,9 @@ const mutations = {
   },
   setSearchSources (state, sources) {
     state.search.sources = sources
+  },
+  setSearchResults (state, {source, results}) {
+    state.search.results[source] = results
   }
 }
 

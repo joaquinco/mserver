@@ -47,10 +47,14 @@ class Song(Base):
     error = Column(Boolean(), default=False)
 
     # Attributes used in search.
-    source = None
+    source = 'local'
     search_id = None
 
     repr_fields = ['title', 'source', 'available']
+
+    @property
+    def search_key(self):
+        return '{source}-{id}'.format(source=self.source, id=self.search_id or self.id)
 
 
 class PlayList(Base):

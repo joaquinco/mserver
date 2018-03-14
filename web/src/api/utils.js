@@ -24,12 +24,12 @@ class Endpoint {
     this.endpoint = endpoint
   }
 
-  post (data) {
-    return RestApi.post(this.endpoint, data)
+  post (config) {
+    return RestApi.post(this.endpoint, config)
   }
 
-  get (params) {
-    return RestApi.get(this.endpoint, params)
+  get (config) {
+    return RestApi.get(this.endpoint, config)
   }
 }
 

@@ -17,6 +17,7 @@ song_list_marshal = {
 
 song_search_marshal = {
     'search_id': SearchIdField,
+    'search_key': fields.String,
     'title': fields.String,
     'duration': fields.String,
     'available': fields.Boolean,

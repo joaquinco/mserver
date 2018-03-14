@@ -57,7 +57,6 @@ def list_info():
     return [{'name': s.name, 'is_default': s.name == default_name} for s in _search_backends.values()]
 
 
-
 def register(search=None, get_song=None, get_file=None, name=None, set_default=False):
     global _default_backend
     global _search_backends
