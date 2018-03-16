@@ -7,6 +7,7 @@ import pafy
 
 from mserver import settings
 from mserver.models import Song
+from mserver.player.utils import format_int_duration
 from .api import register
 from .exceptions import DownloadError
 
@@ -117,6 +118,8 @@ def get_songs_from_result(yresult):
 
         snippet = item.get('snippet', {})
         title = snippet.get('title', '').strip()
+
+        duration = format_int_duration(duration)
 
         current = Song(title=title, duration=duration, source=THIS_SOURCE, available=False, search_id=ytid)
         songs.append(current)
