@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-row song-row">
+  <div class="d-flex flex-row song-row justify-content-between">
     <div class="d-flex flex-column">
       <span class="title">{{song.title}}</span>
       <span class="artist" v-if="song.artist">{{song.artist}}</span>
@@ -20,8 +20,12 @@ export default {
 
 <style scoped>
 .song-row {
-  padding: 10px;
-  border-bottom: 1px solid;
+  padding: 10px 10px 10px 0;
+  border-bottom: 1px solid #b2b2b2;
+}
+
+.song-row:last-child {
+  border-bottom: none;
 }
 
 .artist,

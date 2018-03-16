@@ -12,7 +12,7 @@ const mutations = {
     state.search.sources = sources
   },
   setSearchResults (state, {source, results}) {
-    state.search.results[source] = results
+    state.search.results = {...state.search.results, [source]: results}
   }
 }
 

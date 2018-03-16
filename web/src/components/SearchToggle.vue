@@ -1,18 +1,23 @@
 <template>
   <div class="d-flex flex-column container-search" :class="{'search-fullpage': searchActive, 'container-sm': searchActive, 'w-100': !searchActive}">
     <div class="input-wrapper">
-      <form @submit.prevent="onSearch" class="d-flex flex-row align-items-center">
+      <form @submit.prevent="globalSearch()" class="d-flex flex-row align-items-center">
         <input class="w-100" type=search v-model="query" placeholder="Buscar" @focus="onSearchFocus"/>
         <a v-if="searchActive" class="cancel-search ml-2" href="" @click.prevent.stop="cancelSearch">Cancelar</a>
       </form>
     </div>
-    <div v-if="searchActive" class="search-results d-flex flex-column align-items-center">
+    <div v-if="searchActive" class="search-results d-flex flex-column">
       <div v-if="loadingSources">Cargando fuentes...</div>
-      <LoadingLine :is-loading="searching"/>
-      <div v-for="(value, key) in searchResults" v-if="!searching && searched" :key="key">
-        <h5>Desde {{key}}</h5>
+      <LoadingLine :is-loading="globalSearching"/>
+      <div v-for="(value, key) in searchResults" v-if="!globalSearching && searched" :key="key">
+        <div class="d-flex flex-row justify-content-between">
+          <h5 class="source-title">Desde {{key}}</h5>
+          <LoadingButton
+            v-if="!value.length"
+            :is-loading="sourceSearching[key]"
+            @click.native="search(key)">Buscar</LoadingButton>
+        </div>
         <SongList v-if="value.length" :songs="value"/>
-        <Button v-if="!value.length">Buscar</Button>
       </div>
     </div>
   </div>
@@ -23,17 +28,19 @@ import { mapState, mapMutations, mapActions } from 'vuex'
 import { executeAlso } from '@/utils'
 import LoadingLine from '@/components/LoadingLine'
 import SongList from '@/components/SongList'
+import LoadingButton from '@/components/LoadingButton'
 
 export default {
   name: 'SearchToggle',
-  components: {LoadingLine, SongList},
+  components: {LoadingLine, SongList, LoadingButton},
   data () {
     return {
       query: '',
       searchActive: false,
       loadingSources: false,
       error: null,
-      searching: false,
+      globalSearching: false,
+      sourceSearching: {},
       defaultSource: null,
       searched: false
     }
@@ -49,29 +56,34 @@ export default {
     if (!this.searchSources.length) {
       this.fetchSearchSources()
     } else {
-      this.setDefaultSource(this.searchSources)
+      this.onSourcesLoaded(this.searchSources)
     }
   },
   methods: {
     ...mapMutations(['setSearchResults']),
     ...mapActions(['clearSearchResults', 'setSearchSources']),
-    onSearch (event) {
+    globalSearch () {
+      this.clearSearchResults()
       this.search()
+      this.globalSearching = true
     },
     search (source) {
-      if (this.searching) {
-        return
-      }
-
-      this.searching = true
-
-      let always = () => { this.searching = false }
-
       let params = {query: this.query}
       if (source) {
         params.source = source
       } else {
         source = this.defaultSource
+      }
+
+      if (this.sourceSearching[source]) {
+        return
+      }
+
+      this.setSearchLoading(source, true)
+
+      let always = () => {
+        this.globalSearching = false
+        this.setSearchLoading(source, false)
       }
 
       this.api.search.get({params}).then(
@@ -86,7 +98,7 @@ export default {
       this.searchActive = true
     },
     cancelSearch () {
-      this.searchActive = false
+      this.searchActive = this.searched = false
       this.query = ''
       this.clearSearchResults()
     },
@@ -98,17 +110,23 @@ export default {
       var self = this
       this.api.srpc.search_sources.get().then(
         executeAlso((response) => {
-          self.setSearchSources(response.data)
-          this.setDefaultSource(response.data)
+          let sources = response.data
+          self.setSearchSources(sources)
+          this.onSourcesLoaded(sources)
         }, always),
         executeAlso(self.onApiError, always))
     },
-    setDefaultSource (sources) {
+    onSourcesLoaded (sources) {
       sources.forEach(source => {
+        let sourceName = source.name
         if (source.is_default) {
-          this.defaultSource = source.name
+          this.defaultSource = sourceName
         }
+        this.sourceSearching[sourceName] = false
       })
+    },
+    setSearchLoading (source, state) {
+      this.sourceSearching = {...this.sourceSearching, [source]: state}
     },
     onApiError (error) {
       this.error = error
@@ -140,5 +158,9 @@ input {
 }
 .search-results {
   flex: 1;
+  overflow-y: auto;
+}
+.source-title {
+  margin-bottom: 0;
 }
 </style>
