@@ -13,10 +13,11 @@
         <div class="d-flex flex-row justify-content-between">
           <h5 class="source-title">Desde {{key}}</h5>
           <LoadingButton
-            v-if="!value.length"
+            v-if="!value.length && !sourceSearched[key]"
             :is-loading="sourceSearching[key]"
             @click.native="search(key)">Buscar</LoadingButton>
         </div>
+        <p v-if="!value.length && sourceSearched[key]" class="center-text no-results">No hay resultados</p>
         <SongList v-if="value.length" :songs="value"/>
       </div>
     </div>
@@ -41,6 +42,7 @@ export default {
       error: null,
       globalSearching: false,
       sourceSearching: {},
+      sourceSearched: {},
       defaultSource: null,
       searched: false
     }
@@ -63,7 +65,7 @@ export default {
     ...mapMutations(['setSearchResults']),
     ...mapActions(['clearSearchResults', 'setSearchSources']),
     globalSearch () {
-      this.clearSearchResults()
+      this.clearResults()
       this.search()
       this.globalSearching = true
     },
@@ -84,6 +86,7 @@ export default {
       let always = () => {
         this.globalSearching = false
         this.setSearchLoading(source, false)
+        this.setSourceSearched(source, true)
       }
 
       this.api.search.get({params}).then(
@@ -101,6 +104,10 @@ export default {
       this.searchActive = this.searched = false
       this.query = ''
       this.clearSearchResults()
+    },
+    clearResults () {
+      this.clearSearchResults()
+      this.resetSourceSearched(this.searchSources)
     },
     fetchSearchSources () {
       this.loadingSources = true
@@ -125,8 +132,16 @@ export default {
         this.sourceSearching[sourceName] = false
       })
     },
+    resetSourceSearched (sources) {
+      sources.forEach(source => {
+        this.sourceSearched[source.name] = false
+      })
+    },
     setSearchLoading (source, state) {
       this.sourceSearching = {...this.sourceSearching, [source]: state}
+    },
+    setSourceSearched (source, state) {
+      this.sourceSearched = {...this.sourceSearched, [source]: state}
     },
     onApiError (error) {
       this.error = error
@@ -161,6 +176,11 @@ input {
   overflow-y: auto;
 }
 .source-title {
+  margin-bottom: 0;
+}
+
+.no-results {
+  color: #b2b2b2;
   margin-bottom: 0;
 }
 </style>
