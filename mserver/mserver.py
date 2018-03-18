@@ -60,7 +60,7 @@ def do_setup(app):
 
     import mserver.socket.sockets
     mserver.socket.sockets.on_connect
-    socketio.run(app)
+    socketio.run(app, host='0.0.0.0')
 
     app.handle_user_exception = handle_user_exception_again
 
