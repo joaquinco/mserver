@@ -1,24 +1,26 @@
 <template>
-  <div class="d-flex flex-column container-search" :class="{'search-fullpage': searchActive, 'container-sm': searchActive, 'w-100': !searchActive}">
-    <div class="input-wrapper">
-      <form @submit.prevent="globalSearch()" class="d-flex flex-row align-items-center">
-        <input class="w-100" type=search v-model="query" placeholder="Buscar" @focus="onSearchFocus"/>
-        <a v-if="searchActive" class="cancel-search ml-2" href="" @click.prevent.stop="cancelSearch">Cancelar</a>
-      </form>
-    </div>
-    <div v-if="searchActive" class="search-results d-flex flex-column">
-      <div v-if="loadingSources">Cargando fuentes...</div>
-      <LoadingLine :is-loading="globalSearching"/>
-      <div v-for="(value, key) in searchResults" v-if="!globalSearching && searched" :key="key">
-        <div class="d-flex flex-row justify-content-between">
-          <h5 class="source-title">Desde {{key}}</h5>
-          <LoadingButton
-            v-if="!value.length && !sourceSearched[key]"
-            :is-loading="sourceSearching[key]"
-            @click.native="search(key)">Buscar</LoadingButton>
+  <div class="container-search" :class="{'w-100': searchActive, 'search-fullpage': searchActive}">
+    <div class="d-flex flex-column" :class="{'container-sm': searchActive, 'w-100': !searchActive}">
+      <div class="input-wrapper">
+        <form @submit.prevent="globalSearch()" class="d-flex flex-row align-items-center">
+          <input class="w-100" type=search v-model="query" placeholder="Buscar" @focus="onSearchFocus"/>
+          <a v-if="searchActive" class="cancel-search ml-2" href="" @click.prevent.stop="cancelSearch">Cancelar</a>
+        </form>
+      </div>
+      <div v-if="searchActive" class="search-results d-flex flex-column">
+        <div v-if="loadingSources">Cargando fuentes...</div>
+        <LoadingLine :is-loading="globalSearching"/>
+        <div v-for="(value, key) in searchResults" v-if="!globalSearching && searched" :key="key">
+          <div class="d-flex flex-row justify-content-between">
+            <h5 class="source-title">Desde {{key}}</h5>
+            <LoadingButton
+              v-if="!value.length && !sourceSearched[key]"
+              :is-loading="sourceSearching[key]"
+              @click.native="search(key)">Buscar</LoadingButton>
+          </div>
+          <p v-if="!value.length && sourceSearched[key]" class="center-text no-results">No hay resultados</p>
+          <SongList v-if="value.length" :songs="value"/>
         </div>
-        <p v-if="!value.length && sourceSearched[key]" class="center-text no-results">No hay resultados</p>
-        <SongList v-if="value.length" :songs="value"/>
       </div>
     </div>
   </div>
@@ -170,6 +172,7 @@ input {
 .search-fullpage {
   position: fixed;
   height: 100vh;
+  left: 0;
 }
 .search-results {
   flex: 1;
