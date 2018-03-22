@@ -19,7 +19,7 @@
               @click.native="search(key)">Buscar</LoadingButton>
           </div>
           <p v-if="!value.length && sourceSearched[key]" class="center-text no-results">No hay resultados</p>
-          <SongList v-if="value.length" :songs="value"/>
+          <SongList v-if="value.length" :songs="value" @selected="onSongSelected(data)"/>
         </div>
       </div>
     </div>
@@ -65,7 +65,7 @@ export default {
   },
   methods: {
     ...mapMutations(['setSearchResults']),
-    ...mapActions(['clearSearchResults', 'setSearchSources']),
+    ...mapActions(['clearSearchResults', 'setSearchSources', 'downloadSong', 'addSong']),
     globalSearch () {
       this.clearResults()
       this.search()
@@ -148,6 +148,10 @@ export default {
     onApiError (error) {
       this.error = error
       alert(error)
+    },
+    onSongSelected ({song, action}) {
+      let actions = {download: this.downloadSong, select: this.addSong}
+      actions[action](song)
     }
   }
 }
@@ -173,6 +177,9 @@ input {
   position: fixed;
   height: 100vh;
   left: 0;
+}
+.container-sm {
+  height: 97vh;
 }
 .search-results {
   flex: 1;

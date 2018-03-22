@@ -3,7 +3,7 @@ from flask_socketio import emit
 from .exceptions import MServerException
 
 
-def handle_exception(error_key):
+def emit_socket_error(error_key):
     """
     Calls method and emit proper error on exception.
 

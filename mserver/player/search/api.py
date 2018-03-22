@@ -37,9 +37,9 @@ def get_default():
 
 def get(backend):
     """
-    Retrieves music source backend.
+    Retrieves music source backend or default if backend evaluates to false
     """
-    return _search_backends.get(backend)
+    return backend and _search_backends.get(backend) or get_default()
 
 
 def list_info():

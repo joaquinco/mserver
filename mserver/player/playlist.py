@@ -22,15 +22,24 @@ def get_playlist(playlist_id=None):
     return playlist
 
 
-@decorators.handle_exception('player.song_add_error')
+@decorators.emit_socket_error('player.download_song_error')
+def just_download(source, search_id, user_id):
+    """
+    Just download a song
+    """
+    _download_song(source, search_id, user_id)
+
+
+def _download_song(source, search_id, user_id):
+    pass
+
+
+@decorators.emit_socket_error('player.song_add_error')
 def add(source, search_id, user_id, playlist_id=None):
     """
     Adds a song to playlist
     """
-    if source:
-        backend = search.get(source)
-    else:
-        backend = search.get_default()
+    backend = search.get(source)
 
     song = backend.get_song(search_id)
 

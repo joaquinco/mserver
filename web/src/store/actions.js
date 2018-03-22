@@ -25,6 +25,12 @@ const actions = {
     sources.forEach(source => {
       commit('setSearchResults', {source: source.name, results: []})
     })
+  },
+  downloadSong ({state, commit}, song) {
+    state.comm.socket.emit('player.add_song', song)
+  },
+  addSong ({state, commit}, song) {
+    state.comm.socket.emit('player.download_song', song)
   }
 }
 
