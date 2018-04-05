@@ -19,7 +19,7 @@
               @click.native="search(key)">Buscar</LoadingButton>
           </div>
           <p v-if="!value.length && sourceSearched[key]" class="center-text no-results">No hay resultados</p>
-          <SongList v-if="value.length" :songs="value" @selected="onSongSelected(data)"/>
+          <SongList v-if="value.length" :songs="value" @song-selected="onSongSelected"/>
         </div>
       </div>
     </div>

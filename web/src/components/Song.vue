@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex flex-row song-row justify-content-start">
-    <span class="icon icon-add" v-if="canSelect" title="Agregar"></span>
-    <span class="icon icon-download" v-if="canDownload" title="Descargar"></span>
+    <span class="icon icon-add" v-if="canSelect" title="Agregar" @click="onSelect()"></span>
+    <span class="icon icon-download" v-if="canDownload" title="Descargar" @click="onDownload()"></span>
     <div class="d-flex flex-row justify-content-between song-info">
       <div class="d-flex flex-column" :class="{'not-available': !song.available}">
         <span class="title">{{song.title}}</span>
@@ -35,6 +35,22 @@ export default {
     },
     canSelect () {
       return this.actions.includes('select')
+    }
+  },
+  methods: {
+    onDownload () {
+      this.onSongAction('download')
+    },
+    onSelect () {
+      this.onSongAction('select')
+    },
+    onSongAction (action) {
+      let event = {
+        action,
+        song: this.song,
+        created: new Date()
+      }
+      this.$emit('song-selected', event)
     }
   }
 }

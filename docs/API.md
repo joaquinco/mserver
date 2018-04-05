@@ -73,3 +73,4 @@ search arguments.
 - `player.add_son`: send
 - `player.song_added`: receive
 - `player.song_available`: receive
+- `player.song_downloading`: receive

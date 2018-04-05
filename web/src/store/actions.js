@@ -11,6 +11,21 @@ const actions = {
       state.server.checked = true
     }
   },
+  initComm ({state, commit}, {api, socket}) {
+    commit('setComm', {api, socket})
+    const events = [
+      'player.play',
+      'player.pause',
+      'player.song_added',
+      'player.song_available',
+      'player.song_downloading',
+      'user.joined',
+      'user.left'
+    ]
+    events.forEach(eventName => {
+      socket.on(eventName, data => console.log(eventName, JSON.stringify(data)))
+    })
+  },
   setUser ({state}, {username, is_superuser}) {
     state.user = {...state.user, username, is_superuser}
   },

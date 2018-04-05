@@ -1,4 +1,3 @@
-from flask import request
 from flask_jwt import current_identity
 from flask_jwt import jwt_required
 from flask_socketio import emit, send
@@ -58,6 +57,17 @@ def add_song_to_playlist(data):
     user_id = current_identity.id
 
     start_background_task(playlist.add, source, search_id, user_id, playlist_id=playlist_id)
+
+
+@socketio.on('player.download_song')
+@jwt_required
+def just_download_song(data):
+    source = data.get('source')
+    search_id = data.get('search_id')
+
+    user_id = current_identity.id
+
+    start_background_task(playlist.just_download, source, search_id, user_id)
 
 
 @socketio.on_error()
