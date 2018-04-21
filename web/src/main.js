@@ -4,7 +4,8 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import { store } from './store'
-// import { anotherStore } from './anotherStore'
+import VueMoment from 'vue-moment'
+import moment from 'moment'
 import './assets/skeleton.css'
 import './assets/site.css'
 // import './assets/normalize.css'
@@ -21,6 +22,10 @@ router.beforeEach((to, from, next) => {
     next()
   }
 })
+
+moment.locale('es')
+
+Vue.use(VueMoment)
 
 /* eslint-disable no-new */
 new Vue({

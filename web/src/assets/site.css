@@ -1,9 +1,14 @@
 
+/*
+  colors:
+  orange: #ffa93a
+  sky blue: #007aff
+  light grey: #b2b2b2
+*/
 
 .center-text {
   text-align: center;
 }
-
 
 .w-25 {
   width: 25% !important;

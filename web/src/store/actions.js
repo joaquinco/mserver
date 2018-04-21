@@ -1,5 +1,8 @@
+import handlers from './handlers'
+
 /* eslint-disable camelcase */
 const actions = {
+  ...handlers,
   updateServerStatus ({state}, {success, data}) {
     if (success) {
       state.server = {...state.server,
@@ -11,7 +14,7 @@ const actions = {
       state.server.checked = true
     }
   },
-  initComm ({state, commit}, {api, socket}) {
+  initComm ({state, commit, dispatch}, {api, socket}) {
     commit('setComm', {api, socket})
     const events = [
       'player.play',
@@ -23,7 +26,13 @@ const actions = {
       'user.left'
     ]
     events.forEach(eventName => {
-      socket.on(eventName, data => console.log(eventName, JSON.stringify(data)))
+      let actionHandlerName = eventName.split('.').join('_')
+
+      let method = (data) => {
+        commit('addEvent', data)
+        dispatch(actionHandlerName, data)
+      }
+      socket.on(eventName, method)
     })
   },
   setUser ({state}, {username, is_superuser}) {

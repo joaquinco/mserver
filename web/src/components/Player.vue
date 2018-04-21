@@ -3,16 +3,23 @@
     <SearchToggle/>
     <Playlist class="player-content"/>
     <PlayerControls/>
+    <Notifications/>
   </div>
 </template>
 <script>
 import PlayerControls from '@/components/PlayerControls'
 import SearchToggle from '@/components/SearchToggle'
 import Playlist from '@/components/Playlist'
+import Notifications from '@/components/Notifications'
 
 export default {
   name: 'Player',
-  components: { PlayerControls, SearchToggle, Playlist },
+  components: {
+    PlayerControls,
+    SearchToggle,
+    Playlist,
+    Notifications
+  },
   data () {
     return {
     }

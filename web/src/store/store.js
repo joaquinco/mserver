@@ -34,6 +34,10 @@ const store = new Vuex.Store({
     },
     player: {
       playing: false
+    },
+    async: {
+      notifications: [],
+      events: []
     }
   },
   mutations,
