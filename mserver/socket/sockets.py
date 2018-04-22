@@ -39,6 +39,7 @@ def on_music_play(data):
 
 
 @socketio.on('player.pause')
+@jwt_required()
 def on_music_paused(data):
     """
     Stops playing music.
@@ -60,7 +61,7 @@ def add_song_to_playlist(data):
 
 
 @socketio.on('player.download_song')
-@jwt_required
+@jwt_required()
 def just_download_song(data):
     source = data.get('source')
     search_id = data.get('search_id')

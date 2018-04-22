@@ -13,15 +13,15 @@ const handlers = {
     commit('togglePlaying', false)
   },
   player_song_added ({state, commit}, {song, playlist}) {
-    let message = `Nueva cancion en cola: ${song.name}`
+    let message = `Nueva cancion en cola: ${song.title}`
     commit('addNotification', {message})
   },
-  player_song_available ({state, commit}, {song}) {
-    let message = `Nueva cancion disponible: ${song.name}`
+  player_song_available ({state, commit}, song) {
+    let message = `Nueva cancion disponible: ${song.title}`
     commit('addNotification', {message})
   },
-  player_song_downloading ({state, commit}, {song}) {
-    let message = `Descargando ${song.name}`
+  player_song_downloading ({state, commit}, song) {
+    let message = `Descargando ${song.title}`
     commit('addNotification', {message})
   }
 }

@@ -40,27 +40,24 @@ def _download_song(source, search_id, user_id):
 
     song = backend.get_song(search_id)
 
+    session = song.query.session
+
     if not song.id:
         song.user_id = user_id
-        db.session.add(song)
-        db.session.commit()
-
-    if song.available:
+        session.commit()
+    elif song.available:
         return song
 
     socketio.emit('player.song_downloading', marshal(song, song_list_marshal))
     filename = backend.get_file(search_id)
 
     song.path = filename
-
-    db.session.query(Song).filter_by(id=song.id).update({"path": filename, "available": True})
-    db.session.commit()
-
-    song = Song.query.filter_by(id=song.id).one()
+    song.available = True
+    session.commit()
 
     socketio.emit('player.song_available', marshal(song, song_list_marshal))
 
-    return Song.query.filter_by(id=song.id).one()
+    return song
 
 
 @decorators.emit_socket_error('player.song_add_error')

@@ -29,6 +29,7 @@ const actions = {
       let actionHandlerName = eventName.split('.').join('_')
 
       let method = (data) => {
+        console.log(`${eventName}: ${JSON.stringify(data)}, ${actionHandlerName}`)
         commit('addEvent', data)
         dispatch(actionHandlerName, data)
       }
@@ -51,10 +52,10 @@ const actions = {
     })
   },
   downloadSong ({state, commit}, song) {
-    state.comm.socket.emit('player.add_song', song)
+    state.comm.socket.emit('player.download_song', song)
   },
   addSong ({state, commit}, song) {
-    state.comm.socket.emit('player.download_song', song)
+    state.comm.socket.emit('player.add_song', song)
   }
 }
 

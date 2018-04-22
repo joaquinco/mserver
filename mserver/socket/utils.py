@@ -8,9 +8,9 @@ from utils import Dummy
 
 def socket_contexted_async_target(target):
     """
-    Mocks flask context to async function call.
+    Mocks flask context to enable emit events in async function calls.
 
-    Must be called within context.
+    Must be called within request context.
     """
     request = flask.request
     current_app = flask.current_app

@@ -19,9 +19,9 @@ export default {
 
 <style scoped>
 .notification-container {
-  padding: 10px 20px;
+  padding: 5px 20px;
   background-color: white;
-  margin-bottom: 5px;
+  margin-bottom: 2px;
 }
 .message {
   font-size: 1.1em;
