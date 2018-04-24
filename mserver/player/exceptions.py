@@ -1,2 +1,5 @@
 class MServerException(Exception):
-    pass
+    def __init__(self, *args, **kwargs):
+        context = kwargs.pop('context', {})
+        self.context = context
+        super().__init__(*args, **kwargs)

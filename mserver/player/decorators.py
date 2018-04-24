@@ -14,8 +14,11 @@ def emit_socket_error(error_key):
         def wrapper(*args, **kwargs):
             try:
                 return wrapped(*args, **kwargs)
-            except MServerException as e:
-                emit('error', {'message': str(e), 'key': error_key})
+            except Exception as e:
+                context = {}
+                if isinstance(e, MServerException):
+                    context = e.context
+                emit('error', {'message': str(e), 'key': error_key, 'detail': context})
 
         return wrapper
 

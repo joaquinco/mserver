@@ -1,4 +1,26 @@
 /* eslint-disable camelcase */
+
+function getMessageFromError ({message, key, detail}) {
+  let hrmessage = `Ha ocurrido un error ${message || key}`
+  switch (key) {
+    case 'player.song_add_error': {
+      hrmessage = 'Error agregando canción'
+      break
+    }
+    case 'player.song_download_error': {
+      hrmessage = 'Error descargando canción'
+      break
+    }
+  }
+
+  let song = detail.song
+  if (song) {
+    hrmessage += ` ${song.ititle}`
+  }
+
+  return hrmessage
+}
+
 const handlers = {
   user_joined ({state, commit}, {message}) {
     commit('addNotification', {message})
@@ -23,6 +45,10 @@ const handlers = {
   player_song_downloading ({state, commit}, song) {
     let message = `Descargando ${song.title}`
     commit('addNotification', {message})
+  },
+  error ({state, commit}, error) {
+    let message = getMessageFromError(error)
+    commit('addNotification', {message, error: true})
   }
 }
 

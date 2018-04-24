@@ -4,7 +4,9 @@
     <Notification v-for='obj in notifications' :noti='obj' :key='obj.id'/>
     <div v-if='notifications.length==0'>No hay notificaciones</div>
   </div>
-  <span class='toggle color-error' v-if='!visible' @click='toggleView()'>!</span>
+  <span class='toggle color-error' v-if='!visible' @click='toggleView()'>
+    {{notifications.length}}
+  </span>
 </div>
 </template>
 
@@ -41,10 +43,10 @@ export default {
   z-index: 3;
 }
 .toggle {
-  border-radius: 50%;
-  box-shadow: -1px 1px 1px #919191;
+  border-radius: 10px;
+  box-shadow: -2px 2px 4px #919191;
   font-size: 1.5em;
-  padding: 5px 17px;
+  padding: 5px 10px;
   cursor: pointer;
   user-select: none;
   background-color: white;

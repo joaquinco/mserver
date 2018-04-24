@@ -24,13 +24,14 @@ const mutations = {
     events.push(data)
     state.async = {...state.async, events: keepMaxLength(events, maxEventsStored)}
   },
-  addNotification (state, {message}) {
+  addNotification (state, {message, error}) {
     let now = new Date()
 
     let notification = {
       message,
       created: now,
       showed: false,
+      error: !!error,
       id: now.toISOString()
     }
 

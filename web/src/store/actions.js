@@ -23,7 +23,8 @@ const actions = {
       'player.song_available',
       'player.song_downloading',
       'user.joined',
-      'user.left'
+      'user.left',
+      'error'
     ]
     events.forEach(eventName => {
       let actionHandlerName = eventName.split('.').join('_')

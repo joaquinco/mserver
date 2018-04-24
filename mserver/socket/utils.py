@@ -1,6 +1,7 @@
 from unittest import mock
 
 import flask
+from flask_socketio import emit
 
 from mserver.mserver import socketio
 from utils import Dummy
@@ -27,3 +28,18 @@ def socket_contexted_async_target(target):
 
 def start_background_task(target, *args, **kwargs):
     socketio.start_background_task(socket_contexted_async_target(target), *args, **kwargs)
+
+
+def background_emit(*args, **kwargs):
+    """
+    Helper to emit messages and send them as soon as posible to clients.
+
+    Meant to be used on background tasks.
+
+    To broadcast the event add boradcast to kwargs and set to True.
+    """
+    if kwargs.get('broadcast', False):
+        socketio.emit(*args, **kwargs)
+    else:
+        emit(*args, **kwargs)
+    socketio.sleep(0)

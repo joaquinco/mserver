@@ -5,7 +5,7 @@ from flask_restful import marshal
 from mserver.database import db
 from mserver.marshals import playlist_song_marshal, song_list_marshal
 from mserver.models import PlayList, Song
-from mserver.mserver import socketio
+from mserver.socket.utils import background_emit
 from mserver.player import search, decorators
 
 
@@ -24,12 +24,27 @@ def get_playlist(playlist_id=None):
     return playlist
 
 
-@decorators.emit_socket_error('player.download_song_error')
+@decorators.emit_socket_error('player.song_download_error')
 def just_download(source, search_id, user_id):
     """
     Just download a song
     """
-    _download_song(source, search_id, user_id)
+    _download_song_tmp(source, search_id, user_id)
+
+
+def _download_song_tmp(source, search_id, user_id):
+    backend = search.get(source)
+
+    song = backend.get_song(search_id)
+
+    background_emit('player.song_downloading', marshal(song, song_list_marshal))
+
+    import time
+    time.sleep(10)
+
+    # filename = backend.get_file(search_id)
+
+    background_emit('player.song_available', marshal(song, song_list_marshal), broadcast=True)
 
 
 def _download_song(source, search_id, user_id):
@@ -48,14 +63,14 @@ def _download_song(source, search_id, user_id):
     elif song.available:
         return song
 
-    socketio.emit('player.song_downloading', marshal(song, song_list_marshal))
+    background_emit('player.song_downloading', marshal(song, song_list_marshal))
     filename = backend.get_file(search_id)
 
     song.path = filename
     song.available = True
     session.commit()
 
-    socketio.emit('player.song_available', marshal(song, song_list_marshal))
+    background_emit('player.song_available', marshal(song, song_list_marshal), broadcast=False)
 
     return song
 
@@ -81,12 +96,13 @@ def old_add(source, search_id, user_id, playlist_id=None):
     db.session.add(playlist)
     db.session.commit()
 
-    socketio.emit('player.song_added', marshal(dict(song=song, playlist=playlist), playlist_song_marshal))
+    background_emit('player.song_added', marshal(dict(song=song, playlist=playlist), playlist_song_marshal),
+                    broadcast=True)
 
     if song.available:
         return
 
-    socketio.emit('player.song_downloading', marshal(song, song_list_marshal))
+    background_emit('player.song_downloading', marshal(song, song_list_marshal), broadcast=True)
     filename = backend.get_file(search_id)
 
     song.path = filename
@@ -96,7 +112,8 @@ def old_add(source, search_id, user_id, playlist_id=None):
 
     song = Song.query.filter_by(id=song.id).one()
 
-    socketio.emit('player.song_available', marshal(dict(song=song, playlist=playlist), playlist_song_marshal))
+    background_emit('player.song_available', marshal(dict(song=song, playlist=playlist), playlist_song_marshal),
+                    broadcast=True)
 
 
 @decorators.emit_socket_error('player.song_add_error')
@@ -112,4 +129,5 @@ def add(source, search_id, user_id, playlist_id=None):
     db.session.add(playlist)
     db.session.commit()
 
-    socketio.emit('player.song_added', marshal(dict(song=song, playlist=playlist), playlist_song_marshal))
+    background_emit('player.song_added', marshal(dict(song=song, playlist=playlist), playlist_song_marshal),
+                    broadcast=True)
