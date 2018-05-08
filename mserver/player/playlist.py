@@ -29,7 +29,7 @@ def just_download(source, search_id, user_id):
     """
     Just download a song
     """
-    _download_song_tmp(source, search_id, user_id)
+    _download_song(source, search_id, user_id)
 
 
 def _download_song_tmp(source, search_id, user_id):

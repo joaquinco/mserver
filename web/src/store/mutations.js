@@ -39,6 +39,9 @@ const mutations = {
     notifications.unshift(notification)
     state.async = {...state.async, notifications: keepMaxLength(notifications, maxNotificationsStored)}
   },
+  clearNotifications (state) {
+    state.async = {...state.async, notifications: []}
+  },
   togglePlaying (state, playing) {
     state.player = {...state.player, playing}
   }

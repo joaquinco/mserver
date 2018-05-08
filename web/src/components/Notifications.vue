@@ -1,8 +1,15 @@
 <template>
 <div class='notifications' :class='{visible}'>
-  <div class='d-flex flex-column justify-content-start' v-if='visible' @click='toggleView()'>
+  <div class='d-flex flex-column justify-content-start' v-if='visible'>
+    <div class='d-flex flex-row justify-content-between mx-4'>
+      <strong class='mr-4'>Notificaciones</strong>
+      <div>
+        <span class='close mr-1' @click='clearNotifications()'>Limpiar</span>
+        <span class='close' @click='toggleView()'>Cerrar</span>
+      </div>
+    </div>
     <Notification v-for='obj in notifications' :noti='obj' :key='obj.id'/>
-    <div v-if='notifications.length==0'>No hay notificaciones</div>
+    <div v-if='notifications.length==0' class='center-text content-placeholder'>No hay notificaciones</div>
   </div>
   <span class='toggle color-error' v-if='!visible' @click='toggleView()'>
     {{notifications.length}}
@@ -11,7 +18,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import Notification from '@/components/Notification'
 
 export default {
@@ -28,6 +35,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['clearNotifications']),
     toggleView () {
       this.visible = !this.visible
     }
@@ -62,5 +70,11 @@ export default {
   max-height: 100%;
   top: 0;
   right: 0;
+}
+
+@media (max-width: 576px) {
+  .visible {
+    width: 100vw;
+  }
 }
 </style>

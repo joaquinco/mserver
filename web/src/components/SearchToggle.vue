@@ -4,7 +4,7 @@
       <div class="input-wrapper">
         <form @submit.prevent="globalSearch()" class="d-flex flex-row align-items-center">
           <input class="w-100" type=search v-model="query" placeholder="Buscar" @focus="onSearchFocus"/>
-          <a v-if="searchActive" class="cancel-search ml-2" href="" @click.prevent.stop="cancelSearch">Cancelar</a>
+          <a v-if="searchActive" class="close ml-2" href="" @click.prevent.stop="cancelSearch">Cancelar</a>
         </form>
       </div>
       <div v-if="searchActive" class="search-results d-flex flex-column">
@@ -165,13 +165,6 @@ input {
   border-radius: 10px;
   margin-bottom: 0;
   height: 34px;
-}
-.cancel-search {
-  color: #007aff;
-  text-decoration: none;
-}
-.cancel-search:active {
-  opacity: 0.7;
 }
 .search-fullpage {
   position: fixed;

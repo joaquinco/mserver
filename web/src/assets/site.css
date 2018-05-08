@@ -374,3 +374,18 @@ button:disabled {
 .color-error {
   color: #ffa93a;
 }
+
+.close {
+  color: #007aff;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+.close:active {
+  opacity: 0.7;
+}
+
+.content-placeholder {
+  color: #b2b2b2;
+}

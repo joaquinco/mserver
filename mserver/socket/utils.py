@@ -36,7 +36,7 @@ def background_emit(*args, **kwargs):
 
     Meant to be used on background tasks.
 
-    To broadcast the event add boradcast to kwargs and set to True.
+    To broadcast the event add boradcast=True.
     """
     if kwargs.get('broadcast', False):
         socketio.emit(*args, **kwargs)
