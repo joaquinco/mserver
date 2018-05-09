@@ -1,7 +1,7 @@
 <template>
 <div class='notifications' :class='{visible}'>
   <div class='d-flex flex-column justify-content-start' v-if='visible'>
-    <div class='d-flex flex-row justify-content-between mx-4'>
+    <div class='notification-header d-flex flex-row justify-content-between mx-4'>
       <strong class='mr-4'>Notificaciones</strong>
       <div>
         <span class='close mr-1' @click='clearNotifications()'>Limpiar</span>
@@ -77,4 +77,12 @@ export default {
     width: 100vw;
   }
 }
+
+.notification-header {
+  border-bottom: 1px solid rgb(242, 242, 242);
+  padding-bottom: 7px;
+  margin-bottom: 7px;
+}
+
+
 </style>

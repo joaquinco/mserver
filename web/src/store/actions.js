@@ -5,13 +5,18 @@ const actions = {
   ...handlers,
   updateServerStatus ({state}, {success, data}) {
     if (success) {
-      state.server = {...state.server,
+      state.server = {
+        ...state.server,
+        ...data,
         checked: true,
-        available: true,
-        version: data.version
+        available: true
       }
     } else {
-      state.server.checked = true
+      state.server = {
+        ...state.server, 
+        checked: true,
+        available: false
+      }
     }
   },
   initComm ({state, commit, dispatch}, {api, socket}) {

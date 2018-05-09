@@ -1,3 +1,6 @@
+import logging
+import traceback
+
 from flask_socketio import emit
 
 from .exceptions import MServerException
@@ -15,6 +18,7 @@ def emit_socket_error(error_key):
             try:
                 return wrapped(*args, **kwargs)
             except Exception as e:
+                logging.error('Socket error: %s', traceback.print_exc())
                 context = {}
                 if isinstance(e, MServerException):
                     context = e.context

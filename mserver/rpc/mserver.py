@@ -7,7 +7,8 @@ def system_status(*args, **kwargs):
     Returns system information.
     """
     return {
-        'version': settings.VERSION
+        'version': settings.VERSION,
+        'debug': settings.DEBUG
     }
 
 

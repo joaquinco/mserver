@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 
-function getMessageFromError ({message, key, detail}) {
+function getMessageFromError (debug, {message, key, detail}) {
   let hrmessage = `Ha ocurrido un error ${message || key}`
   switch (key) {
     case 'player.song_add_error': {
@@ -16,6 +16,10 @@ function getMessageFromError ({message, key, detail}) {
   let song = detail.song
   if (song) {
     hrmessage += ` ${song.ititle}`
+  }
+
+  if (debug) {
+    hrmessage += `\n${message}`
   }
 
   return hrmessage
@@ -47,7 +51,7 @@ const handlers = {
     commit('addNotification', {message})
   },
   error ({state, commit}, error) {
-    let message = getMessageFromError(error)
+    let message = getMessageFromError(state.server.debug, error)
     commit('addNotification', {message, error: true})
   }
 }

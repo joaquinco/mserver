@@ -1,3 +1,5 @@
+import logging
+import traceback
 from unittest import mock
 
 import flask
@@ -38,8 +40,12 @@ def background_emit(*args, **kwargs):
 
     To broadcast the event add boradcast=True.
     """
-    if kwargs.get('broadcast', False):
-        socketio.emit(*args, **kwargs)
+    try:
+        if kwargs.get('broadcast', False):
+            socketio.emit(*args, **kwargs)
+        else:
+            emit(*args, **kwargs)
+    except Exception as e:
+        logging.error('Emit error: %s', traceback.print_exc())
     else:
-        emit(*args, **kwargs)
-    socketio.sleep(0)
+        socketio.sleep(0)

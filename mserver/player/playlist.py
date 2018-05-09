@@ -5,8 +5,9 @@ from flask_restful import marshal
 from mserver.database import db
 from mserver.marshals import playlist_song_marshal, song_list_marshal
 from mserver.models import PlayList, Song
-from mserver.socket.utils import background_emit
+from mserver.mserver import socketio
 from mserver.player import search, decorators
+from mserver.socket.utils import background_emit
 
 
 def get_playlist(playlist_id=None):
@@ -55,20 +56,22 @@ def _download_song(source, search_id, user_id):
 
     song = backend.get_song(search_id)
 
-    session = song.query.session
-
     if not song.id:
         song.user_id = user_id
-        session.commit()
+        db.session.add(song)
+        db.session.commit()
     elif song.available:
         return song
 
     background_emit('player.song_downloading', marshal(song, song_list_marshal))
     filename = backend.get_file(search_id)
 
+    song = db.session.query(Song).filter_by(id=song.id).scalar()
+
     song.path = filename
     song.available = True
-    session.commit()
+    db.session.add(song)
+    db.session.commit()
 
     background_emit('player.song_available', marshal(song, song_list_marshal), broadcast=False)
 

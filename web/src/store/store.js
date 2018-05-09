@@ -11,7 +11,8 @@ const store = new Vuex.Store({
     server: {
       checked: false,
       available: false,
-      version: ''
+      version: '',
+      debug: false
     },
     user: {
       username: '',

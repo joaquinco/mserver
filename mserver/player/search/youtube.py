@@ -6,6 +6,7 @@ from string import Template
 import pafy
 
 from mserver import settings
+from mserver.database import db
 from mserver.models import Song
 from mserver.player.utils import format_int_duration
 from .api import register
@@ -163,7 +164,7 @@ def get_song_from_ytid(ytid):
     """
     Returns Song instance from ytid with basic fields filed
     """
-    song = Song.query.filter_by(original_source=THIS_SOURCE, source_song_id=ytid).scalar()
+    song = db.session.query(Song).filter_by(original_source=THIS_SOURCE, source_song_id=ytid).scalar()
     if song:
         return song
 
