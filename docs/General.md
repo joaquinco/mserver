@@ -17,3 +17,7 @@ the socket io endpoint with OPTIONS method. Then a dummy view was added
 with the exact same path as the socketio endpoint so that flask-cors
 will create the preflight packages properly and uniformly.
 
+## SocketIO
+
+Uses Redis as message_queue, to enable worker process to emit socketio
+events from different processes.

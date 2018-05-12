@@ -6,6 +6,8 @@ from flask_jwt import JWTError
 from flask_restful import Api
 from flask_socketio import SocketIO
 
+from mserver.settings import SOCKETIO_REDIS_URL
+
 
 def create_app():
     app = Flask(__name__)
@@ -39,6 +41,7 @@ def _add_dummy_view_to_expose_socketio_preflights(app):
     """
     Add route that is used only to support OPTIONS in socketio.
     """
+
     @app.route('/socket.io/', methods=['GET', 'POST'])
     def socketio():
         return ''
@@ -78,9 +81,16 @@ def handle_user_exception_again(e):
     return e
 
 
+def get_socketio(app=None):
+    kwargs = dict(message_queue=SOCKETIO_REDIS_URL)
+    if app:
+        kwargs['async_mode'] = app.config['SOCKETIO_ASYNC_MODE']
+    return SocketIO(app, **kwargs)
+
+
 _add_support_engineio_preflights()
 app = create_app()
 _add_dummy_view_to_expose_socketio_preflights(app)
 api = Api(app)
-socketio = SocketIO(app)
+socketio = get_socketio(app)
 do_setup(app)

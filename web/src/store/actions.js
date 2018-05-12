@@ -13,7 +13,7 @@ const actions = {
       }
     } else {
       state.server = {
-        ...state.server, 
+        ...state.server,
         checked: true,
         available: false
       }
