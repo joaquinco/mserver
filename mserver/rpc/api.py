@@ -25,6 +25,9 @@ def handle_rpc_error(rpc_fn):
 
 
 def register(rpc_name, rpc_fn, secure=False):
+    """
+    Secure rpc need user authentication.
+    """
     global _rpcs
     _get_rpcs(secure)[rpc_name] = handle_rpc_error(rpc_fn)
 

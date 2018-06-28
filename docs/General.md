@@ -1,5 +1,7 @@
 # General documentation
 
+The whole documentation is based on debian based distributions.
+
 ## A&A
 
 To use every API endpoint and sockets an access token is required.

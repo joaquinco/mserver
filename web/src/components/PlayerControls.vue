@@ -1,11 +1,11 @@
 <template>
-  <div class='d-flex flex-column w-100'>
-    <div class='d-flex flex-row justify-content-center player-controls'>
+  <div class='d-flex flex-column w-100 mb-4'>
+    <div v-if='loaded' class='d-flex flex-row justify-content-center player-controls'>
       <button class='button button-left'>
         <span class='prev'></span>
       </button>
-      <button class='button button-center'>
-        <span class='play'></span>
+      <button class='button button-center' @click.prevent='playPause()'>
+        <span :class='{play: isPlaying, pause: !isPlaying}'></span>
       </button>
       <button class='button button-right'>
         <span class='next'></span>
@@ -17,11 +17,23 @@
 
 <script>
 export default {
-  name: 'PlayerControls',
-  data () {
-    return {}
+  name: "PlayerControls",
+  data() {
+    return {
+      isPlaying: false,
+      loaded: false
+    };
+  },
+  mounted() {
+    fetchPlayerState();
+  },
+  methods: {
+    playPause() {
+      this.isPlaying = !this.isPlaying;
+    },
+    fetchPlayerState() {}
   }
-}
+};
 </script>
 
 <style scoped>
@@ -33,6 +45,8 @@ export default {
   padding: 10px;
   color: black;
   margin: 0;
+  height: 50px;
+  width: 60px;
 }
 
 .button-left {
@@ -49,29 +63,27 @@ export default {
   border-radius: 0 30% 30% 0;
 }
 
-.button,
 .prev,
 .next,
 .play,
 .pause {
-  height: 50px;
-  width: 60px;
+  height: 100%;
+  width: 100%;
 }
 
 .prev {
-  background: url('../assets/icons/prev.svg')
+  content: url("/static/icons/prev.svg");
 }
 
 .next {
-  background: url('../assets/icons/next.svg')
+  content: url("/static/icons/next.svg");
 }
 
 .play {
-  background: url('../assets/icons/play.svg')
+  content: url("/static/icons/play.svg");
 }
 
 .pause {
-  background: url('../assets/icons/pause.svg')
+  content: url("/static/icons/pause.svg");
 }
-
 </style>
