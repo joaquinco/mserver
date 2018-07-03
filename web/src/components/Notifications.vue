@@ -26,17 +26,17 @@ export default {
   components: { Notification },
   computed: {
     ...mapState({
-      notifications: (state) => state.async.notifications
+      notifications: state => state.async.notifications
     })
   },
-  data () {
+  data() {
     return {
       visible: false
     }
   },
   methods: {
     ...mapMutations(['clearNotifications']),
-    toggleView () {
+    toggleView() {
       this.visible = !this.visible
     }
   }

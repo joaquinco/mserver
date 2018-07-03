@@ -27,18 +27,18 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions } from "vuex";
-import { executeAlso } from "@/utils";
-import LoadingLine from "@/components/LoadingLine";
-import SongList from "@/components/SongList";
-import LoadingButton from "@/components/LoadingButton";
+import { mapState, mapMutations, mapActions } from 'vuex'
+import { executeAlso } from '@/utils'
+import LoadingLine from '@/components/LoadingLine'
+import SongList from '@/components/SongList'
+import LoadingButton from '@/components/LoadingButton'
 
 export default {
-  name: "SearchToggle",
+  name: 'SearchToggle',
   components: { LoadingLine, SongList, LoadingButton },
   data() {
     return {
-      query: "",
+      query: '',
       searchActive: false,
       loadingSources: false,
       error: null,
@@ -47,7 +47,7 @@ export default {
       sourceSearched: {},
       defaultSource: null,
       searched: false
-    };
+    }
   },
   computed: {
     ...mapState({
@@ -58,111 +58,111 @@ export default {
   },
   mounted() {
     if (!this.searchSources.length) {
-      this.fetchSearchSources();
+      this.fetchSearchSources()
     } else {
-      this.onSourcesLoaded(this.searchSources);
+      this.onSourcesLoaded(this.searchSources)
     }
   },
   methods: {
-    ...mapMutations(["setSearchResults"]),
+    ...mapMutations(['setSearchResults']),
     ...mapActions([
-      "clearSearchResults",
-      "setSearchSources",
-      "downloadSong",
-      "addSong"
+      'clearSearchResults',
+      'setSearchSources',
+      'downloadSong',
+      'addSong'
     ]),
     globalSearch() {
-      this.clearResults();
-      this.search();
-      this.globalSearching = true;
+      this.clearResults()
+      this.search()
+      this.globalSearching = true
     },
     search(source) {
-      let params = { query: this.query };
+      let params = { query: this.query }
       if (source) {
-        params.source = source;
+        params.source = source
       } else {
-        source = this.defaultSource;
+        source = this.defaultSource
       }
 
       if (this.sourceSearching[source]) {
-        return;
+        return
       }
 
-      this.setSearchLoading(source, true);
+      this.setSearchLoading(source, true)
 
       let always = () => {
-        this.globalSearching = false;
-        this.setSearchLoading(source, false);
-        this.setSourceSearched(source, true);
-      };
+        this.globalSearching = false
+        this.setSearchLoading(source, false)
+        this.setSourceSearched(source, true)
+      }
 
       this.api.search.get({ params }).then(
         executeAlso(response => {
-          this.setSearchResults({ source, results: response.data });
-          this.searched = true;
+          this.setSearchResults({ source, results: response.data })
+          this.searched = true
         }, always),
         executeAlso(this.onApiError, always)
-      );
+      )
     },
     onSearchFocus() {
-      this.searchActive = true;
+      this.searchActive = true
     },
     cancelSearch() {
-      this.searchActive = this.searched = false;
-      this.query = "";
-      this.clearSearchResults();
+      this.searchActive = this.searched = false
+      this.query = ''
+      this.clearSearchResults()
     },
     clearResults() {
-      this.clearSearchResults();
-      this.resetSourceSearched(this.searchSources);
+      this.clearSearchResults()
+      this.resetSourceSearched(this.searchSources)
     },
     fetchSearchSources() {
-      this.loadingSources = true;
+      this.loadingSources = true
 
       let always = () => {
-        this.loadingSources = false;
-      };
+        this.loadingSources = false
+      }
 
-      var self = this;
+      var self = this
       this.api.srpc.search_sources.get().then(
         executeAlso(response => {
-          let sources = response.data;
-          self.setSearchSources(sources);
-          this.onSourcesLoaded(sources);
+          let sources = response.data
+          self.setSearchSources(sources)
+          this.onSourcesLoaded(sources)
         }, always),
         executeAlso(self.onApiError, always)
-      );
+      )
     },
     onSourcesLoaded(sources) {
       sources.forEach(source => {
-        let sourceName = source.name;
+        let sourceName = source.name
         if (source.is_default) {
-          this.defaultSource = sourceName;
+          this.defaultSource = sourceName
         }
-        this.sourceSearching[sourceName] = false;
-      });
+        this.sourceSearching[sourceName] = false
+      })
     },
     resetSourceSearched(sources) {
       sources.forEach(source => {
-        this.sourceSearched[source.name] = false;
-      });
+        this.sourceSearched[source.name] = false
+      })
     },
     setSearchLoading(source, state) {
-      this.sourceSearching = { ...this.sourceSearching, [source]: state };
+      this.sourceSearching = { ...this.sourceSearching, [source]: state }
     },
     setSourceSearched(source, state) {
-      this.sourceSearched = { ...this.sourceSearched, [source]: state };
+      this.sourceSearched = { ...this.sourceSearched, [source]: state }
     },
     onApiError(error) {
-      this.error = error;
-      alert(error);
+      this.error = error
+      alert(error)
     },
     onSongSelected({ song, action }) {
-      let actions = { download: this.downloadSong, select: this.addSong };
-      actions[action](song);
+      let actions = { download: this.downloadSong, select: this.addSong }
+      actions[action](song)
     }
   }
-};
+}
 </script>
 
 <style scoped>

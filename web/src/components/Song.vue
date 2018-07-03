@@ -26,25 +26,25 @@ export default {
       default: 'select'
     }
   },
-  data () {
+  data() {
     return {}
   },
   computed: {
-    canDownload () {
+    canDownload() {
       return this.actions.includes('download') && !this.song.available
     },
-    canSelect () {
+    canSelect() {
       return this.actions.includes('select')
     }
   },
   methods: {
-    onDownload () {
+    onDownload() {
       this.onSongAction('download')
     },
-    onSelect () {
+    onSelect() {
       this.onSongAction('select')
     },
-    onSongAction (action) {
+    onSongAction(action) {
       let event = {
         action,
         song: this.song,
@@ -101,9 +101,9 @@ export default {
 }
 
 .icon-download {
-  content: url('/static/icons/download.svg');
+  content: url("/static/icons/download.svg");
 }
 .icon-add {
-  content: url('/static/icons/plus.svg')
+  content: url("/static/icons/plus.svg");
 }
 </style>

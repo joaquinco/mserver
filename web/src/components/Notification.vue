@@ -9,7 +9,7 @@
 export default {
   name: 'Notification',
   props: {
-    'noti': {
+    noti: {
       type: Object,
       required: true
     }

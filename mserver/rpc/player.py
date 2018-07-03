@@ -1,5 +1,13 @@
-from .api import register
+from mserver.player.mpd import get_status
 from mserver.player.search import list_info as get_search_backends_list
+from .api import register
+
+
+def player_status(*args, **kwargs):
+    """
+    Returns player current information.
+    """
+    return get_status()
 
 
 def player_sources(*args, **kwargs):
@@ -10,3 +18,4 @@ def player_sources(*args, **kwargs):
 
 
 register('player-sources', player_sources, secure=True)
+register('player-status', player_status, secure=True)

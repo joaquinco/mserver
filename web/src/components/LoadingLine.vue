@@ -15,7 +15,7 @@ export default {
       required: true
     }
   },
-  data () {
+  data() {
     return {}
   }
 }
@@ -28,7 +28,7 @@ export default {
   text-align: center;
 }
 
-.spinner>div {
+.spinner > div {
   width: 18px;
   height: 18px;
   background-color: #3d3d3d;
@@ -53,10 +53,10 @@ export default {
   0%,
   80%,
   100% {
-    -webkit-transform: scale(0)
+    -webkit-transform: scale(0);
   }
   40% {
-    -webkit-transform: scale(1.0)
+    -webkit-transform: scale(1);
   }
 }
 
@@ -68,8 +68,8 @@ export default {
     transform: scale(0);
   }
   40% {
-    -webkit-transform: scale(1.0);
-    transform: scale(1.0);
+    -webkit-transform: scale(1);
+    transform: scale(1);
   }
 }
 </style>

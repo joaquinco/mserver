@@ -7,13 +7,13 @@
   </div>
 </template>
 <script>
-import PlayerControls from "@/components/PlayerControls";
-import SearchToggle from "@/components/SearchToggle";
-import Playlist from "@/components/Playlist";
-import Notifications from "@/components/Notifications";
+import PlayerControls from '@/components/PlayerControls'
+import SearchToggle from '@/components/SearchToggle'
+import Playlist from '@/components/Playlist'
+import Notifications from '@/components/Notifications'
 
 export default {
-  name: "Player",
+  name: 'Player',
   components: {
     PlayerControls,
     SearchToggle,
@@ -21,9 +21,9 @@ export default {
     Notifications
   },
   data() {
-    return {};
+    return {}
   }
-};
+}
 </script>
 
 <style scoped>

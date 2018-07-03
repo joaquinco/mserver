@@ -20,14 +20,14 @@ export default {
     LoadingLine,
     ApiError
   },
-  data () {
+  data() {
     return {
       loading: true,
       message: 'Conectando',
       error: ''
     }
   },
-  mounted () {
+  mounted() {
     if (!this.$store.state.server.checked) {
       this.connectToServer()
     } else {
@@ -37,42 +37,45 @@ export default {
   methods: {
     ...mapActions(['updateServerStatus', 'initComm', 'setUser']),
     ...mapMutations(['setToken']),
-    connectToServer () {
+    connectToServer() {
       var self = this
-      axios.get(urls.rpc.system_status).then((response) => {
-        this.updateServerStatus({
-          success: true,
-          data: response.data
-        })
-        this.onServerUp()
-      }, (error) => {
-        console.log(error)
-        this.loading = false
-        this.updateServerStatus({
-          success: false
-        })
-        self.onConnectionError(error)
-      })
+      axios.get(urls.rpc.system_status).then(
+        response => {
+          this.updateServerStatus({
+            success: true,
+            data: response.data
+          })
+          this.onServerUp()
+        },
+        error => {
+          console.log(error)
+          this.loading = false
+          this.updateServerStatus({
+            success: false
+          })
+          self.onConnectionError(error)
+        }
+      )
     },
-    onConnectionError (error) {
+    onConnectionError(error) {
       if (!error) {
         error = 'No se pudo conectar con el servidor'
       }
       this.error = error
       this.loading = false
     },
-    onServerUp () {
+    onServerUp() {
       let token = storage.get('token')
       if (!token) {
-        this.$router.push({name: 'login'})
+        this.$router.push({ name: 'login' })
       } else {
         this.setToken(token)
         var api = getEndpoints(token)
-        api.auth.self.get().then((response) => {
-          this.setUser({...response.data})
-          getSocket(token).then((socket) => {
-            this.initComm({api, socket})
-            this.$router.push({name: 'player'})
+        api.auth.self.get().then(response => {
+          this.setUser({ ...response.data })
+          getSocket(token).then(socket => {
+            this.initComm({ api, socket })
+            this.$router.push({ name: 'player' })
           }, this.onConnectionError)
         }, this.onConnectionError)
       }

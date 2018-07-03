@@ -14,13 +14,13 @@ import Song from '@/components/Song'
 
 export default {
   name: 'SongList',
-  components: {Song},
+  components: { Song },
   props: ['songs'],
-  data () {
+  data() {
     return {}
   },
   methods: {
-    onSongEvent (event) {
+    onSongEvent(event) {
       this.$emit('song-selected', event)
     }
   }

@@ -5,9 +5,10 @@ const maxNotificationsStored = 20
 
 /* eslint-disable camelcase */
 const mutations = {
-  setComm (state, {api, socket}) {
+  setComm (state, { api, socket }) {
     state.comm = {
-      api, socket
+      api,
+      socket
     }
   },
   setToken (state, access_token) {
@@ -16,15 +17,18 @@ const mutations = {
   setSearchSources (state, sources) {
     state.search.sources = sources
   },
-  setSearchResults (state, {source, results}) {
-    state.search.results = {...state.search.results, [source]: results}
+  setSearchResults (state, { source, results }) {
+    state.search.results = { ...state.search.results, [source]: results }
   },
   addEvent (state, data) {
     let events = state.async.events.slice()
     events.push(data)
-    state.async = {...state.async, events: keepMaxLength(events, maxEventsStored)}
+    state.async = {
+      ...state.async,
+      events: keepMaxLength(events, maxEventsStored)
+    }
   },
-  addNotification (state, {message, error}) {
+  addNotification (state, { message, error }) {
     let now = new Date()
 
     let notification = {
@@ -37,13 +41,16 @@ const mutations = {
 
     let notifications = state.async.notifications.slice()
     notifications.unshift(notification)
-    state.async = {...state.async, notifications: keepMaxLength(notifications, maxNotificationsStored)}
+    state.async = {
+      ...state.async,
+      notifications: keepMaxLength(notifications, maxNotificationsStored)
+    }
   },
   clearNotifications (state) {
-    state.async = {...state.async, notifications: []}
+    state.async = { ...state.async, notifications: [] }
   },
-  togglePlaying (state, playing) {
-    state.player = {...state.player, playing}
+  setPlayerStatus (state, status) {
+    state.player = { ...state.player, ...status }
   }
 }
 

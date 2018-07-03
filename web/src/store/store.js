@@ -34,7 +34,9 @@ const store = new Vuex.Store({
       results: {}
     },
     player: {
-      playing: false
+      stats: {},
+      status: {},
+      version: null
     },
     async: {
       notifications: [],

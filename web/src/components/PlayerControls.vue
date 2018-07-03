@@ -1,6 +1,6 @@
 <template>
   <div class='d-flex flex-column w-100 mb-4'>
-    <div v-if='loaded' class='d-flex flex-row justify-content-center player-controls'>
+    <div v-show='loaded' class='d-flex flex-row justify-content-center player-controls'>
       <button class='button button-left'>
         <span class='prev'></span>
       </button>
@@ -10,30 +10,61 @@
       <button class='button button-right'>
         <span class='next'></span>
       </button>
+      <ApiError :errorResponse="error"/>
     </div>
     <!-- Progress bar -->
   </div>
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
+import ApiError from '@/components/ApiError'
+
 export default {
-  name: "PlayerControls",
+  name: 'PlayerControls',
+  components: { ApiError },
   data() {
     return {
-      isPlaying: false,
-      loaded: false
-    };
+      loaded: false,
+      error: null
+    }
+  },
+  computed: {
+    ...mapState({
+      playerState: state => state.player.status.state,
+      api: state => state.comm.api,
+      socket: state => state.comm.socket
+    }),
+    isPlaying() {
+      return this.playerState === 'play'
+    },
+    isStoped() {
+      return this.playerState === 'stop'
+    },
+    isPaused() {
+      return this.playerState == 'pause'
+    }
   },
   mounted() {
-    fetchPlayerState();
+    this.fetchPlayerState()
   },
   methods: {
-    playPause() {
-      this.isPlaying = !this.isPlaying;
-    },
-    fetchPlayerState() {}
+    ...mapMutations(['setPlayerStatus']),
+    fetchPlayerState() {
+      let always = () => (this.loaded = false)
+      this.api.srpc.player_status.get().then(
+        response => {
+          this.setPlayerStatus(response.data)
+          always()
+        },
+        error => {
+          this.error = error
+          always()
+        }
+      )
+    }
   }
-};
+}
 </script>
 
 <style scoped>

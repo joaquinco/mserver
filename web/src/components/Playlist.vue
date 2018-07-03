@@ -10,7 +10,7 @@
 <script>
 export default {
   name: 'Playlist',
-  data () {
+  data() {
     return {
       songs: []
     }

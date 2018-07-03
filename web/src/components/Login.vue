@@ -29,7 +29,7 @@ export default {
     LoadingCircular,
     ApiError
   },
-  data () {
+  data() {
     return {
       username: '',
       password: '',
@@ -42,12 +42,12 @@ export default {
     }
   },
   computed: {
-    isFormInvalid () {
+    isFormInvalid() {
       return this.username.length < 5
     }
   },
   methods: {
-    wantToTriggerPassword () {
+    wantToTriggerPassword() {
       if (this.timer) {
         clearTimeout(this.timer)
       }
@@ -59,25 +59,32 @@ export default {
         this.timer = setTimeout(this.clearPasswordCount, 800)
       }
     },
-    clearPasswordCount () {
+    clearPasswordCount() {
       this.triggerPasswordCount = 0
     },
-    submit () {
+    submit() {
       this.isLoading = true
 
-      let stopLoading = (fn) => (params) => {
+      let stopLoading = fn => params => {
         this.isLoading = false
         return fn(params)
       }
 
-      axios.post(urls.auth.login, {
-        username: this.username,
-        password: this.password
-      }).then(stopLoading(this.onLoginSuccess), stopLoading((error) => { this.apiError = error }))
+      axios
+        .post(urls.auth.login, {
+          username: this.username,
+          password: this.password
+        })
+        .then(
+          stopLoading(this.onLoginSuccess),
+          stopLoading(error => {
+            this.apiError = error
+          })
+        )
     },
-    onLoginSuccess (response) {
+    onLoginSuccess(response) {
       storage.set('token', response.data.access_token)
-      this.$router.push({name: 'dispatch'})
+      this.$router.push({ name: 'dispatch' })
     }
   }
 }

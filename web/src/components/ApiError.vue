@@ -9,14 +9,15 @@ export default {
   name: 'ApiError',
   props: ['errorResponse'],
   computed: {
-    message () {
+    message() {
       let message = ''
       if (this.errorResponse) {
         let error = this.errorResponse
         if (error.response) {
           let status = error.response.status
           switch (status) {
-            case 401: case 403: {
+            case 401:
+            case 403: {
               message = 'Mira no te puedo dejar pasar con esos datos'
               break
             }
@@ -24,8 +25,9 @@ export default {
               message = 'Pa se rompio todo'
               break
             }
-            case 200: case 201: case 203:
-            {
+            case 200:
+            case 201:
+            case 203: {
               message = ''
               break
             }
@@ -44,7 +46,7 @@ export default {
       }
       return message
     },
-    show () {
+    show() {
       return Boolean(this.message)
     }
   }

@@ -5,7 +5,8 @@ const endpoints = {
     system_status: '/rpc/system-status'
   },
   srpc: {
-    search_sources: '/srpc/player-sources'
+    search_sources: '/srpc/player-sources',
+    player_status: '/srpc/player-status'
   },
   search: '/search',
   auth: {
@@ -16,7 +17,7 @@ const endpoints = {
 
 export const urls = getFullUlrs(endpoints)
 
-export const getEndpoints = (token) => {
+export const getEndpoints = token => {
   initApiCaller(token)
   return initApiEndpoints(endpoints)
 }
