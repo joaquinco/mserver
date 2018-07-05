@@ -12,7 +12,8 @@ const endpoints = {
   auth: {
     login: '/auth',
     self: '/auth/self'
-  }
+  },
+  playlist: '/playlist'
 }
 
 export const urls = getFullUlrs(endpoints)

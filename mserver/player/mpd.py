@@ -54,10 +54,19 @@ def get_client():
     return _MPDClientWrapper()
 
 
-def get_status():
+def mpd_get_status():
     """
-
-    :return:
+    Get mpd current status.
     """
     with get_client() as conn:
         return normalize_dict(dict(status=conn.status(), stats=conn.stats(), version=conn.mpd_version))
+
+
+def mpd_get_playlist():
+    """
+    Returns songs of current playlist.
+
+    Each song is {'file': 'File name'}
+    """
+    with get_client() as conn:
+        return conn.listall()

@@ -7,7 +7,6 @@ class SearchIdField(fields.Raw):
 
 
 song_list_marshal = {
-    'id': fields.Integer,
     'title': fields.String,
     'artist': fields.String,
     'album': fields.String,

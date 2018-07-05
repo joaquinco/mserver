@@ -3,7 +3,7 @@ from flask_jwt import jwt_required, current_identity
 from flask_restful import Resource, marshal_with, reqparse
 
 from mserver import rpc
-from mserver.marshals import song_search_marshal, playlist_detail_marshal, user_detail_marshal
+from mserver.marshals import song_search_marshal, playlist_detail_marshal, user_detail_marshal, song_list_marshal
 from mserver.player import search, playlist
 
 search_args = reqparse.RequestParser()
@@ -27,29 +27,17 @@ class SongSearchResource(Resource):
         return backend.search(query)
 
 
+class PlaylistResource(Resource):
+    @marshal_with(song_list_marshal)
+    # @jwt_required()
+    def get(self):
+        return playlist.list_playlist_songs()
+
+
 addsong_args = reqparse.RequestParser()
 addsong_args.add_argument('search_id', help='Search id', required=True, location='json')
 addsong_args.add_argument('source', required=False, location='json')
 
-
-class PlayListResource(Resource):
-    @jwt_required()
-    def post(self, playlist_id=None):
-        args = addsong_args.parse_args()
-
-        search_id = args.get('search_id')
-        source = args.get('source')
-        user = current_identity
-
-        playlist.add(source, search_id, user.id, playlist_id)
-
-        return {}, 204
-
-    @marshal_with(playlist_detail_marshal)
-    @jwt_required()
-    def get(self, playlist_id=None):
-        return playlist.get_playlist(playlist_id)
-        # TODO: should list if playlist_id==None else detail
 
 
 rpc_post_params = reqparse.RequestParser()

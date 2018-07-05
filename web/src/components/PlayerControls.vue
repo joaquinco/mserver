@@ -1,6 +1,7 @@
 <template>
   <div class='d-flex flex-column w-100 mb-4'>
-    <div v-show='loaded' class='d-flex flex-row justify-content-center player-controls'>
+    <ApiError :errorResponse="error"/>
+    <div v-show='loaded && !error' class='d-flex flex-row justify-content-center player-controls'>
       <button class='button button-left'>
         <span class='prev'></span>
       </button>
@@ -10,7 +11,6 @@
       <button class='button button-right'>
         <span class='next'></span>
       </button>
-      <ApiError :errorResponse="error"/>
     </div>
     <!-- Progress bar -->
   </div>
@@ -42,7 +42,7 @@ export default {
       return this.playerState === 'stop'
     },
     isPaused() {
-      return this.playerState == 'pause'
+      return this.playerState === 'pause'
     }
   },
   mounted() {
@@ -51,15 +51,13 @@ export default {
   methods: {
     ...mapMutations(['setPlayerStatus']),
     fetchPlayerState() {
-      let always = () => (this.loaded = false)
       this.api.srpc.player_status.get().then(
         response => {
           this.setPlayerStatus(response.data)
-          always()
+          this.loaded = false
         },
         error => {
           this.error = error
-          always()
         }
       )
     }

@@ -1,12 +1,11 @@
-import warnings
-
 from flask_restful import marshal
 
 from mserver.database import db
 from mserver.marshals import playlist_song_marshal, song_list_marshal
 from mserver.models import PlayList, Song
-from mserver.player import search, decorators
 from mserver.mserver import get_socketio
+from mserver.player import search, decorators
+from mserver.player.mpd import mpd_get_playlist
 
 
 def get_playlist(playlist_id=None):
@@ -94,4 +93,15 @@ def add(source, search_id, user_id, playlist_id=None):
     db.session.commit()
 
     socketio('player.song_added', marshal(dict(song=song, playlist=playlist), playlist_song_marshal),
-                    broadcast=True)
+             broadcast=True)
+
+
+def list_playlist_songs(playlist=None):
+    """
+    Returns list of Song objects
+    """
+
+    def convert_to_song(mpd_song):
+        return Song(title=mpd_song.get('file'), available=True)
+
+    return list(map(convert_to_song, mpd_get_playlist()))
