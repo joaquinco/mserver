@@ -1,8 +1,8 @@
 <template>
-  <div class='container-sm d-flex flex-column justfy-content-around h-100vh'>
-    <SearchToggle class='mt-3'/>
+  <div class='container-sm d-flex flex-column justfy-content-around'>
+    <SearchToggle class='pt-3 search-toggle'/>
     <Playlist class="player-content mt-3"/>
-    <PlayerControls/>
+    <PlayerControls class='player-controls'/>
     <Notifications/>
   </div>
 </template>
@@ -29,5 +29,14 @@ export default {
 <style scoped>
 .player-content {
   flex: 1;
+  padding-bottom: 90px;
+  padding-top: 50px;
+}
+
+.player-controls {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
-  <div class="container-search" :class="{'w-100': searchActive, 'search-fullpage': searchActive}">
-    <div class="d-flex flex-column" :class="{'container-sm': searchActive, 'w-100': !searchActive}">
+  <div class="container-search container-sm" :class="{'search-fullpage': searchActive}">
+    <div class="d-flex flex-column" :class="{'w-100': !searchActive}">
       <div class="input-wrapper">
         <form @submit.prevent="globalSearch()" class="d-flex flex-row align-items-center">
           <input class="w-100" type=search v-model="query" placeholder="Buscar" @focus="onSearchFocus"/>
@@ -168,20 +168,22 @@ export default {
 <style scoped>
 .container-search {
   background: white;
+  position: fixed;
 }
+
 input {
   border-radius: 10px;
   margin-bottom: 0;
   height: 34px;
 }
-.search-fullpage {
+/* .search-fullpage {
   position: fixed;
   height: 100vh;
   left: 0;
-}
-.container-sm {
+} */
+/* .container-sm {
   height: 97vh;
-}
+} */
 .search-results {
   flex: 1;
   overflow-y: auto;

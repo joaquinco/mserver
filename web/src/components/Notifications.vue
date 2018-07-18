@@ -4,8 +4,8 @@
     <div class='notification-header d-flex flex-row justify-content-between mx-4'>
       <strong class='mr-4'>Notificaciones</strong>
       <div>
-        <span class='close mr-1' @click='clearNotifications()'>Limpiar</span>
-        <span class='close' @click='toggleView()'>Cerrar</span>
+        <a class='close mr-1' @click='clearNotifications()'>Limpiar</a>
+        <a class='close' @click='toggleView()'>Cerrar</a>
       </div>
     </div>
     <Notification v-for='obj in notifications' :noti='obj' :key='obj.id'/>
@@ -64,7 +64,7 @@ export default {
 }
 .visible {
   background-color: white;
-  box-shadow: -1px 1px 1px #919191;
+  box-shadow: 0px 0px 10px #919191;
   padding: 10px 0;
   overflow-y: auto;
   max-height: 100%;

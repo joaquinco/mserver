@@ -76,6 +76,7 @@ export default {
   margin: 0;
   height: 50px;
   width: 60px;
+  background-color: white;
 }
 
 .button-left {
