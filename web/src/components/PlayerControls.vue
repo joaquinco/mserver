@@ -1,7 +1,7 @@
 <template>
-  <div class='d-flex flex-column w-100 mb-4'>
+  <div class='d-flex flex-column mb-4'>
     <ApiError :errorResponse="error"/>
-    <div v-show='loaded && !error' class='d-flex flex-row justify-content-center player-controls'>
+    <div v-if='loaded && !error' class='d-flex flex-row justify-content-center player-controls'>
       <button class='button button-left'>
         <span class='prev'></span>
       </button>

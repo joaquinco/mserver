@@ -6,6 +6,7 @@ from mserver.models import PlayList, Song
 from mserver.mserver import get_socketio
 from mserver.player import search, decorators
 from mserver.player.mpd import mpd_get_playlist
+from mserver.player.utils import convert_to_song
 
 
 def get_playlist(playlist_id=None):
@@ -100,8 +101,4 @@ def list_playlist_songs(playlist=None):
     """
     Returns list of Song objects
     """
-
-    def convert_to_song(mpd_song):
-        return Song(title=mpd_song.get('file'), available=True)
-
     return list(map(convert_to_song, mpd_get_playlist()))

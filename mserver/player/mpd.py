@@ -47,7 +47,7 @@ class _MPDClientWrapper(object):
         self.client = MPDClient(*args, **kwargs)
 
     def __enter__(self):
-        self.client.connect(MPD_SERVER_CONF.get('host'), MPD_SERVER_CONF.get('post'))
+        self.client.connect(MPD_SERVER_CONF.get('host'), MPD_SERVER_CONF.get('port'))
         return self.client
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -78,7 +78,7 @@ def mpd_get_playlist():
     Each song is {'file': 'File name'}
     """
     with get_client() as conn:
-        return conn.listall()
+        return list(conn._parse_database(conn.playlist()))
 
 
 @normalize_mpd_response
@@ -90,7 +90,6 @@ def mpd_play():
     """
     with get_client() as conn:
         conn.play()
-
         return conn.status()
 
 
@@ -103,5 +102,12 @@ def mpd_pause():
     """
     with get_client() as conn:
         conn.pause()
-
         return conn.status()
+
+
+def mpd_search(query):
+    """
+    Performs a search over mpd database
+    """
+    with get_client() as conn:
+        return conn.search('file', query)

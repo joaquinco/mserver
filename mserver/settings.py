@@ -27,5 +27,5 @@ VERSION = '0.0.1'
 
 MPD_SERVER_CONF = {
     'host': 'localhost',
-    'post': '6600'
+    'port': '6600'
 }
