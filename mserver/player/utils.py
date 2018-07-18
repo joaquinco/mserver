@@ -11,7 +11,7 @@ def format_int_duration(value):
     return '{min:02}:{sec:02}'.format(min=minutes, sec=seconds)
 
 
-def convert_to_song(mpd_song, available=True):
+def mpd_convert_to_song(mpd_song, available=True):
 
     file = mpd_song.get('file')
     time = mpd_song.get('time')

@@ -27,7 +27,7 @@ const store = new Vuex.Store({
     },
     playlist: {
       songs: [],
-      fetching: false
+      current: {}
     },
     search: {
       sources: [],

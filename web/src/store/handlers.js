@@ -38,9 +38,16 @@ const handlers = {
   player_pause({ state, commit }, data) {
     commit('togglePlaying', data)
   },
-  player_song_added({ state, commit }, { song, playlist }) {
+  player_previous({ commit }, song) {
+    commit('setCurrentSong', song)
+  },
+  player_next({ state, commit }, song) {
+    commit('setCurrentSong', song)
+  },
+  player_song_added({ state, commit, dispatch }, song) {
     let message = `Nueva cancion en cola: ${song.title}`
     commit('addNotification', { message })
+    dispatch('refreshPlaylist')
   },
   player_song_available({ state, commit }, song) {
     let message = `Nueva cancion disponible: ${song.title}`

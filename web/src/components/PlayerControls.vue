@@ -1,14 +1,15 @@
 <template>
   <div class='d-flex flex-column mb-4'>
     <ApiError :errorResponse="error"/>
+    <p>{{current.title}}</p>
     <div v-if='loaded && !error' class='d-flex flex-row justify-content-center player-controls'>
-      <button class='button button-left'>
+      <button class='button button-left' @click.prevent='previous()'>
         <span class='prev'></span>
       </button>
       <button class='button button-center' @click.prevent='playPause()'>
-        <span :class='{play: isPlaying, pause: isPaused, stop: isStoped}'></span>
+        <span :class='{play: isPaused, pause: isPlaying, stop: isStoped}'></span>
       </button>
-      <button class='button button-right'>
+      <button class='button button-right' @click.prevent='next()'>
         <span class='next'></span>
       </button>
     </div>
@@ -33,7 +34,8 @@ export default {
     ...mapState({
       playerState: state => state.player.status.state,
       api: state => state.comm.api,
-      socket: state => state.comm.socket
+      socket: state => state.comm.socket,
+      current: state => state.playlist.current
     }),
     isPlaying() {
       return this.playerState === 'play'
@@ -64,6 +66,12 @@ export default {
     playPause() {
       let event = (this.isPlaying && 'player.pause') || 'player.play'
       this.socket.emit(event)
+    },
+    next() {
+      this.socket.emit('player.next')
+    },
+    previous() {
+      this.socket.emit('player.previous')
     }
   }
 }

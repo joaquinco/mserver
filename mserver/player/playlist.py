@@ -1,27 +1,12 @@
 from flask_restful import marshal
 
 from mserver.database import db
-from mserver.marshals import playlist_song_marshal, song_list_marshal
-from mserver.models import PlayList, Song
-from mserver.mserver import get_socketio
+from mserver.marshals import song_list_marshal
+from mserver.models import Song
+from mserver.mserver import socketio
+from mserver.player import mpd
 from mserver.player import search, decorators
-from mserver.player.mpd import mpd_get_playlist
-from mserver.player.utils import convert_to_song
-
-
-def get_playlist(playlist_id=None):
-    """
-    Gets playlist. If playlist is None return default.
-    """
-    if playlist_id:
-        playlist = PlayList.query.filter_by(id=playlist_id).one()
-    else:
-        playlist = PlayList.query.filter_by(is_default=True).first()
-        if not playlist:
-            playlist = PlayList(name='default', is_default=True)
-            db.session.add(playlist)
-            db.session.commit()
-    return playlist
+from mserver.player.utils import mpd_convert_to_song
 
 
 @decorators.emit_socket_error('player.song_download_error')
@@ -29,30 +14,30 @@ def just_download(source, search_id, user_id):
     """
     Just download a song
     """
-    _download_song(source, search_id, user_id)
+    _get_song(source, search_id, user_id)
 
 
 def _download_song_tmp(source, search_id, user_id):
-    socketio = get_socketio()
+    # socketio = get_socketio()
     backend = search.get(source)
 
     song = backend.get_song(search_id)
 
-    socketio('player.song_downloading', marshal(song, song_list_marshal))
+    socketio.emit('player.song_downloading', marshal(song, song_list_marshal))
 
     import time
     time.sleep(10)
 
     # filename = backend.get_file(search_id)
 
-    socketio('player.song_available', marshal(song, song_list_marshal), broadcast=True)
+    socketio.emit('player.song_available', marshal(song, song_list_marshal), broadcast=True)
 
 
-def _download_song(source, search_id, user_id):
+def _get_song(source, search_id, user_id):
     """
     Downloads a song if it's not available or being downloaded
     """
-    socketio = get_socketio()
+    # socketio = get_socketio()
     backend = search.get(source)
 
     song = backend.get_song(search_id)
@@ -84,21 +69,27 @@ def add(source, search_id, user_id, playlist_id=None):
     """
     Adds a song to playlist
     """
-    socketio = get_socketio()
-    song = _download_song(source, search_id, user_id)
+    # socketio = get_socketio()
+    song = _get_song(source, search_id, user_id)
 
-    playlist = get_playlist(playlist_id)
+    mpd.mpd_add_song(song.title)
 
-    playlist.songs.append(song)
-    db.session.add(playlist)
-    db.session.commit()
-
-    socketio('player.song_added', marshal(dict(song=song, playlist=playlist), playlist_song_marshal),
-             broadcast=True)
+    socketio.emit('player.song_added', marshal(song, song_list_marshal), broadcast=True)
 
 
 def list_playlist_songs(playlist=None):
     """
     Returns list of Song objects
     """
-    return list(map(convert_to_song, mpd_get_playlist()))
+    return list(map(mpd_convert_to_song, mpd.mpd_get_playlist()))
+
+
+def get_current_song():
+    """
+    Returns current song
+    """
+    return mpd_convert_to_song(mpd.mpd_get_current())
+
+
+def get_current_song_marshaled():
+    return marshal(get_current_song(), song_list_marshal)

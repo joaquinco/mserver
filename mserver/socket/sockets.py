@@ -1,10 +1,10 @@
 from flask_jwt import current_identity
 from flask_jwt import jwt_required
+from flask_socketio import emit, send
 
 from mserver.mserver import socketio
 from mserver.player import playlist, mpd
 from .utils import start_background_task
-from flask_socketio import emit, send
 
 
 @socketio.on('message')
@@ -71,6 +71,21 @@ def just_download_song(data):
     user_id = current_identity.id
 
     start_background_task(playlist.just_download, source, search_id, user_id)
+
+
+@socketio.on('player.next')
+@jwt_required()
+def player_next(data=None):
+    mpd.mpd_next()
+    emit('player.next', playlist.get_current_song_marshaled(), broadcast=True)
+
+
+@socketio.on('player.previous')
+@jwt_required()
+def player_previous(data=None):
+    mpd.mpd_previous()
+    print(playlist.get_current_song_marshaled())
+    emit('player.previous', playlist.get_current_song_marshaled(), broadcast=True)
 
 
 @socketio.on_error()

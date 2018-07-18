@@ -29,7 +29,7 @@ class SongSearchResource(Resource):
 
 class PlaylistResource(Resource):
     @marshal_with(song_list_marshal)
-    # @jwt_required()
+    @jwt_required()
     def get(self):
         return playlist.list_playlist_songs()
 

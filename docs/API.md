@@ -70,6 +70,9 @@ search arguments.
 - `user.left`: receive
 - `player.play`: send, receive
 - `player.pause`: send, receive
+- `player.stop`: send, receive
+- `player.next`: send, receive
+- `player.previous`: send, receive
 - `player.add_son`: send
 - `player.song_added`: receive
 - `player.song_available`: receive

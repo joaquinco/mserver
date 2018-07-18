@@ -3,7 +3,7 @@ import handlers from './handlers'
 /* eslint-disable camelcase */
 const actions = {
   ...handlers,
-  updateServerStatus ({ state }, { success, data }) {
+  updateServerStatus({ state }, { success, data }) {
     if (success) {
       state.server = {
         ...state.server,
@@ -19,11 +19,13 @@ const actions = {
       }
     }
   },
-  initComm ({ state, commit, dispatch }, { api, socket }) {
+  initComm({ state, commit, dispatch }, { api, socket }) {
     commit('setComm', { api, socket })
     const events = [
       'player.play',
       'player.pause',
+      'player.next',
+      'player.previous',
       'player.song_added',
       'player.song_available',
       'player.song_downloading',
@@ -44,26 +46,31 @@ const actions = {
       socket.on(eventName, method)
     })
   },
-  setUser ({ state }, { username, is_superuser }) {
+  setUser({ state }, { username, is_superuser }) {
     state.user = { ...state.user, username, is_superuser }
   },
-  clearSearchResults ({ state, commit }) {
+  clearSearchResults({ state, commit }) {
     state.search.sources.forEach(source => {
       commit('setSearchResults', { source: source.name, results: [] })
     })
   },
-  setSearchSources ({ state, commit }, sources) {
+  setSearchSources({ state, commit }, sources) {
     state.search.sources = sources
     commit('setSearchSources', sources)
     sources.forEach(source => {
       commit('setSearchResults', { source: source.name, results: [] })
     })
   },
-  downloadSong ({ state, commit }, song) {
+  downloadSong({ state, commit }, song) {
     state.comm.socket.emit('player.download_song', song)
   },
-  addSong ({ state, commit }, song) {
+  addSong({ state, commit }, song) {
     state.comm.socket.emit('player.add_song', song)
+  },
+  refreshPlaylist({ state, commit }) {
+    state.comm.api.playlist.get().then(response => {
+      commit('setCurrentPlaylistSongs', response.data)
+    })
   }
 }
 

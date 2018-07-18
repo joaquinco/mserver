@@ -81,6 +81,14 @@ def mpd_get_playlist():
         return list(conn._parse_database(conn.playlist()))
 
 
+def mpd_add_song(file):
+    """
+    Adds song to current playlist
+    """
+    with get_client() as conn:
+        conn.add(file)
+
+
 @normalize_mpd_response
 def mpd_play():
     """
@@ -103,6 +111,30 @@ def mpd_pause():
     with get_client() as conn:
         conn.pause()
         return conn.status()
+
+
+def mpd_next():
+    """
+    Play next song
+    """
+    with get_client() as conn:
+        conn.next()
+
+
+def mpd_previous():
+    """
+    Play previous song
+    """
+    with get_client() as conn:
+        conn.previous()
+
+
+def mpd_get_current():
+    """
+    Get current song
+    """
+    with get_client() as conn:
+        return conn.currentsong()
 
 
 def mpd_search(query):

@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import SongList from '@/components/SongList'
 
 export default {
@@ -14,14 +14,14 @@ export default {
   components: { SongList },
   data() {
     return {
-      songs: [],
       loading: false,
       error: null
     }
   },
   computed: {
     ...mapState({
-      api: state => state.comm.api
+      api: state => state.comm.api,
+      songs: state => state.playlist.songs
     }),
     songsExist() {
       return this.songs.length > 0 && this.loaded
@@ -31,11 +31,11 @@ export default {
     this.fetchPlaylistSongs()
   },
   methods: {
+    ...mapMutations(['setCurrentPlaylistSongs']),
     fetchPlaylistSongs() {
       this.api.playlist.get().then(response => {
-        this.songs = response.data
+        this.setCurrentPlaylistSongs(response.data)
         this.loaded = true
-        // TODO: add songs to state
       })
     }
   }

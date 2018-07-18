@@ -31,11 +31,6 @@ playlist_detail_marshal = {
     'songs_count': fields.Integer,
 }
 
-playlist_song_marshal = {
-    'song': fields.Nested(song_list_marshal),
-    'playlist': fields.Nested(playlist_detail_marshal)
-}
-
 user_detail_marshal = {
     'id': fields.String,
     'username': fields.String,
