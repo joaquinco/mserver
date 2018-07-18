@@ -1,57 +1,43 @@
 from flask_jwt import current_identity
 from flask_jwt import jwt_required
-from flask_socketio import emit, send
+from flask_socketio import emit
 
 from mserver.mserver import socketio
 from mserver.player import playlist, mpd
 from .utils import start_background_task
 
 
-@socketio.on('message')
-def handle_message(message):
-    send(message)
-
-
-@socketio.on('connect')
-@jwt_required()
 def on_connect():
     if current_identity:
         emit('user.joined', {'message': '{} connected'.format(current_identity.username)}, broadcast=True)
     else:
         return False
-    # emit('user.joined', {'message': 'User connected'}, broadcast=True)
 
 
-@socketio.on('disconnect')
-@jwt_required()
 def on_disconnect():
     emit('user.left', {'message': '{} disconnected'.format(current_identity.username)}, broadcast=True)
 
 
-@socketio.on('player.play')
-@jwt_required()
 def on_music_play(data=None):
     """
     Starts playing music.
     Broadcast player state
     """
-    status = mpd.mpd_play()
-    emit('player.play', status, broadcast=True)
+    mpd.mpd_play()
+    emit('player.play', broadcast=True)
+    player_status()
 
 
-@socketio.on('player.pause')
-@jwt_required()
 def on_music_paused(data=None):
     """
     Stops playing music.
     Broadcast player state
     """
-    status = mpd.mpd_pause()
-    emit('player.pause', status, broadcast=True)
+    mpd.mpd_pause()
+    emit('player.pause', broadcast=True)
+    player_status()
 
 
-@socketio.on('player.add_song')
-@jwt_required()
 def add_song_to_playlist(data):
     source = data.get('source')
     search_id = data.get('search_id')
@@ -62,8 +48,6 @@ def add_song_to_playlist(data):
     start_background_task(playlist.add, source, search_id, user_id, playlist_id=playlist_id)
 
 
-@socketio.on('player.download_song')
-@jwt_required()
 def just_download_song(data):
     source = data.get('source')
     search_id = data.get('search_id')
@@ -73,19 +57,60 @@ def just_download_song(data):
     start_background_task(playlist.just_download, source, search_id, user_id)
 
 
-@socketio.on('player.next')
-@jwt_required()
 def player_next(data=None):
     mpd.mpd_next()
-    emit('player.next', playlist.get_current_song_marshaled(), broadcast=True)
+    emit('player.next', broadcast=True)
+    _emit_player_current(broadcast=True)
 
 
-@socketio.on('player.previous')
-@jwt_required()
 def player_previous(data=None):
     mpd.mpd_previous()
-    print(playlist.get_current_song_marshaled())
-    emit('player.previous', playlist.get_current_song_marshaled(), broadcast=True)
+    emit('player.previous', broadcast=True)
+    _emit_player_current(broadcast=True)
+
+
+def _emit_player_current(broadcast=False):
+    emit('player.current', playlist.get_current_song_marshaled(), broadcast=broadcast)
+
+
+def player_random(data):
+    mpd.mpd_random(data.get('value'))
+    player_status()
+
+
+def player_repeat(data):
+    mpd.mpd_repeat(data.get('value'))
+    player_status()
+
+
+def player_status():
+    emit('player.status', mpd.mpd_get_status(), broadcast=True)
+
+
+events = [
+    ('connect', True, on_connect),
+    ('disconnect', True, on_disconnect),
+    ('player.play', True, on_music_play),
+    ('player.pause', True, on_music_paused),
+    ('player.add_song', True, add_song_to_playlist),
+    ('player.download_song', True, just_download_song),
+    ('player.next', True, player_next),
+    ('player.previous', True, player_previous),
+    ('player.current', True, _emit_player_current),
+    ('player.random', True, player_random),
+    ('player.repeat', True, player_repeat),
+    ('player.status', True, player_status)
+]
+
+
+def _setup_events():
+    global events
+    for event_name, requires_auth, handler in events:
+        method = requires_auth and jwt_required()(handler) or handler
+        socketio.on(event_name)(method)
+
+
+_setup_events()
 
 
 @socketio.on_error()

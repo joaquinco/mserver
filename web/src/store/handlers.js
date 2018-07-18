@@ -32,16 +32,14 @@ const handlers = {
   user_left({ state, commit }, { message }) {
     commit('addNotification', { message })
   },
-  player_play({ state, commit }, data) {
-    commit('togglePlaying', data)
+  player_play({ state, commit }, data) {},
+  player_pause({ state, commit }, data) {},
+  player_status({ state, commit }, data) {
+    commit('setPlayerStatus', data)
   },
-  player_pause({ state, commit }, data) {
-    commit('togglePlaying', data)
-  },
-  player_previous({ commit }, song) {
-    commit('setCurrentSong', song)
-  },
-  player_next({ state, commit }, song) {
+  player_previous({ commit }, song) {},
+  player_next({ state, commit }, song) {},
+  player_current({ state, commit }, song) {
     commit('setCurrentSong', song)
   },
   player_song_added({ state, commit, dispatch }, song) {

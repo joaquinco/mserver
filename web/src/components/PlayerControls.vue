@@ -1,19 +1,25 @@
 <template>
-  <div class='d-flex flex-column mb-4'>
+  <div class='d-flex flex-column player-controls-container align-items-center'>
     <ApiError :errorResponse="error"/>
-    <p>{{current.title}}</p>
-    <div v-if='loaded && !error' class='d-flex flex-row justify-content-center player-controls'>
-      <button class='button button-left' @click.prevent='previous()'>
-        <span class='prev'></span>
-      </button>
-      <button class='button button-center' @click.prevent='playPause()'>
-        <span :class='{play: isPaused, pause: isPlaying, stop: isStoped}'></span>
-      </button>
-      <button class='button button-right' @click.prevent='next()'>
-        <span class='next'></span>
-      </button>
+    <div v-show='loaded && !error' class='d-flex flex-column align-items-center w-100'>
+      <p class='song-title mb-0'>{{currentSongTitle}}</p>
+      <div  class='d-flex flex-row justify-content-center player-controls'>
+        <button class='button button-left' @click.prevent='previous()'>
+          <span class='prev'></span>
+        </button>
+        <button class='button button-center' @click.prevent='playPause()'>
+          <span :class='{play: isPaused, pause: isPlaying, stop: isStoped}'></span>
+        </button>
+        <button class='button button-right' @click.prevent='next()'>
+          <span class='next'></span>
+        </button>
+      </div>
+      <div class='d-flex flex-row justify-content-around player-other-buttons'>
+        <span class='text-toggle' :class='{disbled: !isRepeatOn}' @click='toggleRepeat()'>Repetir</span>
+        <span class='text-toggle' :class='{disbled: !isShuffleOn}' @click='toggleShuffle()'>Shuffle</span>
+      </div>
+      <!-- Progress bar -->
     </div>
-    <!-- Progress bar -->
   </div>
 </template>
 
@@ -32,19 +38,28 @@ export default {
   },
   computed: {
     ...mapState({
-      playerState: state => state.player.status.state,
       api: state => state.comm.api,
       socket: state => state.comm.socket,
-      current: state => state.playlist.current
+      current: state => state.playlist.current,
+      status: state => state.player.status
     }),
     isPlaying() {
-      return this.playerState === 'play'
+      return this.status.state === 'play'
     },
     isStoped() {
-      return this.playerState === 'stop'
+      return this.status.state === 'stop'
     },
     isPaused() {
-      return this.playerState === 'pause'
+      return this.status.state === 'pause'
+    },
+    currentSongTitle() {
+      return this.current.title || '...'
+    },
+    isShuffleOn() {
+      return this.status && this.status.random
+    },
+    isRepeatOn() {
+      return this.status && this.status.repeat
     }
   },
   mounted() {
@@ -57,6 +72,7 @@ export default {
         response => {
           this.setPlayerStatus(response.data)
           this.loaded = true
+          this.socket.emit('player.current')
         },
         error => {
           this.error = error
@@ -72,12 +88,23 @@ export default {
     },
     previous() {
       this.socket.emit('player.previous')
+    },
+    toggleRepeat() {
+      this.socket.emit('player.repeat', { value: !this.isRepeatOn })
+    },
+    toggleShuffle() {
+      this.socket.emit('player.random', { value: !this.isShuffleOn })
     }
   }
 }
 </script>
 
 <style scoped>
+.player-controls-container {
+  background-color: white;
+  box-shadow: 0px 0px 5px #919191;
+  width: 100%;
+}
 .player-controls {
   box-sizing: border-box;
 }
@@ -89,20 +116,14 @@ export default {
   height: 50px;
   width: 60px;
   background-color: white;
+  border: none;
 }
 
-.button-left {
-  border-radius: 30% 0 0 30%;
-}
-
-.button-center {
-  border-radius: 0;
-  border-right: none;
-  border-left: none;
-}
-
-.button-right {
-  border-radius: 0 30% 30% 0;
+.song-title {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 90%;
 }
 
 .prev,
@@ -111,7 +132,6 @@ export default {
 .pause,
 .stop {
   height: 100%;
-  width: 100%;
 }
 
 .prev {
@@ -132,5 +152,27 @@ export default {
 
 .stop {
   content: url("/static/icons/stop.svg");
+}
+
+.player-other-buttons {
+  width: 300px;
+}
+
+@media (max-width: 500px) {
+  .player-other-buttons {
+    width: 100%;
+  }
+}
+
+.text-toggle {
+  color: #e46f89;
+  cursor: pointer;
+}
+.text-toggle:hover {
+  opacity: 0.7;
+}
+
+.text-toggle.disbled {
+  text-decoration: line-through;
 }
 </style>

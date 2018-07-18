@@ -52,9 +52,6 @@ const mutations = {
   setPlayerStatus(state, status) {
     state.player = { ...state.player, ...status }
   },
-  togglePlaying(state, status) {
-    state.player = { ...state.player, status }
-  },
   setCurrentPlaylistSongs(state, songs) {
     state.playlist = { ...state.playlist, songs }
   },

@@ -72,8 +72,12 @@ search arguments.
 - `player.pause`: send, receive
 - `player.stop`: send, receive
 - `player.next`: send, receive
+- `player.current`: send, receive
 - `player.previous`: send, receive
-- `player.add_son`: send
+- `player.random`: send
+- `player.repeat`: send
+- `player.status`: send, receive
+- `player.add_song`: send
 - `player.song_added`: receive
 - `player.song_available`: receive
 - `player.song_downloading`: receive

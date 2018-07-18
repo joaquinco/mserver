@@ -22,10 +22,12 @@ const actions = {
   initComm({ state, commit, dispatch }, { api, socket }) {
     commit('setComm', { api, socket })
     const events = [
+      'player.status',
       'player.play',
       'player.pause',
       'player.next',
       'player.previous',
+      'player.current',
       'player.song_added',
       'player.song_available',
       'player.song_downloading',

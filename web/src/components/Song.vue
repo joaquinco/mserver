@@ -59,7 +59,7 @@ export default {
 <style scoped>
 .song-row {
   padding: 10px 10px 10px 0;
-  border-bottom: 1px solid #b2b2b2;
+  border-bottom: 1px solid rgba(178, 178, 178, 0.23);
 }
 
 .song-info {

@@ -35,8 +35,7 @@ export default {
 
 .player-controls {
   position: fixed;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 0;
+  left: 0;
 }
 </style>

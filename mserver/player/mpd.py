@@ -143,3 +143,19 @@ def mpd_search(query):
     """
     with get_client() as conn:
         return conn.search('file', query)
+
+
+def mpd_random(value):
+    """
+    Activates/deactivates random
+    """
+    with get_client() as conn:
+        conn.random(value and 1 or 0)
+
+
+def mpd_repeat(value):
+    """
+    Activetes/deactivate repeat
+    """
+    with get_client() as conn:
+        conn.repeat(value and 1 or 0)
