@@ -6,7 +6,7 @@
         <span class='prev'></span>
       </button>
       <button class='button button-center' @click.prevent='playPause()'>
-        <span :class='{play: isPlaying, pause: !isPlaying}'></span>
+        <span :class='{play: isPlaying, pause: isPaused, stop: isStoped}'></span>
       </button>
       <button class='button button-right'>
         <span class='next'></span>
@@ -54,12 +54,16 @@ export default {
       this.api.srpc.player_status.get().then(
         response => {
           this.setPlayerStatus(response.data)
-          this.loaded = false
+          this.loaded = true
         },
         error => {
           this.error = error
         }
       )
+    },
+    playPause() {
+      let event = (this.isPlaying && 'player.pause') || 'player.play'
+      this.socket.emit(event)
     }
   }
 }
@@ -96,7 +100,8 @@ export default {
 .prev,
 .next,
 .play,
-.pause {
+.pause,
+.stop {
   height: 100%;
   width: 100%;
 }
@@ -115,5 +120,9 @@ export default {
 
 .pause {
   content: url("/static/icons/pause.svg");
+}
+
+.stop {
+  content: url("/static/icons/stop.svg");
 }
 </style>

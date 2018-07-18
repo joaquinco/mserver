@@ -1,10 +1,10 @@
 from flask_jwt import current_identity
 from flask_jwt import jwt_required
-from flask_socketio import emit, send
 
 from mserver.mserver import socketio
-from mserver.player import playlist
+from mserver.player import playlist, mpd
 from .utils import start_background_task
+from flask_socketio import emit, send
 
 
 @socketio.on('message')
@@ -30,22 +30,24 @@ def on_disconnect():
 
 @socketio.on('player.play')
 @jwt_required()
-def on_music_play(data):
+def on_music_play(data=None):
     """
     Starts playing music.
     Broadcast player state
     """
-    emit('player.play', broadcast=True)
+    status = mpd.mpd_play()
+    emit('player.play', status, broadcast=True)
 
 
 @socketio.on('player.pause')
 @jwt_required()
-def on_music_paused(data):
+def on_music_paused(data=None):
     """
     Stops playing music.
     Broadcast player state
     """
-    emit('player.pause', broadcast=True)
+    status = mpd.mpd_pause()
+    emit('player.pause', status, broadcast=True)
 
 
 @socketio.on('player.add_song')

@@ -1,8 +1,9 @@
 import datetime
-from utils.functional import compose
+
 from mpd import MPDClient
 
 from mserver.settings import MPD_SERVER_CONF
+from utils.functional import compose
 
 
 def _mpd_bool(value):
@@ -34,6 +35,13 @@ def normalize_dict(data):
     return {k: normalize(k, v) for (k, v) in data.items()}
 
 
+def normalize_mpd_response(method):
+    def wrapper(*args, **kwargs):
+        return normalize_dict(method(*args, **kwargs))
+
+    return wrapper
+
+
 class _MPDClientWrapper(object):
     def __init__(self, *args, **kwargs):
         self.client = MPDClient(*args, **kwargs)
@@ -54,12 +62,13 @@ def get_client():
     return _MPDClientWrapper()
 
 
+@normalize_mpd_response
 def mpd_get_status():
     """
     Get mpd current status.
     """
     with get_client() as conn:
-        return normalize_dict(dict(status=conn.status(), stats=conn.stats(), version=conn.mpd_version))
+        return dict(status=conn.status(), stats=conn.stats(), version=conn.mpd_version)
 
 
 def mpd_get_playlist():
@@ -70,3 +79,29 @@ def mpd_get_playlist():
     """
     with get_client() as conn:
         return conn.listall()
+
+
+@normalize_mpd_response
+def mpd_play():
+    """
+    Continue or start playing
+
+    Return player status
+    """
+    with get_client() as conn:
+        conn.play()
+
+        return conn.status()
+
+
+@normalize_mpd_response
+def mpd_pause():
+    """
+    Stops playing.
+
+    Return player status
+    """
+    with get_client() as conn:
+        conn.pause()
+
+        return conn.status()

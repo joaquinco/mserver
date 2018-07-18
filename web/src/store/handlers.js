@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 
-function getMessageFromError (debug, {message, key, detail}) {
+function getMessageFromError(debug, { message, key, detail }) {
   let hrmessage = `Ha ocurrido un error ${message || key}`
   switch (key) {
     case 'player.song_add_error': {
@@ -26,33 +26,33 @@ function getMessageFromError (debug, {message, key, detail}) {
 }
 
 const handlers = {
-  user_joined ({state, commit}, {message}) {
-    commit('addNotification', {message})
+  user_joined({ state, commit }, { message }) {
+    commit('addNotification', { message })
   },
-  user_left ({state, commit}, {message}) {
-    commit('addNotification', {message})
+  user_left({ state, commit }, { message }) {
+    commit('addNotification', { message })
   },
-  player_play ({state, commit}, data) {
-    commit('togglePlaying', true)
+  player_play({ state, commit }, data) {
+    commit('togglePlaying', data)
   },
-  player_pause ({state, commit}, data) {
-    commit('togglePlaying', false)
+  player_pause({ state, commit }, data) {
+    commit('togglePlaying', data)
   },
-  player_song_added ({state, commit}, {song, playlist}) {
+  player_song_added({ state, commit }, { song, playlist }) {
     let message = `Nueva cancion en cola: ${song.title}`
-    commit('addNotification', {message})
+    commit('addNotification', { message })
   },
-  player_song_available ({state, commit}, song) {
+  player_song_available({ state, commit }, song) {
     let message = `Nueva cancion disponible: ${song.title}`
-    commit('addNotification', {message})
+    commit('addNotification', { message })
   },
-  player_song_downloading ({state, commit}, song) {
+  player_song_downloading({ state, commit }, song) {
     let message = `Descargando ${song.title}`
-    commit('addNotification', {message})
+    commit('addNotification', { message })
   },
-  error ({state, commit}, error) {
+  error({ state, commit }, error) {
     let message = getMessageFromError(state.server.debug, error)
-    commit('addNotification', {message, error: true})
+    commit('addNotification', { message, error: true })
   }
 }
 
