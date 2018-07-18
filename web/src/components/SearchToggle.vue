@@ -1,6 +1,6 @@
 <template>
-  <div class="container-search container-sm" :class="{'search-fullpage': searchActive}">
-    <div class="d-flex flex-column" :class="{'w-100': !searchActive}">
+  <div class="container-search" :class="{'search-fullpage': searchActive}">
+    <div class="d-flex flex-column container-sm">
       <div class="input-wrapper">
         <form @submit.prevent="globalSearch()" class="d-flex flex-row align-items-center">
           <input class="w-100" type=search v-model="query" placeholder="Buscar" @focus="onSearchFocus"/>
@@ -105,16 +105,25 @@ export default {
       )
     },
     onSearchFocus() {
+      if (!this.searchActive) {
+        this.toggleBodyScroll()
+      }
       this.searchActive = true
     },
     cancelSearch() {
       this.searchActive = this.searched = false
       this.query = ''
+      this.toggleBodyScroll()
       this.clearSearchResults()
     },
     clearResults() {
       this.clearSearchResults()
       this.resetSourceSearched(this.searchSources)
+    },
+    toggleBodyScroll() {
+      let elem = document.getElementsByTagName('body')[0]
+      const className = 'overflow-hidden'
+      elem.classList.toggle(className)
     },
     fetchSearchSources() {
       this.loadingSources = true
@@ -169,6 +178,8 @@ export default {
 .container-search {
   background: white;
   position: fixed;
+  width: 100%;
+  left: 0;
 }
 
 input {
@@ -176,17 +187,15 @@ input {
   margin-bottom: 0;
   height: 34px;
 }
-/* .search-fullpage {
-  position: fixed;
+
+.search-fullpage {
   height: 100vh;
-  left: 0;
-} */
-/* .container-sm {
-  height: 97vh;
-} */
+  overflow-y: auto;
+  z-index: 100;
+}
+
 .search-results {
   flex: 1;
-  overflow-y: auto;
 }
 .source-title {
   margin-bottom: 0;
