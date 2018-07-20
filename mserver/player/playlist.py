@@ -1,7 +1,7 @@
 from flask_restful import marshal
 
 from mserver.database import db
-from mserver.marshals import song_list_marshal
+from mserver.marshals import song_list_marshal, dummy_song_playlist_list_marshal
 from mserver.models import Song
 from mserver.mserver import socketio
 from mserver.player import mpd
@@ -92,4 +92,4 @@ def get_current_song():
 
 
 def get_current_song_marshaled():
-    return marshal(get_current_song(), song_list_marshal)
+    return marshal(get_current_song(), dummy_song_playlist_list_marshal)

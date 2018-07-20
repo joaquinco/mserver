@@ -78,7 +78,12 @@ def mpd_get_playlist():
     Each song is {'file': 'File name'}
     """
     with get_client() as conn:
-        return list(conn._parse_database(conn.playlist()))
+        ret = []
+        for index, item in enumerate(conn._parse_database(conn.playlist())):
+            item['pos'] = index
+            ret.append(item)
+
+        return ret
 
 
 def mpd_add_song(file):

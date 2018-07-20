@@ -1,5 +1,5 @@
-from mserver.models import Song
-
+from mserver.models import DummySong
+import copy
 
 def format_int_duration(value):
     """
@@ -11,10 +11,12 @@ def format_int_duration(value):
     return '{min:02}:{sec:02}'.format(min=minutes, sec=seconds)
 
 
-def mpd_convert_to_song(mpd_song, available=True):
+def mpd_convert_to_song(data, available=True):
 
-    file = mpd_song.get('file')
-    time = mpd_song.get('time')
+    mpd_song = copy.deepcopy(data)
+    mpd_song.pop('id', None)
+    file = mpd_song.pop('file')
+    time = mpd_song.pop('time', None)
     duration = time and format_int_duration(int(time))
 
-    return Song(id=file, title=file, available=available, duration=duration)
+    return DummySong(id=file, title=file, available=available, duration=duration, **mpd_song)

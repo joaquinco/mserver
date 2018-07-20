@@ -56,7 +56,11 @@ const mutations = {
     state.playlist = { ...state.playlist, songs }
   },
   setCurrentSong(state, song) {
-    state.playlist = { ...state.playlist, current: song }
+    let songs = state.playlist.songs.map(obj => {
+      obj.is_current = obj.pos === song.pos
+      return obj
+    })
+    state.playlist = { ...state.playlist, current: song, songs }
   }
 }
 

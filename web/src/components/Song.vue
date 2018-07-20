@@ -1,7 +1,6 @@
 <template>
   <div class="d-flex flex-row song-row justify-content-start">
-    <span class="icon icon-add" v-if="canSelect" title="Agregar" @click="onSelect()"></span>
-    <span class="icon icon-download" v-if="canDownload" title="Descargar" @click="onDownload()"></span>
+    <strong class="song-position">{{getSongPosition(song)}}</strong>
     <div class="d-flex flex-row justify-content-between song-info">
       <div class="d-flex flex-column" :class="{'not-available': !song.available}">
         <span class="title">{{song.title}}</span>
@@ -9,6 +8,8 @@
       </div>
       <span class="duration">{{song.duration}}</span>
     </div>
+    <span class="icon icon-add" v-if="canSelect" title="Agregar" @click="onSelect()"></span>
+    <span class="icon icon-download" v-if="canDownload" title="Descargar" @click="onDownload()"></span>
   </div>
 </template>
 
@@ -51,6 +52,11 @@ export default {
         created: new Date()
       }
       this.$emit('song-selected', event)
+    },
+    getSongPosition(song) {
+      if (song && song.pos != null) {
+        return song.pos + 1
+      }
     }
   }
 }
@@ -105,5 +111,9 @@ export default {
 }
 .icon-add {
   content: url("/static/icons/plus.svg");
+}
+
+.song-position {
+  margin: 0 10px;
 }
 </style>

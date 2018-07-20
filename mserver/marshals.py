@@ -1,3 +1,5 @@
+import copy
+
 from flask_restful import fields
 
 
@@ -13,6 +15,11 @@ song_list_marshal = {
     'duration': fields.String,
     'available': fields.Boolean,
 }
+
+dummy_song_playlist_list_marshal = copy.deepcopy(song_list_marshal)
+dummy_song_playlist_list_marshal.update({
+    'pos': fields.Integer
+})
 
 song_search_marshal = {
     'search_id': SearchIdField,

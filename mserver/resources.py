@@ -3,7 +3,7 @@ from flask_jwt import jwt_required, current_identity
 from flask_restful import Resource, marshal_with, reqparse
 
 from mserver import rpc
-from mserver.marshals import song_search_marshal, playlist_detail_marshal, user_detail_marshal, song_list_marshal
+from mserver.marshals import song_search_marshal, user_detail_marshal, dummy_song_playlist_list_marshal
 from mserver.player import search, playlist
 
 search_args = reqparse.RequestParser()
@@ -28,7 +28,7 @@ class SongSearchResource(Resource):
 
 
 class PlaylistResource(Resource):
-    @marshal_with(song_list_marshal)
+    @marshal_with(dummy_song_playlist_list_marshal)
     @jwt_required()
     def get(self):
         return playlist.list_playlist_songs()

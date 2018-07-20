@@ -29,7 +29,18 @@ class SongPlayList(Base):
     playlist_id = Column(ForeignKey('playlist.id'), primary_key=True)
 
 
-class Song(Base):
+class DummySong(object):
+    def __init__(self, **kwargs):
+        self.search_id = None
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+    @property
+    def search_key(self):
+        return '{source}-{id}'.format(source=self.source, id=self.search_id or self.id)
+
+
+class Song(Base, DummySong):
     __tablename__ = 'song'
     id = Column(Integer(), Sequence('song_id_seq'), primary_key=True)
     title = Column(String(250), nullable=False)
@@ -51,10 +62,6 @@ class Song(Base):
     search_id = None
 
     repr_fields = ['title', 'source', 'available']
-
-    @property
-    def search_key(self):
-        return '{source}-{id}'.format(source=self.source, id=self.search_id or self.id)
 
 
 class PlayList(Base):
