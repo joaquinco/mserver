@@ -66,6 +66,8 @@ search arguments.
 
 ## SocketIO Events
 
+From client's perspective:
+
 - `user.joined`: receive
 - `user.left`: receive
 - `player.play`: send, receive
@@ -77,6 +79,7 @@ search arguments.
 - `player.random`: send
 - `player.repeat`: send
 - `player.status`: send, receive
+- `player.select`: send
 - `player.add_song`: send
 - `player.song_added`: receive
 - `player.song_available`: receive

@@ -1,5 +1,6 @@
 <template>
-  <div class="d-flex flex-row song-row justify-content-start">
+  <div class="d-flex flex-row song-row justify-content-start" @click="onSelect()"
+   :class="{'song-clickable': canSelect, 'current-song': song.is_current}">
     <strong class="song-position">{{getSongPosition(song)}}</strong>
     <div class="d-flex flex-row justify-content-between song-info">
       <div class="d-flex flex-column" :class="{'not-available': !song.available}">
@@ -8,7 +9,6 @@
       </div>
       <span class="duration">{{song.duration}}</span>
     </div>
-    <span class="icon icon-add" v-if="canSelect" title="Agregar" @click="onSelect()"></span>
     <span class="icon icon-download" v-if="canDownload" title="Descargar" @click="onDownload()"></span>
   </div>
 </template>
@@ -66,6 +66,19 @@ export default {
 .song-row {
   padding: 10px 10px 10px 0;
   border-bottom: 1px solid rgba(178, 178, 178, 0.23);
+}
+
+.song-clickable {
+  cursor: pointer;
+}
+
+.current-song,
+.song-clickable:hover {
+  background: linear-gradient(90deg, white, rgba(193, 193, 193, 0.26), white);
+}
+
+.song-clickable:active {
+  background: linear-gradient(90deg, white, rgba(193, 193, 193, 0.1), white);
 }
 
 .song-info {

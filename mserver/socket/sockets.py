@@ -87,6 +87,11 @@ def player_status():
     emit('player.status', mpd.mpd_get_status(), broadcast=True)
 
 
+def player_select_song(song):
+    mpd.mpd_select(song.get('pos'))
+    _emit_player_current()
+
+
 events = [
     ('connect', True, on_connect),
     ('disconnect', True, on_disconnect),
@@ -99,7 +104,8 @@ events = [
     ('player.current', True, _emit_player_current),
     ('player.random', True, player_random),
     ('player.repeat', True, player_repeat),
-    ('player.status', True, player_status)
+    ('player.status', True, player_status),
+    ('player.select', True, player_select_song),
 ]
 
 

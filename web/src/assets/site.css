@@ -1,4 +1,3 @@
-
 /*
   colors:
   orange: #ffa93a
@@ -392,4 +391,8 @@ button:disabled {
 
 .content-placeholder {
   color: #b2b2b2;
+}
+
+.clickable {
+  cursor: pointer;
 }

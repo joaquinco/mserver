@@ -106,6 +106,14 @@ def mpd_play():
         return conn.status()
 
 
+def mpd_select(pos):
+    """
+    Starts playing song at :pos
+    """
+    with get_client() as conn:
+        conn.play(pos)
+
+
 @normalize_mpd_response
 def mpd_pause():
     """

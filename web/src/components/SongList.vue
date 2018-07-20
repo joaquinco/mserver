@@ -1,7 +1,7 @@
 <template>
   <div class="w-100 d-flex flex-column justify-content-start">
-    <Song :class="{'current-song': song.is_current}"
-      actions="select,download"
+    <Song
+      :actions="songActions"
       v-for="song in songs"
       :song="song"
       :key="song.search_key"
@@ -19,6 +19,10 @@ export default {
     songs: {
       type: Array,
       required: true
+    },
+    songActions: {
+      type: String,
+      required: false
     }
   },
   data() {
@@ -33,7 +37,4 @@ export default {
 </script>
 
 <style scoped>
-.current-song {
-  background: linear-gradient(90deg, white, rgba(193, 193, 193, 0.26), white);
-}
 </style>

@@ -6,7 +6,7 @@ const BASE_API_URL = `${BASE_URL}/api`
 
 var RestApi = null
 
-function getApiCaller (token) {
+function getApiCaller(token) {
   return axios.create({
     baseURL: BASE_API_URL,
     headers: {
@@ -15,25 +15,25 @@ function getApiCaller (token) {
   })
 }
 
-export function initApiCaller (token) {
+export function initApiCaller(token) {
   RestApi = getApiCaller(token)
 }
 
 class Endpoint {
-  constructor (endpoint) {
+  constructor(endpoint) {
     this.endpoint = endpoint
   }
 
-  post (config) {
+  post(config) {
     return RestApi.post(this.endpoint, config)
   }
 
-  get (config) {
+  get(config) {
     return RestApi.get(this.endpoint, config)
   }
 }
 
-function recursiveMap (obj, result, fun) {
+function recursiveMap(obj, result, fun) {
   Object.entries(obj).forEach(([key, value]) => {
     if (typeof value !== 'object') {
       result[key] = fun(value)
@@ -45,7 +45,7 @@ function recursiveMap (obj, result, fun) {
   })
 }
 
-function callRecursiveMap (obj, fun) {
+function callRecursiveMap(obj, fun) {
   var ret = {}
 
   recursiveMap(obj, ret, fun)
@@ -53,17 +53,19 @@ function callRecursiveMap (obj, fun) {
   return ret
 }
 
-export const initApiEndpoints = (endpoints) => callRecursiveMap(endpoints, value => new Endpoint(value))
-export const getFullUlrs = (endpoints) => callRecursiveMap(endpoints, value => BASE_API_URL + value)
+export const initApiEndpoints = endpoints =>
+  callRecursiveMap(endpoints, value => new Endpoint(value))
+export const getFullUlrs = endpoints =>
+  callRecursiveMap(endpoints, value => BASE_API_URL + value)
 
-export function getSocket (token) {
+export function getSocket(token) {
   return new Promise((resolve, reject) => {
     try {
       var socket = io(BASE_URL, {
         transportOptions: {
           polling: {
             extraHeaders: {
-              'Authorization': 'Bearer ' + token
+              Authorization: 'Bearer ' + token
             }
           }
         }
