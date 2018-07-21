@@ -35,13 +35,16 @@ const actions = {
       'user.left',
       'error'
     ]
+    var debug = state.server.debug
     events.forEach(eventName => {
       let actionHandlerName = eventName.split('.').join('_')
 
       let method = data => {
-        console.log(
-          `${eventName}: ${JSON.stringify(data)}, ${actionHandlerName}`
-        )
+        if (debug) {
+          console.log(
+            `${eventName}: ${JSON.stringify(data)}, ${actionHandlerName}`
+          )
+        }
         commit('addEvent', data)
         dispatch(actionHandlerName, data)
       }
