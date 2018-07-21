@@ -17,6 +17,11 @@ class _SearchBackend(object):
         raise Exception('Search function is not callable')
 
     def get_file(self, search_id, *args, **kwargs):
+        """
+        Returns a local path of the song file.
+
+        The path should be relative to the music directory.
+        """
         if hasattr(self.get_file_fn, '__call__'):
             return self.get_file_fn(search_id, *args, **kwargs)
         raise Exception('Get file function is not callable')

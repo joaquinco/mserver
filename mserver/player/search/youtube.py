@@ -21,6 +21,7 @@ MUSIC_CATEGORYID = 10
 ORDER = 'relevance'
 VIDEO_DURATION = 'medium'  # ('any', 'short', 'medium', 'long')
 AUDIO_FORMAT = 'mp3'
+AUDIO_FORMAT_EXTENSION = 'mp3'
 
 ISO8601_TIMEDUR_EX = re.compile(r'PT((\d{1,3})H)?((\d{1,3})M)?((\d{1,2})S)?')
 
@@ -187,7 +188,7 @@ def youtube_download(search_id):
     title = snippet.get('title', '').strip()
 
     filename_base = os.path.join(download_dir, title)
-    filename = '{0}.{1}'.format(filename_base, AUDIO_FORMAT)
+    filename = '{0}.{1}'.format(filename_base, AUDIO_FORMAT_EXTENSION)
 
     youtube_dl_output = '{0}.%(ext)s'.format(filename_base)
 
@@ -197,7 +198,9 @@ def youtube_download(search_id):
         if exitcode != 0:
             raise DownloadError('Error downloading search_id={0} from source {1}'.format(search_id, THIS_SOURCE))
 
-    return filename
+    basename = os.path.basename(filename)
+
+    return basename
 
 
 register(search=youtube_search, get_song=get_song_from_ytid, get_file=youtube_download, name=THIS_SOURCE)

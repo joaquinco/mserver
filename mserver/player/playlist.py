@@ -52,8 +52,6 @@ def _get_song(source, search_id, user_id):
     socketio.emit('player.song_downloading', marshal(song, song_list_marshal))
     filename = backend.get_file(search_id)
 
-    print(filename)
-
     mpd.mpd_add_song_to_db(filename)
 
     song = db.session.query(Song).filter_by(id=song.id).scalar()
@@ -76,7 +74,7 @@ def add(source, search_id, user_id, playlist_id=None):
     # socketio = get_socketio()
     song = _get_song(source, search_id, user_id)
 
-    mpd.mpd_add_song(song.title)
+    mpd.mpd_add_song(song.path)
 
     socketio.emit('player.song_added', marshal(song, song_list_marshal), broadcast=True)
 
