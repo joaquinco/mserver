@@ -19,7 +19,7 @@ THIS_SOURCE = 'youtube'
 
 MUSIC_CATEGORYID = 10
 ORDER = 'relevance'
-VIDEO_DURATION = 'medium' #('any', 'short', 'medium', 'long')
+VIDEO_DURATION = 'medium'  # ('any', 'short', 'medium', 'long')
 AUDIO_FORMAT = 'mp3'
 
 ISO8601_TIMEDUR_EX = re.compile(r'PT((\d{1,3})H)?((\d{1,3})M)?((\d{1,2})S)?')
@@ -186,10 +186,13 @@ def youtube_download(search_id):
     snippet = item.get('snippet', {})
     title = snippet.get('title', '').strip()
 
-    filename = os.path.join(download_dir, '{0}.{1}'.format(title, AUDIO_FORMAT))
+    filename_base = os.path.join(download_dir, title)
+    filename = '{0}.{1}'.format(filename_base, AUDIO_FORMAT)
+
+    youtube_dl_output = '{0}.%(ext)s'.format(filename_base)
 
     if not os.path.exists(filename):
-        cmd = get_download_cmd(search_id, filename, audio_format=AUDIO_FORMAT)
+        cmd = get_download_cmd(search_id, youtube_dl_output, audio_format=AUDIO_FORMAT)
         exitcode = subprocess.call(cmd)
         if exitcode != 0:
             raise DownloadError('Error downloading search_id={0} from source {1}'.format(search_id, THIS_SOURCE))

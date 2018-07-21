@@ -86,6 +86,14 @@ def mpd_get_playlist():
         return ret
 
 
+def mpd_add_song_to_db(file):
+    """
+    Adds song to mpd's song db
+    """
+    with get_client() as conn:
+        conn.update(file)
+
+
 def mpd_add_song(file):
     """
     Adds song to current playlist
