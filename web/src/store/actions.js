@@ -63,11 +63,19 @@ const actions = {
       commit('setSearchResults', { source: source.name, results: [] })
     })
   },
-  downloadSong({ state, commit }, song) {
+  removeSongFromSearchList({ state, commit }, song) {
+    let searchedSongs = state.search.results[song.source]
+    let remainingSongs = searchedSongs.filter(
+      obj => obj.search_id !== song.search_id
+    )
+    commit('setSearchResults', { source: song.source, results: remainingSongs })
+  },
+  downloadSong({ state }, song) {
     state.comm.socket.emit('player.download_song', song)
   },
-  addSong({ state, commit }, song) {
+  addSong({ state, dispatch }, song) {
     state.comm.socket.emit('player.add_song', song)
+    dispatch('removeSongFromSearchList', song)
   },
   refreshPlaylist({ state, commit }) {
     state.comm.api.playlist.get().then(response => {

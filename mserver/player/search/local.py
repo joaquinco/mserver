@@ -3,12 +3,19 @@ from mserver.player.utils import mpd_convert_to_song
 from .api import register
 from .exceptions import NotFoundError
 
+THIS_SOURCE = 'local'
+
+
+def _convert_to_song(data):
+    data.update(dict(source=THIS_SOURCE))
+    return mpd_convert_to_song(data)
+
 
 def local_search(query):
     """
     Searches songs on mpd.
     """
-    return list(map(mpd_convert_to_song, mpd_search(query)))
+    return list(map(_convert_to_song, mpd_search(query)))
 
 
 def get_song(song_id):
@@ -27,4 +34,4 @@ def get_song(song_id):
     return song
 
 
-register(search=local_search, name='local', set_default=True, get_song=get_song)
+register(search=local_search, name=THIS_SOURCE, set_default=True, get_song=get_song)
