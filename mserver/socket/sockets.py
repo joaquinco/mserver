@@ -90,6 +90,7 @@ def player_status():
 def player_select_song(song):
     mpd.mpd_select(song.get('pos'))
     _emit_player_current()
+    player_status()
 
 
 events = [
