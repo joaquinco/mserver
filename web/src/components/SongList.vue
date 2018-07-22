@@ -1,10 +1,11 @@
 <template>
   <div class="w-100 d-flex flex-column justify-content-start">
     <Song
+      :class="{'current-song': isSongHighlighted(song)}"
       :actions="songActions"
       v-for="song in songs"
       :song="song"
-      :key="song.search_key"
+      :key="song.search_key || song.pos"
       @song-selected="onSongEvent"/>
   </div>
 </template>
@@ -23,6 +24,11 @@ export default {
     songActions: {
       type: String,
       required: false
+    },
+    isSongHighlighted: {
+      type: Function,
+      required: false,
+      default: () => false
     }
   },
   data() {
@@ -37,4 +43,7 @@ export default {
 </script>
 
 <style scoped>
+.current-song {
+  background: linear-gradient(90deg, white, rgba(193, 193, 193, 0.26), white);
+}
 </style>

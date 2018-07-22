@@ -1,7 +1,7 @@
 <template>
   <div class="w-100 d-flex flex-column align-items-center">
     <SongList :songs='songs' v-if="songsExist" songActions='select'
-            @song-selected="onSongSelected"/>
+            @song-selected="onSongSelected" :isSongHighlighted="isSongCurrent"/>
     <h4 v-if="!songsExist">Agregá canciones gil</h4>
   </div>
 </template>
@@ -23,7 +23,8 @@ export default {
     ...mapState({
       api: state => state.comm.api,
       socket: state => state.comm.socket,
-      songs: state => state.playlist.songs
+      songs: state => state.playlist.songs,
+      current: state => state.playlist.current
     }),
     songsExist() {
       return this.songs.length > 0 && this.loaded
@@ -42,6 +43,9 @@ export default {
     },
     onSongSelected({ song, action }) {
       this.socket.emit('player.select', song)
+    },
+    isSongCurrent(song) {
+      return song.pos === this.current.pos
     }
   }
 }

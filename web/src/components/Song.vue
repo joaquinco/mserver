@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex flex-row song-row justify-content-start"
     @click="onSelect()"
-    :class="{'song-clickable': canSelect, 'current-song': song.is_current}">
+    :class="{'song-clickable': canSelect}">
     <strong class="song-position">{{getSongPosition(song)}}</strong>
     <div class="d-flex flex-row justify-content-between song-info">
       <div class="d-flex flex-column" :class="{'not-available': !song.available}">

@@ -14,7 +14,9 @@ def just_download(source, search_id, user_id):
     """
     Just download a song
     """
-    _get_song(source, search_id, user_id)
+    song = _get_song(source, search_id, user_id)
+
+    socketio.emit('player.song_available', marshal(song, song_list_marshal), broadcast=False)
 
 
 def _download_song_tmp(source, search_id, user_id):
@@ -60,8 +62,6 @@ def _get_song(source, search_id, user_id):
     song.available = True
     db.session.add(song)
     db.session.commit()
-
-    socketio.emit('player.song_available', marshal(song, song_list_marshal), broadcast=False)
 
     return song
 
