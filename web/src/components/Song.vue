@@ -1,20 +1,41 @@
 <template>
-  <div class="d-flex flex-row song-row justify-content-start"
-    @click="onSelect()"
-    :class="{'song-clickable': canSelect}">
-    <strong class="song-position">{{getSongPosition(song)}}</strong>
-    <div class="d-flex flex-row justify-content-between song-info">
-      <div class="d-flex flex-column" :class="{'not-available': !song.available}">
-        <span class="title">{{song.title}}</span>
-        <span class="artist" v-if="song.artist">{{song.artist}}</span>
+  <div>
+    <div class="d-flex flex-row song-row justify-content-start align-items-center"
+      :class="{'song-clickable': canSelect}">
+      <strong class="song-position">{{getSongPosition(song)}}</strong>
+      <div class="d-flex flex-row justify-content-between song-info" @click="onSelect()">
+        <div class="d-flex flex-column" :class="{'not-available': !song.available}">
+          <span class="title">{{song.title}}</span>
+          <span class="artist" v-if="song.artist">{{song.artist}}</span>
+        </div>
+        <span class="duration">{{song.duration}}</span>
       </div>
-      <span class="duration">{{song.duration}}</span>
+      <span class="icon icon-actions" v-if="hasOtherActions" @click="showActions()"></span>
+      <span class="icon icon-download" v-if="canDownload" title="Descargar" @click="onDownload()"></span>
     </div>
-    <span class="icon icon-download" v-if="canDownload" title="Descargar" @click="onDownload()"></span>
+    <div v-if="actionsVisible">
+      <div class="d-flex flex-row justify-content-center align-items-center">
+        <button
+          class='action-button'
+          v-for="action in otherActions"
+          @click.prevent="onSongAction(action.name)"
+          type="button"
+          :key="action.name">
+          {{action.label}}
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+const POSSTIBLE_OTHER_ACTIONS = [
+  { name: 'remove', label: 'Quitar' },
+  { name: 'download', label: 'Download' }
+]
+
+const CLOSE_ACTION = { name: 'close', label: 'Cerrar' }
+
 export default {
   name: 'Song',
   props: {
@@ -26,10 +47,18 @@ export default {
       type: String,
       required: false,
       default: 'select'
+    },
+    actionsTimeout: {
+      type: Number,
+      required: false,
+      default: 5 * 1000
     }
   },
   data() {
-    return {}
+    return {
+      actionsVisible: false,
+      actionsTimeoutId: null
+    }
   },
   computed: {
     canDownload() {
@@ -37,6 +66,16 @@ export default {
     },
     canSelect() {
       return this.actions.includes('select')
+    },
+    hasOtherActions() {
+      return this.actions !== 'select'
+    },
+    otherActions() {
+      var ret = POSSTIBLE_OTHER_ACTIONS.filter(obj =>
+        this.actions.includes(obj.name)
+      )
+      ret.push(CLOSE_ACTION)
+      return ret
     }
   },
   methods: {
@@ -47,18 +86,33 @@ export default {
       this.onSongAction('select')
     },
     onSongAction(action) {
-      let event = {
-        action,
-        song: this.song,
-        created: new Date()
+      if (action === CLOSE_ACTION.name) {
+        this.closeActions()
+      } else {
+        let event = {
+          action,
+          song: this.song,
+          created: new Date()
+        }
+        this.$emit('song-selected', event)
       }
-      this.$emit('song-selected', event)
     },
     getSongPosition(song) {
       if (song && song.pos != null) {
         return song.pos + 1
       }
+    },
+    showActions() {
+      this.actionsVisible = true
+      this.actionsTimeoutId = setTimeout(this.closeActions, this.actionsTimeout)
+    },
+    closeActions() {
+      this.actionsVisible = false
+      clearTimeout(this.actionsTimeoutId)
     }
+  },
+  destroyed() {
+    clearTimeout(this.actionsTimeoutId)
   }
 }
 </script>
@@ -73,7 +127,6 @@ export default {
   cursor: pointer;
 }
 
-.current-song,
 .song-clickable:hover {
   background: linear-gradient(90deg, white, rgba(193, 193, 193, 0.26), white);
 }
@@ -109,15 +162,18 @@ export default {
 }
 
 .icon {
-  height: 25px;
-  border: 1px solid #b2b2b2;
-  padding: 5px 0;
-  border-radius: 5px;
-  margin-right: 10px;
   cursor: pointer;
+  height: 25px;
+  padding: 7px 1px;
+  border-radius: 100%;
 }
+.icon:active,
 .icon:hover {
-  border: 1px solid black;
+  background-color: rgba(178, 178, 178, 0.1);
+}
+
+.icon-actions {
+  content: url("/static/icons/more.svg");
 }
 
 .icon-download {
@@ -127,6 +183,11 @@ export default {
   content: url("/static/icons/plus.svg");
 }
 
+.action-button {
+  border: none;
+  padding: 0 10px;
+  margin: 0;
+}
 .song-position {
   margin: 0 10px;
 }

@@ -7,7 +7,7 @@
           <a v-if="searchActive" class="close ml-2" href="" @click.prevent.stop="cancelSearch">Cancelar</a>
         </form>
       </div>
-      <div v-if="searchActive" class="search-results d-flex flex-column">
+      <div v-if="searchActive" class="search-results d-flex flex-column mt-4">
         <div v-if="loadingSources">Cargando fuentes...</div>
         <LoadingLine :is-loading="globalSearching"/>
         <div v-for="(value, key) in searchResults" v-if="!globalSearching && searched" :key="key">
@@ -22,7 +22,7 @@
           <SongList v-if="value.length"
             :songs="value"
             @song-selected="onSongSelected"
-            songActions='select'/>
+            songActions='select,download'/>
         </div>
       </div>
     </div>
@@ -183,6 +183,10 @@ export default {
   position: fixed;
   width: 100%;
   left: 0;
+}
+
+.container-search form {
+  margin-bottom: 0;
 }
 
 input {
