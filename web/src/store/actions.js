@@ -31,6 +31,7 @@ const actions = {
       'player.song_added',
       'player.song_available',
       'player.song_downloading',
+      'player.playlist_changed',
       'user.joined',
       'user.left',
       'error'

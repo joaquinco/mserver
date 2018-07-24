@@ -109,7 +109,7 @@ def emit_full_player_state(broadcast=False):
 
 
 def emit_playlist_changed(broadcast=True):
-    emit('player.playlist_changed')
+    emit('player.playlist_changed', broadcast=broadcast)
 
 
 mpd_event_handlers = {
