@@ -29,3 +29,5 @@ MPD_SERVER_CONF = {
     'host': 'localhost',
     'port': '6600'
 }
+
+SQLALCHEMY_TRACK_MODIFICATIONS = False

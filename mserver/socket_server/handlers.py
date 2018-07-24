@@ -1,7 +1,10 @@
+from threading import Thread
+
 from flask_jwt import current_identity
 from flask_jwt import jwt_required
 from flask_socketio import emit
 
+from mserver.mpd.listener import listen_events as mpd_listen_events
 from mserver.mserver import socketio
 from mserver.player import playlist, mpd
 from .utils import start_background_task
@@ -93,6 +96,20 @@ def player_select_song(song):
     player_status()
 
 
+def player_remove_song(song):
+    pos = song.get('pos')
+
+    if pos is None:
+        return
+
+    mpd.mpd_delete(pos)
+    emit('player.song_removed', song)
+
+
+def playlist_changed():
+    emit('player.playlist_changed')
+
+
 events = [
     ('connect', True, on_connect),
     ('disconnect', True, on_disconnect),
@@ -107,6 +124,7 @@ events = [
     ('player.repeat', True, player_repeat),
     ('player.status', True, player_status),
     ('player.select', True, player_select_song),
+    ('player.remove', True, player_remove_song)
 ]
 
 
@@ -123,3 +141,30 @@ _setup_events()
 @socketio.on_error()
 def error_handler(e):
     print('Error encountered ' + str(e))
+
+
+def player_control_state():
+    player_status()
+    _emit_player_current()
+
+
+mpd_event_handlers = {
+    'player': player_control_state,
+    'playlist': playlist_changed,
+    'mixer': player_status,
+    'options': player_status
+}
+
+
+def listen_mpd():
+    def callback(event):
+        mpd_event_handlers.get(event)()
+
+    thread = Thread(target=mpd_listen_events, args=(mpd_event_handlers.keys(), callback))
+
+    thread.daemon = True
+    thread.start()
+
+
+# TODO: put elsewhere
+listen_mpd()

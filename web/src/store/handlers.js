@@ -45,7 +45,6 @@ const handlers = {
   player_song_added({ state, commit, dispatch }, song) {
     let message = `Nueva cancion en cola: ${song.title}`
     commit('addNotification', { message })
-    dispatch('refreshPlaylist')
   },
   player_song_available({ state, commit }, song) {
     let message = `Nueva cancion disponible: ${song.title}`
@@ -54,6 +53,13 @@ const handlers = {
   player_song_downloading({ state, commit }, song) {
     let message = `Descargando ${song.title}`
     commit('addNotification', { message })
+  },
+  player_song_removed({ state, commit }, song) {
+    let message = `Canción eliminada: ${song.title}`
+    commit('addNotification', { message })
+  },
+  player_playlist_changed({ dispatch }, data) {
+    dispatch('refreshPlaylist')
   },
   error({ state, commit }, error) {
     let message = getMessageFromError(state.server.debug, error)

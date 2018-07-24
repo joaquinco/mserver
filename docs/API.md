@@ -80,7 +80,9 @@ From client's perspective:
 - `player.repeat`: send
 - `player.status`: send, receive
 - `player.select`: send
+- `player.remove`: send
 - `player.add_song`: send
 - `player.song_added`: receive
 - `player.song_available`: receive
 - `player.song_downloading`: receive
+- `player.song_removed`: send

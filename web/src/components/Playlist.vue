@@ -42,7 +42,11 @@ export default {
       })
     },
     onSongSelected({ song, action }) {
-      this.socket.emit('player.select', song)
+      if (action === 'select') {
+        this.socket.emit('player.select', song)
+      } else if (action === 'remove') {
+        this.socket.emit('player.remove', song)
+      }
     },
     isSongCurrent(song) {
       return song.pos === this.current.pos

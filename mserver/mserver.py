@@ -61,9 +61,8 @@ def do_setup(app):
     import mserver.auth
     mserver.auth.authenticate
 
-    import mserver.socket.sockets
-    mserver.socket.sockets.on_connect
-    socketio.run(app, host='0.0.0.0')
+    import mserver.socket_server.handlers
+    mserver.socket_server.handlers.on_connect
 
     app.handle_user_exception = handle_user_exception_again
 
@@ -94,3 +93,10 @@ _add_dummy_view_to_expose_socketio_preflights(app)
 api = Api(app)
 socketio = get_socketio(app)
 do_setup(app)
+
+
+def run_server():
+    socketio.run(app, host='0.0.0.0')
+
+# TODO: call if main
+run_server()

@@ -10,7 +10,7 @@
         </div>
         <span class="duration">{{song.duration}}</span>
       </div>
-      <span class="icon icon-actions" v-if="hasOtherActions" @click="showActions()"></span>
+      <span class="icon icon-actions" v-if="hasOtherActions" @click="toggleShowActions()"></span>
       <span class="icon icon-download" v-if="canDownload" title="Descargar" @click="onDownload()"></span>
     </div>
     <div v-if="actionsVisible">
@@ -102,9 +102,15 @@ export default {
         return song.pos + 1
       }
     },
-    showActions() {
-      this.actionsVisible = true
-      this.actionsTimeoutId = setTimeout(this.closeActions, this.actionsTimeout)
+    toggleShowActions() {
+      this.actionsVisible = !this.actionsVisible
+      clearTimeout(this.actionsTimeoutId)
+      if (this.actionsVisible) {
+        this.actionsTimeoutId = setTimeout(
+          this.closeActions,
+          this.actionsTimeout
+        )
+      }
     },
     closeActions() {
       this.actionsVisible = false

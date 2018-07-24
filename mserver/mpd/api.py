@@ -46,13 +46,19 @@ class _MPDClientWrapper(object):
     def __init__(self, *args, **kwargs):
         self.client = MPDClient(*args, **kwargs)
 
-    def __enter__(self):
+    def connect(self):
         self.client.connect(MPD_SERVER_CONF.get('host'), MPD_SERVER_CONF.get('port'))
+
+    def __enter__(self):
+        self.connect()
         return self.client
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.client.close()
         self.client.disconnect()
+
+    def __getattr__(self, item):
+        return getattr(self.client, item)
 
 
 def get_client():
@@ -120,14 +126,6 @@ def mpd_select(pos):
     """
     with get_client() as conn:
         conn.play(pos)
-
-
-def mpd_delete(pos):
-    """
-    Removes song from playlist
-    """
-    with get_client() as conn:
-        conn.delete(pos)
 
 
 @normalize_mpd_response
