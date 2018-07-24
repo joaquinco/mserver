@@ -24,11 +24,10 @@ def on_disconnect():
 def add_song_to_playlist(data):
     source = data.get('source')
     search_id = data.get('search_id')
-    playlist_id = data.get('playlist')
 
     user_id = current_identity.id
 
-    start_background_task(playlist.add, source, search_id, user_id, playlist_id=playlist_id)
+    start_background_task(playlist.add, source, search_id, user_id)
 
 
 def just_download_song(data):

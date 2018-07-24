@@ -19,4 +19,4 @@ def mpd_convert_to_song(data, available=True):
     time = mpd_song.pop('time', None)
     duration = time and format_int_duration(int(time))
 
-    return DummySong(id=file, title=file, available=available, duration=duration, **mpd_song)
+    return DummySong(id=file, title=file, available=available, duration=duration, path=file, **mpd_song)

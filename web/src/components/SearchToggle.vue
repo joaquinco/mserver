@@ -170,6 +170,7 @@ export default {
       alert(error)
     },
     onSongSelected({ song, action }) {
+      console.log(song, action)
       let actions = { download: this.downloadSong, select: this.addSong }
       actions[action](song)
     }
