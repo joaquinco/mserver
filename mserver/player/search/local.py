@@ -1,4 +1,4 @@
-from mserver.player.mpd import mpd_search
+from mserver import mpd
 from mserver.player.utils import mpd_convert_to_song
 from .api import register
 from .exceptions import NotFoundError
@@ -15,7 +15,7 @@ def local_search(query):
     """
     Searches songs on mpd.
     """
-    return list(map(_convert_to_song, mpd_search(query)))
+    return list(map(_convert_to_song, mpd.search(query)))
 
 
 def get_song(song_id):

@@ -19,25 +19,25 @@ _key_transform = {
 }
 
 
-def normalize(key, value):
+def _normalize(key, value):
     """
     Normalize mpd values to python
     """
     if isinstance(value, dict):
-        return normalize_dict(value)
+        return _normalize_dict(value)
     try:
         return _key_transform.get(key, lambda x: x)(value)
     except Exception as e:
         return None
 
 
-def normalize_dict(data):
-    return {k: normalize(k, v) for (k, v) in data.items()}
+def _normalize_dict(data):
+    return {k: _normalize(k, v) for (k, v) in data.items()}
 
 
-def normalize_mpd_response(method):
+def _normalize_mpd_response(method):
     def wrapper(*args, **kwargs):
-        return normalize_dict(method(*args, **kwargs))
+        return _normalize_dict(method(*args, **kwargs))
 
     return wrapper
 
@@ -68,121 +68,128 @@ def get_client():
     return _MPDClientWrapper()
 
 
-@normalize_mpd_response
-def mpd_get_status():
+def _with_mpd_client(method):
+    def mpd_client_wrapped(*args, **kwargs):
+        with get_client() as conn:
+            return method(conn, *args, **kwargs)
+
+    return mpd_client_wrapped
+
+
+@_normalize_mpd_response
+@_with_mpd_client
+def status(conn):
     """
     Get mpd current status.
     """
-    with get_client() as conn:
-        return dict(status=conn.status(), stats=conn.stats(), version=conn.mpd_version)
+    return dict(status=conn.status(), stats=conn.stats(), version=conn.mpd_version)
 
 
-def mpd_get_playlist():
+@_with_mpd_client
+def playlist(conn):
     """
     Returns songs of current playlist.
 
     Each song is {'file': 'File name'}
     """
-    with get_client() as conn:
-        ret = []
-        for index, item in enumerate(conn._parse_database(conn.playlist())):
-            item['pos'] = index
-            ret.append(item)
+    ret = []
+    for index, item in enumerate(conn._parse_database(conn.playlist())):
+        item['pos'] = index
+        ret.append(item)
 
-        return ret
+    return ret
 
 
-def mpd_add_song_to_db(file):
+@_with_mpd_client
+def update(conn, uri):
     """
     Adds song to mpd's song db
     """
-    with get_client() as conn:
-        conn.update(file)
+    conn.update(uri)
 
 
-def mpd_add_song(file):
+@_with_mpd_client
+def add(conn, file):
     """
     Adds song to current playlist
     """
-    with get_client() as conn:
-        conn.add(file)
+    conn.add(file)
 
 
-@normalize_mpd_response
-def mpd_play():
+@_with_mpd_client
+def play(conn, pos=None):
     """
     Continue or start playing
 
     Return player status
     """
-    with get_client() as conn:
+    if pos is None:
         conn.play()
-        return conn.status()
-
-
-def mpd_select(pos):
-    """
-    Starts playing song at :pos
-    """
-    with get_client() as conn:
+    else:
         conn.play(pos)
 
 
-@normalize_mpd_response
-def mpd_pause():
+@_with_mpd_client
+def pause(conn):
     """
     Stops playing.
 
     Return player status
     """
-    with get_client() as conn:
-        conn.pause()
-        return conn.status()
+    conn.pause()
 
 
-def mpd_next():
+@_with_mpd_client
+def next(conn):
     """
     Play next song
     """
-    with get_client() as conn:
-        conn.next()
+    conn.next()
 
 
-def mpd_previous():
+@_with_mpd_client
+def previous(conn):
     """
     Play previous song
     """
-    with get_client() as conn:
-        conn.previous()
+    conn.previous()
 
 
-def mpd_get_current():
+@_with_mpd_client
+def currentsong(conn):
     """
     Get current song
     """
-    with get_client() as conn:
-        return conn.currentsong()
+    return conn.currentsong()
 
 
-def mpd_search(query):
+@_with_mpd_client
+def search(conn, query):
     """
     Performs a search over mpd database
     """
-    with get_client() as conn:
-        return conn.search('file', query)
+    return conn.search('file', query)
 
 
-def mpd_random(value):
+@_with_mpd_client
+def random(conn, value):
     """
     Activates/deactivates random
     """
-    with get_client() as conn:
-        conn.random(value and 1 or 0)
+    conn.random(value and 1 or 0)
 
 
-def mpd_repeat(value):
+@_with_mpd_client
+def repeat(conn, value):
     """
     Activetes/deactivate repeat
     """
-    with get_client() as conn:
-        conn.repeat(value and 1 or 0)
+    conn.repeat(value and 1 or 0)
+
+
+@_with_mpd_client
+def delete(conn, pos):
+    """
+    Deletes song from playlist
+    """
+    conn.delete(pos)

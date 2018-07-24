@@ -1,5 +1,8 @@
 import json
 
+from flask import request
+from flask_socketio import emit as socketio_emit
+
 from mserver.mserver import socketio
 
 
@@ -19,3 +22,15 @@ def _stringify_data(kwargs):
         kwargs['data'] = data
 
     return kwargs
+
+
+def emit(*args, **kwargs):
+    """
+    Calls proper emit function depending on request context
+    """
+    broadcast = kwargs.get('broadcast', False)
+
+    if broadcast or not request:
+        socketio.emit(*args, **kwargs)
+    else:
+        socketio_emit(*args, **kwargs)

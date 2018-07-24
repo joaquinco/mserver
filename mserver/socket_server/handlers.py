@@ -1,13 +1,13 @@
+from functools import partial
 from threading import Thread
 
 from flask_jwt import current_identity
 from flask_jwt import jwt_required
-from flask_socketio import emit
 
-from mserver.mpd.listener import listen_events as mpd_listen_events
+from mserver import mpd
 from mserver.mserver import socketio
-from mserver.player import playlist, mpd
-from .utils import start_background_task
+from mserver.player import playlist
+from .utils import start_background_task, emit
 
 
 def on_connect():
@@ -19,26 +19,6 @@ def on_connect():
 
 def on_disconnect():
     emit('user.left', {'message': '{} disconnected'.format(current_identity.username)}, broadcast=True)
-
-
-def on_music_play(data=None):
-    """
-    Starts playing music.
-    Broadcast player state
-    """
-    mpd.mpd_play()
-    emit('player.play', broadcast=True)
-    player_status()
-
-
-def on_music_paused(data=None):
-    """
-    Stops playing music.
-    Broadcast player state
-    """
-    mpd.mpd_pause()
-    emit('player.pause', broadcast=True)
-    player_status()
 
 
 def add_song_to_playlist(data):
@@ -60,71 +40,51 @@ def just_download_song(data):
     start_background_task(playlist.just_download, source, search_id, user_id)
 
 
-def player_next(data=None):
-    mpd.mpd_next()
-    emit('player.next', broadcast=True)
-    _emit_player_current(broadcast=True)
+def emit_player_status(broadcast=False):
+    emit('player.status', mpd.status(), broadcast=broadcast)
 
 
-def player_previous(data=None):
-    mpd.mpd_previous()
-    emit('player.previous', broadcast=True)
-    _emit_player_current(broadcast=True)
-
-
-def _emit_player_current(broadcast=False):
+def emit_player_currentsong(broadcast=False):
     emit('player.current', playlist.get_current_song_marshaled(), broadcast=broadcast)
 
 
-def player_random(data):
-    mpd.mpd_random(data.get('value'))
-    player_status()
+def mpd_write_command_wrapper(command_name, data_key=None):
+    fn = getattr(mpd, command_name)
 
+    def wrapped(data=None):
+        params = ()
+        if data_key is not None:
+            if data_key == '__all__':
+                value = data
+            else:
+                value = data.get(data_key)
+            params = (value,)
+        return fn(*params)
 
-def player_repeat(data):
-    mpd.mpd_repeat(data.get('value'))
-    player_status()
-
-
-def player_status():
-    emit('player.status', mpd.mpd_get_status(), broadcast=True)
-
-
-def player_select_song(song):
-    mpd.mpd_select(song.get('pos'))
-    _emit_player_current()
-    player_status()
-
-
-def player_remove_song(song):
-    pos = song.get('pos')
-
-    if pos is None:
-        return
-
-    mpd.mpd_delete(pos)
-    emit('player.song_removed', song)
-
-
-def playlist_changed():
-    emit('player.playlist_changed')
+    return wrapped
 
 
 events = [
     ('connect', True, on_connect),
     ('disconnect', True, on_disconnect),
-    ('player.play', True, on_music_play),
-    ('player.pause', True, on_music_paused),
+
+    # Player read actions
+    ('player.status', True, emit_player_status),
+    ('player.current', True, emit_player_currentsong),
+
+    # Player dummy write actions
+    ('player.next', True, mpd_write_command_wrapper('next')),
+    ('player.previous', True, mpd_write_command_wrapper('previous')),
+    ('player.play', True, mpd_write_command_wrapper('play')),
+    ('player.pause', True, mpd_write_command_wrapper('pause')),
+    ('player.random', True, mpd_write_command_wrapper('random', 'value')),
+    ('player.repeat', True, mpd_write_command_wrapper('repeat', 'value')),
+    ('player.select', True, mpd_write_command_wrapper('play', 'pos')),
+    ('player.remove', True, mpd_write_command_wrapper('delete', 'pos')),
+
+    # Other more complex
     ('player.add_song', True, add_song_to_playlist),
     ('player.download_song', True, just_download_song),
-    ('player.next', True, player_next),
-    ('player.previous', True, player_previous),
-    ('player.current', True, _emit_player_current),
-    ('player.random', True, player_random),
-    ('player.repeat', True, player_repeat),
-    ('player.status', True, player_status),
-    ('player.select', True, player_select_song),
-    ('player.remove', True, player_remove_song)
 ]
 
 
@@ -143,16 +103,20 @@ def error_handler(e):
     print('Error encountered ' + str(e))
 
 
-def player_control_state():
-    player_status()
-    _emit_player_current()
+def emit_full_player_state(broadcast=False):
+    emit_player_status(broadcast=broadcast)
+    emit_player_currentsong(broadcast=broadcast)
+
+
+def emit_playlist_changed(broadcast=True):
+    emit('player.playlist_changed')
 
 
 mpd_event_handlers = {
-    'player': player_control_state,
-    'playlist': playlist_changed,
-    'mixer': player_status,
-    'options': player_status
+    'player': partial(emit_full_player_state, broadcast=True),
+    'playlist': emit_playlist_changed,
+    'mixer': partial(emit_player_status, broadcast=True),
+    'options': partial(emit_player_status, broadcast=True)
 }
 
 
@@ -160,7 +124,7 @@ def listen_mpd():
     def callback(event):
         mpd_event_handlers.get(event)()
 
-    thread = Thread(target=mpd_listen_events, args=(mpd_event_handlers.keys(), callback))
+    thread = Thread(target=mpd.listen_events, args=(mpd_event_handlers.keys(), callback))
 
     thread.daemon = True
     thread.start()

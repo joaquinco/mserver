@@ -1,10 +1,10 @@
 from flask_restful import marshal
 
+from mserver import mpd
 from mserver.database import db
 from mserver.marshals import song_list_marshal, dummy_song_playlist_list_marshal
 from mserver.models import Song
 from mserver.mserver import socketio
-from mserver.player import mpd
 from mserver.player import search, decorators
 from mserver.player.utils import mpd_convert_to_song
 
@@ -16,30 +16,13 @@ def just_download(source, search_id, user_id):
     """
     song = _get_song(source, search_id, user_id)
 
-    socketio.emit('player.song_available', marshal(song, song_list_marshal), broadcast=False)
-
-
-def _download_song_tmp(source, search_id, user_id):
-    # socketio = get_socketio()
-    backend = search.get(source)
-
-    song = backend.get_song(search_id)
-
-    socketio.emit('player.song_downloading', marshal(song, song_list_marshal))
-
-    import time
-    time.sleep(10)
-
-    # filename = backend.get_file(search_id)
-
-    socketio.emit('player.song_available', marshal(song, song_list_marshal), broadcast=True)
+    socketio.emit('player.song_available', marshal(song, song_list_marshal))
 
 
 def _get_song(source, search_id, user_id):
     """
     Downloads a song if it's not available or being downloaded
     """
-    # socketio = get_socketio()
     backend = search.get(source)
 
     song = backend.get_song(search_id)
@@ -54,7 +37,7 @@ def _get_song(source, search_id, user_id):
     socketio.emit('player.song_downloading', marshal(song, song_list_marshal))
     filename = backend.get_file(search_id)
 
-    mpd.mpd_add_song_to_db(filename)
+    mpd.update(filename)
 
     song = db.session.query(Song).filter_by(id=song.id).scalar()
 
@@ -67,30 +50,29 @@ def _get_song(source, search_id, user_id):
 
 
 @decorators.emit_socket_error('player.song_add_error')
-def add(source, search_id, user_id, playlist_id=None):
+def add(source, search_id, user_id):
     """
     Adds a song to playlist
     """
-    # socketio = get_socketio()
     song = _get_song(source, search_id, user_id)
 
-    mpd.mpd_add_song(song.path)
+    mpd.add(song.path)
 
-    socketio.emit('player.song_added', marshal(song, song_list_marshal), broadcast=True)
+    socketio.emit('player.song_added', marshal(song, song_list_marshal))
 
 
 def list_playlist_songs(playlist=None):
     """
     Returns list of Song objects
     """
-    return list(map(mpd_convert_to_song, mpd.mpd_get_playlist()))
+    return list(map(mpd_convert_to_song, mpd.playlist()))
 
 
 def get_current_song():
     """
     Returns current song
     """
-    return mpd_convert_to_song(mpd.mpd_get_current())
+    return mpd_convert_to_song(mpd.currentsong())
 
 
 def get_current_song_marshaled():
