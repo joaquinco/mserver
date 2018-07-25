@@ -8,10 +8,9 @@
           <span class="title">{{song.title}}</span>
           <span class="artist" v-if="song.artist">{{song.artist}}</span>
         </div>
-        <span class="duration">{{song.duration}}</span>
       </div>
-      <span class="icon icon-actions" v-if="hasOtherActions" @click="toggleShowActions()"></span>
-      <span class="icon icon-download" v-if="canDownload" title="Descargar" @click="onDownload()"></span>
+      <span class="duration">{{song.duration}}</span>
+      <span class="icon icon-actions noselect" v-show="hasOtherActions" @click="toggleShowActions()"></span>
     </div>
     <div v-if="actionsVisible">
       <div class="d-flex flex-row justify-content-center align-items-center">
@@ -30,11 +29,9 @@
 
 <script>
 const POSSTIBLE_OTHER_ACTIONS = [
-  { name: 'remove', label: 'Quitar' },
-  { name: 'download', label: 'Download' }
+  { name: 'remove', label: 'Quitar', validator: song => true },
+  { name: 'download', label: 'Download', validator: song => !song.available }
 ]
-
-const CLOSE_ACTION = { name: 'close', label: 'Cerrar' }
 
 export default {
   name: 'Song',
@@ -61,20 +58,16 @@ export default {
     }
   },
   computed: {
-    canDownload() {
-      return this.actions.includes('download') && !this.song.available
-    },
     canSelect() {
       return this.actions.includes('select')
     },
     hasOtherActions() {
-      return this.actions !== 'select'
+      return this.otherActions.length
     },
     otherActions() {
-      var ret = POSSTIBLE_OTHER_ACTIONS.filter(obj =>
-        this.actions.includes(obj.name)
+      var ret = POSSTIBLE_OTHER_ACTIONS.filter(
+        obj => this.actions.includes(obj.name) && obj.validator(this.song)
       )
-      ret.push(CLOSE_ACTION)
       return ret
     }
   },
@@ -86,16 +79,13 @@ export default {
       this.onSongAction('select')
     },
     onSongAction(action) {
-      if (action === CLOSE_ACTION.name) {
-        this.closeActions()
-      } else {
-        let event = {
-          action,
-          song: this.song,
-          created: new Date()
-        }
-        this.$emit('song-selected', event)
+      let event = {
+        action,
+        song: this.song,
+        created: new Date()
       }
+      this.$emit('song-selected', event)
+      setTimeout(this.closeActions, 150)
     },
     getSongPosition(song) {
       if (song && song.pos != null) {
@@ -167,26 +157,8 @@ export default {
   color: #b2b2b2;
 }
 
-.icon {
-  cursor: pointer;
-  height: 25px;
-  padding: 7px 1px;
-  border-radius: 100%;
-}
-.icon:active,
-.icon:hover {
-  background-color: rgba(178, 178, 178, 0.1);
-}
-
 .icon-actions {
   content: url("/static/icons/more.svg");
-}
-
-.icon-download {
-  content: url("/static/icons/download.svg");
-}
-.icon-add {
-  content: url("/static/icons/plus.svg");
 }
 
 .action-button {

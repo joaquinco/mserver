@@ -14,6 +14,7 @@
           <span class='next'></span>
         </button>
       </div>
+      <Volume class='volume-wrapper' @change='onVolumeChange' :value='status.volume'/>
       <div class='d-flex flex-row justify-content-around player-other-buttons'>
         <span class='text-toggle' :class='{disbled: !isRepeatOn}' @click='toggleRepeat()'>Repetir</span>
         <span class='text-toggle' :class='{disbled: !isShuffleOn}' @click='toggleShuffle()'>Shuffle</span>
@@ -26,10 +27,11 @@
 <script>
 import { mapState, mapMutations } from 'vuex'
 import ApiError from '@/components/ApiError'
+import Volume from '@/components/Volume'
 
 export default {
   name: 'PlayerControls',
-  components: { ApiError },
+  components: { ApiError, Volume },
   data() {
     return {
       loaded: false,
@@ -94,6 +96,9 @@ export default {
     },
     toggleShuffle() {
       this.socket.emit('player.random', { value: !this.isShuffleOn })
+    },
+    onVolumeChange(value) {
+      this.socket.emit('player.volume', { value })
     }
   }
 }
@@ -174,5 +179,10 @@ export default {
 
 .text-toggle.disbled {
   text-decoration: line-through;
+}
+
+.volume-wrapper {
+  max-width: 200px;
+  width: 68%;
 }
 </style>

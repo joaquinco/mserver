@@ -193,3 +193,9 @@ def delete(conn, pos):
     Deletes song from playlist
     """
     conn.delete(pos)
+
+
+@_with_mpd_client
+def setvol(conn, vol):
+    """Sets volume"""
+    conn.setvol(vol)

@@ -80,6 +80,7 @@ events = [
     ('player.repeat', True, mpd_write_command_wrapper('repeat', 'value')),
     ('player.select', True, mpd_write_command_wrapper('play', 'pos')),
     ('player.remove', True, mpd_write_command_wrapper('delete', 'pos')),
+    ('player.volume', True, mpd_write_command_wrapper('setvol', 'value')),
 
     # Other more complex
     ('player.add_song', True, add_song_to_playlist),

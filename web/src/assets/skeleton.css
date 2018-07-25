@@ -577,3 +577,24 @@ there.
 .overflow-hidden {
   overflow: hidden;
 }
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
+.icon {
+  cursor: pointer;
+  height: 25px;
+  padding: 7px 1px;
+  border-radius: 100%;
+}
+.icon:active,
+.icon:hover {
+  background-color: rgba(178, 178, 178, 0.1);
+}
