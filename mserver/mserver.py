@@ -10,7 +10,7 @@ from mserver.settings import SOCKETIO_REDIS_URL
 
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder='../dist', static_folder='../dist/static')
     app.config.from_object('mserver.settings')
 
     return app
@@ -64,6 +64,9 @@ def do_setup(app):
     import mserver.socket_server.handlers
     mserver.socket_server.handlers.on_connect
 
+    import mserver.views
+    mserver.views.index
+
     app.handle_user_exception = handle_user_exception_again
 
 
@@ -97,6 +100,7 @@ do_setup(app)
 
 def run_server():
     socketio.run(app, host='0.0.0.0')
+
 
 # TODO: call if main
 run_server()
