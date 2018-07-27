@@ -4,7 +4,7 @@ from mserver import mpd
 from mserver.database import db
 from mserver.marshals import song_list_marshal, dummy_song_playlist_list_marshal
 from mserver.models import Song
-from mserver.mserver import socketio
+from mserver.application import socketio
 from mserver.player import search, decorators
 from mserver.player.utils import mpd_convert_to_song
 

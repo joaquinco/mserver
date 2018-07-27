@@ -2,7 +2,7 @@ import os
 
 from flask_sqlalchemy import SQLAlchemy
 
-from mserver.mserver import app
+from mserver.application import app
 from .settings import BASE_DIR
 
 sqlite_path = 'sqlite:///{}'.format(os.path.join(BASE_DIR, 'mserver.db'))

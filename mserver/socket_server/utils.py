@@ -3,7 +3,7 @@ import json
 from flask import request
 from flask_socketio import emit as socketio_emit
 
-from mserver.mserver import socketio
+from mserver.application import socketio
 
 
 def start_background_task(target, *args, **kwargs):

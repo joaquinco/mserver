@@ -39,12 +39,12 @@ export default {
 <style scoped>
 /*
  Generate here
- http://www.cssportal.com/style-input-range/ 
+ http://www.cssportal.com/style-input-range/
  */
 input[type="range"] {
   height: 28px;
   -webkit-appearance: none;
-  margin: 10px 0;
+  margin: 0;
   width: 100%;
 }
 input[type="range"]:focus {

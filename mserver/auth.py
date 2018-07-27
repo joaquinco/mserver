@@ -1,10 +1,10 @@
 import bcrypt
-from flask import jsonify
-from flask_jwt import JWT
+from flask import jsonify, request
+from flask_jwt import JWT, JWTError
 
+from mserver.application import app
 from mserver.database import db
 from mserver.models import User
-from mserver.mserver import app
 
 
 def _create_user(username):
@@ -42,3 +42,17 @@ def default_auth_response_handler(access_token, identity):
             'is_superuser': identity.is_superuser
         }
     })
+
+
+def auth_request_handler():
+    data = request.get_json()
+    username = data.get('username', None)
+    password = data.get('password', None)
+
+    identity = jwt.authentication_callback(username, password)
+
+    if identity:
+        access_token = jwt.jwt_encode_callback(identity)
+        return jwt.auth_response_callback(access_token, identity)
+    else:
+        raise JWTError('Bad Request', 'Invalid credentials')

@@ -5,7 +5,7 @@ from flask_jwt import current_identity
 from flask_jwt import jwt_required
 
 from mserver import mpd
-from mserver.mserver import socketio
+from mserver.application import socketio
 from mserver.player import playlist
 from .utils import start_background_task, emit
 

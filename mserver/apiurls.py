@@ -1,5 +1,6 @@
 from mserver import resources
-from mserver.mserver import api
+from mserver.application import api
+from .auth import auth_request_handler
 
 API_PREFIX = '/api/'
 
@@ -8,7 +9,7 @@ urls = [
     (resources.PlaylistResource, 'playlist'),
     (resources.RPCResource, 'rpc/<string:rpc_name>'),
     (resources.SecureRPCResource, 'srpc/<string:rpc_name>'),
-    (resources.UserResource, 'auth/self'),
+    (resources.AuthResource, 'auth'),
 ]
 
 

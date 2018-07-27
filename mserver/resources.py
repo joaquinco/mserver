@@ -2,7 +2,7 @@ from flask import request
 from flask_jwt import jwt_required, current_identity
 from flask_restful import Resource, marshal_with, reqparse
 
-from mserver import rpc
+from mserver import rpc, auth
 from mserver.marshals import song_search_marshal, user_detail_marshal, dummy_song_playlist_list_marshal
 from mserver.player import search, playlist
 
@@ -38,8 +38,6 @@ addsong_args = reqparse.RequestParser()
 addsong_args.add_argument('search_id', help='Search id', required=True, location='json')
 addsong_args.add_argument('source', required=False, location='json')
 
-
-
 rpc_post_params = reqparse.RequestParser()
 rpc_post_params.add_argument('args', help='argument list', required=False, location='json', default=lambda: [],
                              type=list)
@@ -71,8 +69,11 @@ class SecureRPCResource(RPCResource):
         return rpc.call(rpc_name, *args, secure=True, **kwargs)
 
 
-class UserResource(Resource):
+class AuthResource(Resource):
     @marshal_with(user_detail_marshal)
     @jwt_required()
     def get(self):
         return current_identity
+
+    def post(self):
+        return auth.auth_request_handler()

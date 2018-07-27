@@ -1,6 +1,6 @@
 from flask import render_template
 
-from mserver.mserver import app
+from mserver.application import app
 
 
 @app.route('/')

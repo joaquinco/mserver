@@ -11,7 +11,7 @@ const endpoints = {
   search: '/search',
   auth: {
     login: '/auth',
-    self: '/auth/self'
+    self: '/auth'
   },
   playlist: '/playlist'
 }

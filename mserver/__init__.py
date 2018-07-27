@@ -2,7 +2,7 @@ import eventlet
 
 eventlet.monkey_patch()
 
-from .mserver import app, run_server
+from .application import app, run_server
 
 __all__ = ['app']
 
