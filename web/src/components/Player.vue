@@ -29,7 +29,7 @@ export default {
 <style scoped>
 .player-content {
   flex: 1;
-  padding-bottom: 100px;
+  padding-bottom: 140px;
   padding-top: 50px;
 }
 

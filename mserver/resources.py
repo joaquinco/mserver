@@ -45,10 +45,6 @@ rpc_post_params.add_argument('kwargs', required=False, location='json', default=
 
 
 class RPCResource(Resource):
-    def __init__(self, *args, **kwargs):
-        self.post = self.get = self.call_rpc
-        super().__init__(*args, **kwargs)
-
     def get(self, rpc_name):
         return self.call_rpc(rpc_name, **request.args)
 
@@ -61,9 +57,10 @@ class RPCResource(Resource):
 
 
 class SecureRPCResource(RPCResource):
-    def __init__(self):
-        get = jwt_required(super().get)
-        post = jwt_required(super().post)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.get = jwt_required()(self.get)
+        self.post = jwt_required()(self.post)
 
     def call_rpc(self, rpc_name, *args, **kwargs):
         return rpc.call(rpc_name, *args, secure=True, **kwargs)
