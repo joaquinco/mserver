@@ -20,7 +20,8 @@ const store = new Vuex.Store({
     },
     comm: {
       api: null,
-      socket: null
+      socket: null,
+      error: null
     },
     auth: {
       access_token: null

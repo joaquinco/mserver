@@ -7,18 +7,25 @@
 </template>
 
 <script>
-import LoadingLine from '@/components/LoadingLine'
-import ApiError from '@/components/ApiError'
-import { mapActions, mapMutations } from 'vuex'
 import axios from 'axios'
+import { mapActions, mapMutations, mapState } from 'vuex'
+
 import { urls, getEndpoints, getSocket } from '@/api'
 import storage from '@/storage'
+import LoadingLine from '@/components/LoadingLine'
+import ApiError from '@/components/ApiError'
 
 export default {
   name: 'Dispatcher',
   components: {
     LoadingLine,
     ApiError
+  },
+  computed: {
+    ...mapState({
+      serverChecked: state => state.server.checked,
+      socket: state => state.comm.socket
+    })
   },
   data() {
     return {
@@ -28,8 +35,10 @@ export default {
     }
   },
   mounted() {
-    if (!this.$store.state.server.checked) {
+    if (!this.serverChecked) {
       this.connectToServer()
+    } else if (this.socket && this.socket.disconnected) {
+      this.reconnect()
     } else {
       this.onServerUp()
     }
@@ -79,6 +88,9 @@ export default {
           }, this.onConnectionError)
         }, this.onConnectionError)
       }
+    },
+    reconnect() {
+      this.socket.on('connect', params => this.$router.push({ name: 'player' }))
     }
   }
 }

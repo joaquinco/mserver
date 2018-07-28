@@ -64,6 +64,9 @@ const handlers = {
   error({ state, commit }, error) {
     let message = getMessageFromError(state.server.debug, error)
     commit('addNotification', { message, error: true })
+  },
+  disconnect({ state, commit }, reason) {
+    commit('onSocketDisconnected', reason)
   }
 }
 

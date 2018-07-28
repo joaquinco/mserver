@@ -1,7 +1,7 @@
 import axios from 'axios'
 import io from 'socket.io-client'
 
-const BASE_URL = 'http://localhost:5000'
+const BASE_URL = process.env.API_URL
 const BASE_API_URL = `${BASE_URL}/api`
 
 var RestApi = null

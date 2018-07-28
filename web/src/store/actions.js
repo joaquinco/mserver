@@ -34,7 +34,8 @@ const actions = {
       'player.playlist_changed',
       'user.joined',
       'user.left',
-      'error'
+      'error',
+      'disconnect'
     ]
     var debug = state.server.debug
     events.forEach(eventName => {

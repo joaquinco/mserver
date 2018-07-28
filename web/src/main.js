@@ -17,7 +17,7 @@ Vue.config.productionTip = false
 router.beforeEach((to, from, next) => {
   // hooks must be set before mounting the app
   if (!store.state.server.checked && to.name !== 'dispatch') {
-    next({name: 'dispatch'})
+    next({ name: 'dispatch' })
   } else {
     next()
   }

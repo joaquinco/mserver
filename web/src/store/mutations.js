@@ -11,6 +11,9 @@ const mutations = {
       socket
     }
   },
+  onSocketDisconnected(state, reason) {
+    state.comm = { ...state.comm, error: reason }
+  },
   setToken(state, access_token) {
     state.auth.access_token = access_token
   },

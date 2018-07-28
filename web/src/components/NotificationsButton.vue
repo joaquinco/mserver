@@ -1,9 +1,7 @@
 <template>
-    <div>
-        <div class='notification-wrapper' @click='toggleNotificationTab()'>
-            <span class='icon icon-notification noselect'>i</span>
-            <span class='notification-badge' v-if='showBadge'>{{notifications.length}}</span>
-        </div>
+    <div class='notification-wrapper d-flex' @click='toggleNotificationTab()'>
+        <span class='icon icon-notification noselect'>i</span>
+        <span class='notification-badge' v-if='showBadge'>{{notifications.length}}</span>
     </div>
 </template>
 

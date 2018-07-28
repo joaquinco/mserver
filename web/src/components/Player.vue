@@ -7,6 +7,7 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 import PlayerControls from '@/components/PlayerControls'
 import SearchToggle from '@/components/SearchToggle'
 import Playlist from '@/components/Playlist'
@@ -20,8 +21,18 @@ export default {
     Playlist,
     Notifications
   },
+  computed: {
+    ...mapState({
+      socket: state => state.comm.socket
+    })
+  },
   data() {
     return {}
+  },
+  mounted() {
+    this.socket.on('disconnect', reason => {
+      this.$router.push({ name: 'dispatch' })
+    })
   }
 }
 </script>
