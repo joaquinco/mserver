@@ -57,6 +57,10 @@ const mutations = {
   },
   setCurrentSong(state, song) {
     state.playlist = { ...state.playlist, current: song }
+  },
+  toggleNotificationTab(state) {
+    let notification_tab_visible = !state.views.notification_tab_visible
+    state.views = { ...state.views, notification_tab_visible }
   }
 }
 

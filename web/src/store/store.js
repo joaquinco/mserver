@@ -41,6 +41,9 @@ const store = new Vuex.Store({
     async: {
       notifications: [],
       events: []
+    },
+    views: {
+      notification_tab_visible: false
     }
   },
   mutations,

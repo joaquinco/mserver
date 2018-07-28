@@ -1,11 +1,12 @@
 <template>
   <div class="container-search" :class="{'search-fullpage': searchActive}">
     <div class="d-flex flex-column container-sm">
-      <div class="input-wrapper">
-        <form @submit.prevent="globalSearch()" class="d-flex flex-row align-items-center">
+      <div class="d-flex flex-row align-items-center">
+        <form @submit.prevent="globalSearch()" class="d-flex flex-row align-items-center col">
           <input class="w-100" type=search v-model="query" placeholder="Buscar" @focus="onSearchFocus"/>
           <a v-if="searchActive" class="close ml-2" href="" @click.prevent.stop="cancelSearch">Cancelar</a>
         </form>
+        <NotificationsButton v-if="!searchActive"/>
       </div>
       <div v-if="searchActive" class="search-results d-flex flex-column mt-4">
         <div v-if="loadingSources">Cargando fuentes...</div>
@@ -35,10 +36,11 @@ import { executeAlso } from '@/utils'
 import LoadingLine from '@/components/LoadingLine'
 import SongList from '@/components/SongList'
 import LoadingButton from '@/components/LoadingButton'
+import NotificationsButton from '@/components/NotificationsButton'
 
 export default {
   name: 'SearchToggle',
-  components: { LoadingLine, SongList, LoadingButton },
+  components: { LoadingLine, SongList, LoadingButton, NotificationsButton },
   data() {
     return {
       query: '',

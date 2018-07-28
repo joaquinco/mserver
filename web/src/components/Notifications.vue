@@ -5,15 +5,12 @@
       <strong class='mr-4'>Notificaciones</strong>
       <div>
         <a class='close mr-1' @click='clearNotifications()'>Limpiar</a>
-        <a class='close' @click='toggleView()'>Cerrar</a>
+        <a class='close' @click='toggleNotificationTab()'>Cerrar</a>
       </div>
     </div>
     <Notification v-for='obj in notifications' :noti='obj' :key='obj.id'/>
     <div v-if='notifications.length==0' class='center-text content-placeholder'>No hay notificaciones</div>
   </div>
-  <span class='toggle color-error' v-if='!visible' @click='toggleView()'>
-    {{notifications.length}}
-  </span>
 </div>
 </template>
 
@@ -26,19 +23,15 @@ export default {
   components: { Notification },
   computed: {
     ...mapState({
-      notifications: state => state.async.notifications
+      notifications: state => state.async.notifications,
+      visible: state => state.views.notification_tab_visible
     })
   },
   data() {
-    return {
-      visible: false
-    }
+    return {}
   },
   methods: {
-    ...mapMutations(['clearNotifications']),
-    toggleView() {
-      this.visible = !this.visible
-    }
+    ...mapMutations(['clearNotifications', 'toggleNotificationTab'])
   }
 }
 </script>
