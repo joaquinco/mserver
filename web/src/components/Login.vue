@@ -1,16 +1,17 @@
 <template>
   <div class="flex-d flex-column justify-content-center container-sm">
     <form class="d-flex flex-column">
-      <h1>Quien sos wacho</h1>
+      <h1>Quien sos?</h1>
       <ApiError :errorResponse='apiError'/>
       <input type=text placeholder="Nombre" v-model="username"/>
+      <span class="input-help">(mínimo {{usernameMinimunLength}} letras)</span>
       <input v-if="!basicLogin" type=password placeholder="Contraseña" v-model="password"/>
       <div class="d-flex flex-row justify-content-end">
         <LoadingCircular :is-loading="isLoading" :in-place="true" :size="30"></LoadingCircular>
         <button class="button-primary ml-1" @click.prevent.stop="submit()" :disabled="isFormInvalid">Dale</button>
       </div>
     </form>
-    <div class="position-fixed trigger-password" @click.stop="wantToTriggerPassword()">
+    <div class="position-fixed trigger-password noselect" @click.stop="wantToTriggerPassword()">
       <h4 v-show="triggerPasswordCount > 3">{{triggerPassworClickLimit - triggerPasswordCount}}</h4>
     </div>
   </div>
@@ -38,12 +39,13 @@ export default {
       triggerPasswordCount: 0,
       timer: null,
       isLoading: false,
-      apiError: null
+      apiError: null,
+      usernameMinimunLength: 4
     }
   },
   computed: {
     isFormInvalid() {
-      return this.username.length < 5
+      return this.username.length < this.usernameMinimunLength
     }
   },
   methods: {
@@ -96,5 +98,13 @@ export default {
   height: 50px;
   right: 0;
   bottom: 0;
+}
+.input-help {
+  margin-bottom: 10px;
+  font-size: 0.7em;
+}
+
+input {
+  margin: 0;
 }
 </style>
