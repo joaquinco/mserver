@@ -24,6 +24,8 @@ def emit_socket_error(error_key):
                     context = e.context
                 emit('error', {'message': str(e), 'key': error_key, 'detail': context})
 
+        wrapper.__name__ = wrapped.__name__
+
         return wrapper
 
     return decorator

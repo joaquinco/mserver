@@ -19,7 +19,9 @@ JWT_VERIFY_EXPIRATION = False
 JWT_EXPIRATION_DELTA = datetime.timedelta(days=365)
 
 SOCKETIO_ASYNC_MODE = 'eventlet'
-SOCKETIO_REDIS_URL = 'redis://'
+SOCKETIO_REDIS_URL = 'redis://localhost:6379/0'
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
 
 
 VERSION = '0.0.1'

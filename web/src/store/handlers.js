@@ -27,10 +27,10 @@ function getMessageFromError(debug, { message, key, detail }) {
 
 const handlers = {
   user_joined({ state, commit }, { message }) {
-    commit('addNotification', { message })
+    // commit('addNotification', { message })
   },
   user_left({ state, commit }, { message }) {
-    commit('addNotification', { message })
+    // commit('addNotification', { message })
   },
   player_play({ state, commit }, data) {},
   player_pause({ state, commit }, data) {},

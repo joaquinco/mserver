@@ -1,5 +1,6 @@
 from collections import OrderedDict
 
+from celery import Celery
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_jwt import JWTError
@@ -90,17 +91,32 @@ def get_socketio(app=None):
     return SocketIO(app, **kwargs)
 
 
+def get_celery(app):
+    celery = Celery(
+        app.import_name,
+        broker=app.config['CELERY_BROKER_URL']
+    )
+    celery.conf.update(app.config)
+
+    class ContextTask(celery.Task):
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+                return self.run(*args, **kwargs)
+
+    celery.Task = ContextTask
+    return celery
+
+
 _add_support_engineio_preflights()
 app = create_app()
 _add_dummy_view_to_expose_socketio_preflights(app)
 api = Api(app)
 socketio = get_socketio(app)
+
+celery = get_celery(app)
+
 do_setup(app)
 
 
 def run_server():
     socketio.run(app, host='0.0.0.0')
-
-
-# TODO: call if main
-run_server()

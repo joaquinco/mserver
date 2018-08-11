@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='mserver',
-    packages=['mserver'],
+    packages=['mserver', 'utils'],
     include_package_data=True,
     install_requires=[
         'flask',

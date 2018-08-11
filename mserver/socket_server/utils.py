@@ -6,11 +6,6 @@ from flask_socketio import emit as socketio_emit
 from mserver.application import socketio
 
 
-def start_background_task(target, *args, **kwargs):
-    # socketio.start_background_task(socket_contexted_async_target(target), *args, **kwargs)
-    socketio.start_background_task(target, *args, **kwargs)
-
-
 def _stringify_data(kwargs):
     """
     If data is dict json.dumps it

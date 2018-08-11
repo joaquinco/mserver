@@ -1,4 +1,4 @@
-from mserver.mpd.api import get_client
+from mserver.mpd_utils.api import get_client
 
 
 def listen_events(subsystems, event_handler):

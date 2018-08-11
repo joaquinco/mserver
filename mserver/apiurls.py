@@ -1,6 +1,5 @@
 from mserver import resources
 from mserver.application import api
-from .auth import auth_request_handler
 
 API_PREFIX = '/api/'
 

@@ -1,13 +1,10 @@
-from functools import partial
-from threading import Thread
-
 from flask_jwt import current_identity
 from flask_jwt import jwt_required
 
-from mserver import mpd
+from mserver import mpd_utils, tasks
 from mserver.application import socketio
 from mserver.player import playlist
-from .utils import start_background_task, emit
+from mserver.socket_server.utils import emit
 
 
 def on_connect():
@@ -27,7 +24,7 @@ def add_song_to_playlist(data):
 
     user_id = current_identity.id
 
-    start_background_task(playlist.add, source, search_id, user_id)
+    tasks.song_add.delay(source, search_id, user_id)
 
 
 def just_download_song(data):
@@ -36,11 +33,11 @@ def just_download_song(data):
 
     user_id = current_identity.id
 
-    start_background_task(playlist.just_download, source, search_id, user_id)
+    tasks.song_just_download.delay(source, search_id, user_id)
 
 
 def emit_player_status(broadcast=False):
-    emit('player.status', mpd.status(), broadcast=broadcast)
+    emit('player.status', mpd_utils.status(), broadcast=broadcast)
 
 
 def emit_player_currentsong(broadcast=False):
@@ -48,7 +45,7 @@ def emit_player_currentsong(broadcast=False):
 
 
 def mpd_write_command_wrapper(command_name, data_key=None):
-    fn = getattr(mpd, command_name)
+    fn = getattr(mpd_utils, command_name)
 
     def wrapped(data=None):
         params = ()
@@ -71,7 +68,7 @@ events = [
     ('player.status', True, emit_player_status),
     ('player.current', True, emit_player_currentsong),
 
-    # Player dummy write actions
+    # Player simple write actions
     ('player.next', True, mpd_write_command_wrapper('next')),
     ('player.previous', True, mpd_write_command_wrapper('previous')),
     ('player.play', True, mpd_write_command_wrapper('play')),
@@ -96,39 +93,3 @@ def _setup_events():
 
 
 _setup_events()
-
-
-@socketio.on_error()
-def error_handler(e):
-    print('Error encountered ' + str(e))
-
-
-def emit_full_player_state(broadcast=False):
-    emit_player_status(broadcast=broadcast)
-    emit_player_currentsong(broadcast=broadcast)
-
-
-def emit_playlist_changed(broadcast=True):
-    emit('player.playlist_changed', broadcast=broadcast)
-
-
-mpd_event_handlers = {
-    'player': partial(emit_full_player_state, broadcast=True),
-    'playlist': emit_playlist_changed,
-    'mixer': partial(emit_player_status, broadcast=True),
-    'options': partial(emit_player_status, broadcast=True)
-}
-
-
-def listen_mpd():
-    def callback(event):
-        mpd_event_handlers.get(event)()
-
-    thread = Thread(target=mpd.listen_events, args=(mpd_event_handlers.keys(), callback))
-
-    thread.daemon = True
-    thread.start()
-
-
-# TODO: put elsewhere
-listen_mpd()

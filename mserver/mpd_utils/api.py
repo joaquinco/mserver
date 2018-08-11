@@ -21,7 +21,7 @@ _key_transform = {
 
 def _normalize(key, value):
     """
-    Normalize mpd values to python
+    Normalize mpd_utils values to python
     """
     if isinstance(value, dict):
         return _normalize_dict(value)
@@ -63,7 +63,7 @@ class _MPDClientWrapper(object):
 
 def get_client():
     """
-    Returns client to comunicate with mpd
+    Returns client to comunicate with mpd_utils
     """
     return _MPDClientWrapper()
 
@@ -80,7 +80,7 @@ def _with_mpd_client(method):
 @_with_mpd_client
 def status(conn):
     """
-    Get mpd current status.
+    Get mpd_utils current status.
     """
     return dict(status=conn.status(), stats=conn.stats(), version=conn.mpd_version)
 
@@ -103,7 +103,7 @@ def playlist(conn):
 @_with_mpd_client
 def update(conn, uri):
     """
-    Adds song to mpd's song db
+    Adds song to mpd_utils's song db
     """
     conn.update(uri)
 
@@ -166,7 +166,7 @@ def currentsong(conn):
 @_with_mpd_client
 def search(conn, query):
     """
-    Performs a search over mpd database
+    Performs a search over mpd_utils database
     """
     return conn.search('file', query)
 

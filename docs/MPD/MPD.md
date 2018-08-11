@@ -22,10 +22,10 @@ apt install mpd
 
 ### Basic Running
 
-`mpd mpd.conf`
+`mpd_utils mpd_utils.conf`
 
 ### Recommended configuration
 
 - music_directory: final path from where music is played
-- database: mpd database configuration
+- database: mpd_utils database configuration
 - input: audio configuration

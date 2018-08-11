@@ -1,6 +1,6 @@
 from flask_restful import marshal
 
-from mserver import mpd
+from mserver import mpd_utils
 from mserver.database import db
 from mserver.marshals import song_list_marshal, dummy_song_playlist_list_marshal
 from mserver.models import Song
@@ -37,7 +37,7 @@ def _get_song(source, search_id, user_id):
     socketio.emit('player.song_downloading', marshal(song, song_list_marshal))
     filename = backend.get_file(search_id)
 
-    mpd.update(filename)
+    mpd_utils.update(filename)
 
     song = db.session.query(Song).filter_by(id=song.id).scalar()
 
@@ -56,7 +56,8 @@ def add(source, search_id, user_id):
     """
     song = _get_song(source, search_id, user_id)
 
-    mpd.add(song.path)
+    print(song.path)
+    mpd_utils.add(song.path)
 
     socketio.emit('player.song_added', marshal(song, song_list_marshal))
 
@@ -65,14 +66,14 @@ def list_playlist_songs(playlist=None):
     """
     Returns list of Song objects
     """
-    return list(map(mpd_convert_to_song, mpd.playlist()))
+    return list(map(mpd_convert_to_song, mpd_utils.playlist()))
 
 
 def get_current_song():
     """
     Returns current song
     """
-    return mpd_convert_to_song(mpd.currentsong())
+    return mpd_convert_to_song(mpd_utils.currentsong())
 
 
 def get_current_song_marshaled():
