@@ -43,7 +43,7 @@ const handlers = {
     commit('setCurrentSong', song)
   },
   player_song_added({ state, commit, dispatch }, song) {
-    let message = `Nueva cancion en cola: ${song.title}`
+    let message = `Nueva cancion en lista: ${song.title}`
     commit('addNotification', { message })
   },
   player_song_available({ state, commit }, song) {

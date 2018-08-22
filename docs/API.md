@@ -35,8 +35,10 @@ GET
 Returns current user information
 
 - `/api/rpc/<rpc_name>`
+- `/api/srpc/<rpc_name>`
 
-Calls a method and returns its result.
+Calls a method and returns its result. The difference between the two is that
+srpc version requires authentication (s from security maybe?).
 
 GET, POST
 ```yaml
