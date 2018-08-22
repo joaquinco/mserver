@@ -18,5 +18,5 @@ flask run
 And start celery worker
 
 ```
-celery -A mserver.flask_celery.celery worker -l info
+celery -A mserver.application.celery worker -l info
 ```

@@ -1,5 +1,6 @@
 from collections import OrderedDict
 
+import eventlet
 from celery import Celery
 from flask import Flask, jsonify
 from flask_cors import CORS
@@ -119,4 +120,5 @@ do_setup(app)
 
 
 def run_server():
+    eventlet.monkey_patch()
     socketio.run(app, host='0.0.0.0')
