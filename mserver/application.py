@@ -1,4 +1,8 @@
+import logging
+import os
 from collections import OrderedDict
+from functools import partial
+from logging.handlers import RotatingFileHandler
 
 import eventlet
 from celery import Celery
@@ -8,7 +12,7 @@ from flask_jwt import JWTError
 from flask_restful import Api
 from flask_socketio import SocketIO
 
-from mserver.settings import SOCKETIO_REDIS_URL
+from mserver import settings
 
 
 def create_app():
@@ -49,10 +53,29 @@ def _add_dummy_view_to_expose_socketio_preflights(app):
         return ''
 
 
+def setup_logging(app):
+    """Configures logging"""
+
+    get_log_file = partial(os.path.join, settings.LOG_DIR)
+
+    root = logging.getLogger()
+    root.addHandler(RotatingFileHandler(get_log_file('general.log')))
+    root.setLevel(settings.LOG_LEVEL)
+
+    for entry in settings.LOGGERS:
+        logger = logging.getLogger(entry)
+        logger.addHandler(RotatingFileHandler(get_log_file('{0}.log'.format(entry))))
+        logger.setLevel(settings.LOG_LEVEL)
+
+    app.logger.addHandler(RotatingFileHandler(get_log_file('mserver.log')))
+    app.logger.setLevel(settings.LOG_LEVEL)
+
+
 def do_setup(app):
     from .database import init_db
     init_db()
     setup_cors(app)
+    setup_logging(app)
 
     import mserver.resources
     mserver.resources.SongSearchResource
@@ -86,7 +109,7 @@ def handle_user_exception_again(e):
 
 
 def get_socketio(app=None):
-    kwargs = dict(message_queue=SOCKETIO_REDIS_URL)
+    kwargs = dict(message_queue=settings.SOCKETIO_REDIS_URL)
     if app:
         kwargs['async_mode'] = app.config['SOCKETIO_ASYNC_MODE']
     return SocketIO(app, **kwargs)

@@ -1,6 +1,6 @@
 <template>
   <div class='d-flex flex-column notification-container align-items-start'>
-    <strong class='message'>{{noti.message}}</strong>
+    <strong class='message' :class="{'color-error': noti.error}">{{noti.message}}</strong>
     <span class='timestamp'>{{noti.created | moment("from", "now")}}</span>
   </div>
 </template>

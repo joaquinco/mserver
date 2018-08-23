@@ -1,9 +1,8 @@
 import logging
 import traceback
 
-from flask_socketio import emit
-
-from .exceptions import MServerException
+from mserver.application import socketio
+from mserver.exceptions import MServerException
 
 
 def emit_socket_error(error_key):
@@ -22,10 +21,9 @@ def emit_socket_error(error_key):
                 context = {}
                 if isinstance(e, MServerException):
                     context = e.context
-                emit('error', {'message': str(e), 'key': error_key, 'detail': context})
+                socketio.emit(error_key, {'message': str(e), 'detail': context})
 
         wrapper.__name__ = wrapped.__name__
 
         return wrapper
-
     return decorator

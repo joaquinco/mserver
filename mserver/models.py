@@ -23,12 +23,6 @@ class User(Base):
         self.password = bcrypt.hashpw(password, bcrypt.gensalt())
 
 
-class SongPlayList(Base):
-    __tablename__ = 'song_playlist'
-    song_id = Column(ForeignKey('song.id'), primary_key=True)
-    playlist_id = Column(ForeignKey('playlist.id'), primary_key=True)
-
-
 class DummySong(object):
     def __init__(self, **kwargs):
         self.search_id = None
@@ -51,27 +45,10 @@ class Song(Base, DummySong):
     created = Column(DateTime(), default=datetime.datetime.now)
     user_id = Column(ForeignKey('user.id'))
     user = relationship(User, back_populates='added_songs')
-    playlists = relationship('PlayList', secondary=SongPlayList.__tablename__, back_populates='songs')
-    original_source = Column(String(100))
-    source_song_id = Column(String(500))
+    source = Column(String(100))
+    search_id = Column(String(500))
     available = Column(Boolean(), default=False)
+    downloading = Column(Boolean(), default=False)
     error = Column(Boolean(), default=False)
 
-    # Attributes used in search.
-    source = 'local'
-    search_id = None
-
     repr_fields = ['title', 'source', 'available']
-
-
-class PlayList(Base):
-    __tablename__ = 'playlist'
-    id = Column(Integer(), Sequence('playlist_id_seq'), primary_key=True)
-    name = Column(String(50))
-    created = Column(DateTime(), default=datetime.datetime.now)
-    is_playing = Column(Boolean(), default=False)
-    is_default = Column(Boolean(), default=False)
-
-    songs = relationship('Song', secondary=SongPlayList.__tablename__, back_populates='playlists')
-
-    repr_fields = ['name', ]

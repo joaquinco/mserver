@@ -25,6 +25,11 @@ function getMessageFromError(debug, { message, key, detail }) {
   return hrmessage
 }
 
+function handleError({ state, commit }, error) {
+  let message = getMessageFromError(state.server.debug, error)
+  commit('addNotification', { message, error: true })
+}
+
 const handlers = {
   user_joined({ state, commit }, { message }) {
     // commit('addNotification', { message })
@@ -61,13 +66,12 @@ const handlers = {
   player_playlist_changed({ dispatch }, data) {
     dispatch('refreshPlaylist')
   },
-  error({ state, commit }, error) {
-    let message = getMessageFromError(state.server.debug, error)
-    commit('addNotification', { message, error: true })
-  },
   disconnect({ state, commit }, reason) {
     commit('onSocketDisconnected', reason)
-  }
+  },
+  error: handleError,
+  player_song_add_error: handleError,
+  player_song_download_error: handleError
 }
 
 export default handlers

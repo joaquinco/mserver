@@ -1,4 +1,4 @@
-from mserver.player.exceptions import MServerException
+from mserver.exceptions import MServerException
 
 
 class SearchException(MServerException):

@@ -57,7 +57,6 @@ export default {
           this.onServerUp()
         },
         error => {
-          console.log(error)
           this.loading = false
           this.updateServerStatus({
             success: false
@@ -67,27 +66,34 @@ export default {
       )
     },
     onConnectionError(error) {
-      if (!error) {
-        error = 'No se pudo conectar con el servidor'
+      let response = error && error.response
+      if (response && response.status === 401) {
+        storage.set('token', null)
+        this.redirectLogin()
       }
+
       this.error = error
       this.loading = false
     },
     onServerUp() {
       let token = storage.get('token')
       if (!token) {
-        this.$router.push({ name: 'login' })
+        this.redirectLogin()
       } else {
-        this.setToken(token)
         var api = getEndpoints(token)
         api.auth.self.get().then(response => {
           this.setUser({ ...response.data })
+          this.setToken(token)
+
           getSocket(token).then(socket => {
             this.initComm({ api, socket })
             this.$router.push({ name: 'player' })
           }, this.onConnectionError)
         }, this.onConnectionError)
       }
+    },
+    redirectLogin() {
+      this.$router.push({ name: 'login' })
     },
     reconnect() {
       this.socket.on('connect', params => this.$router.push({ name: 'player' }))

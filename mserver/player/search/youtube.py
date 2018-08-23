@@ -12,10 +12,11 @@ from mserver.player.utils import format_int_duration
 from .api import register
 from .exceptions import DownloadError
 
-# TODO: get own api key
-api_key = 'AIzaSyCIM4EzNqi1in22f4Z3Ru3iYvLaY8tc3bo'
-
 THIS_SOURCE = 'youtube'
+
+CONFIG = settings.SONG_SOURCES_CONFIG.get(THIS_SOURCE, {})
+
+API_KEY = CONFIG.get('api_key')
 
 MUSIC_CATEGORYID = 10
 ORDER = 'relevance'
@@ -37,18 +38,11 @@ def generate_search_query(term, category=MUSIC_CATEGORYID, order=ORDER, duration
         'part': 'id,snippet',
         'type': 'video',
         'videoDuration': duration,
-        'key': api_key,
+        'key': API_KEY,
         'videoCategoryId': category
     }
 
     return qs
-
-
-def convert_to_song(item):
-    """
-    Converts a youtube item to Song object
-    """
-    pass
 
 
 def get_track_id_from_json(item):
@@ -137,7 +131,24 @@ def youtube_search(query):
 
     yresult = pafy.call_gdata('search', qs)
 
-    return get_songs_from_result(yresult)
+    return update_song_availability(get_songs_from_result(yresult))
+
+
+def update_song_availability(songs):
+    """
+    Given a list of songs, sets them as availables in case they have been already downloaded.
+    """
+    ids = [s.search_id for s in songs]
+
+    db_songs = Song.query.filter(Song.search_id.in_(ids)).all()
+
+    db_songs_by_search_id = {s.search_id: s for s in db_songs}
+
+    for song in songs:
+        db_song = db_songs_by_search_id.get(song.search_id)
+        song.available = db_song and db_song.available
+
+    return songs
 
 
 def get_download_cmd(ytid, filename, audio_format=AUDIO_FORMAT):
@@ -165,7 +176,7 @@ def get_song_from_ytid(ytid):
     """
     Returns Song instance from ytid with basic fields filed
     """
-    song = db.session.query(Song).filter_by(original_source=THIS_SOURCE, source_song_id=ytid).scalar()
+    song = db.session.query(Song).filter_by(source=THIS_SOURCE, search_id=ytid).scalar()
     if song:
         return song
 
@@ -173,7 +184,8 @@ def get_song_from_ytid(ytid):
 
     snippet = item.get('snippet', {})
     title = snippet.get('title', '').strip()
-    return Song(original_source=THIS_SOURCE, source_song_id=ytid, title=title)
+
+    return Song(source=THIS_SOURCE, search_id=ytid, title=title)
 
 
 def youtube_download(search_id):

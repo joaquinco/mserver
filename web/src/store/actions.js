@@ -34,8 +34,11 @@ const actions = {
       'player.playlist_changed',
       'user.joined',
       'user.left',
+      'disconnect',
+      // Errors
       'error',
-      'disconnect'
+      'player.song_add_error',
+      'player.song_download_error'
     ]
     var debug = state.server.debug
     events.forEach(eventName => {

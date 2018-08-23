@@ -3,13 +3,11 @@ from flask_restful import marshal
 from mserver import mpd_utils
 from mserver.database import db
 from mserver.marshals import song_list_marshal, dummy_song_playlist_list_marshal
-from mserver.models import Song
 from mserver.application import socketio
-from mserver.player import search, decorators
+from mserver.player import search
 from mserver.player.utils import mpd_convert_to_song
 
 
-@decorators.emit_socket_error('player.song_download_error')
 def just_download(source, search_id, user_id):
     """
     Just download a song
@@ -29,27 +27,38 @@ def _get_song(source, search_id, user_id):
 
     if not song.id:
         song.user_id = user_id
+        song.downloading = True
         db.session.add(song)
         db.session.commit()
     elif song.available:
         return song
 
-    socketio.emit('player.song_downloading', marshal(song, song_list_marshal))
-    filename = backend.get_file(search_id)
+    raise_exception = None
 
-    mpd_utils.update(filename)
+    try:
+        socketio.emit('player.song_downloading', marshal(song, song_list_marshal))
+        filename = backend.get_file(search_id)
 
-    song = db.session.query(Song).filter_by(id=song.id).scalar()
+        song.path = filename
 
-    song.path = filename
-    song.available = True
+        mpd_utils.update(filename)
+    except Exception as e:
+        song.downloading = False
+        song.error = str(e)
+        raise_exception = e
+    else:
+        song.downloading = False
+        song.available = True
+
     db.session.add(song)
     db.session.commit()
+
+    if raise_exception:
+        raise raise_exception
 
     return song
 
 
-@decorators.emit_socket_error('player.song_add_error')
 def add(source, search_id, user_id):
     """
     Adds a song to playlist

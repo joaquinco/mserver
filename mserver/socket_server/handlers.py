@@ -5,7 +5,7 @@ from mserver import mpd_utils, tasks
 from mserver.application import socketio
 from mserver.player import playlist
 from mserver.socket_server.utils import emit
-
+from mserver.socket_server.decorators import emit_socket_error
 
 def on_connect():
     if current_identity:
