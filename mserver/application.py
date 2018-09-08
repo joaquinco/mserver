@@ -16,7 +16,7 @@ from mserver import settings
 
 
 def create_app():
-    app = Flask(__name__, template_folder='../dist', static_folder='../dist/static')
+    app = Flask(__name__, template_folder='../webapp', static_folder='../webapp/static')
     app.config.from_object('mserver.settings')
 
     return app
@@ -142,6 +142,6 @@ celery = get_celery(app)
 do_setup(app)
 
 
-def run_server():
+def run_server(*args, **kwargs):
     eventlet.monkey_patch()
-    socketio.run(app, host='0.0.0.0')
+    socketio.run(app, *args, **kwargs)

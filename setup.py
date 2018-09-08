@@ -3,6 +3,11 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+with open('requirements.txt', 'r') as fh:
+    install_requires = [line.strip() for line in fh]
+
+print(install_requires)
+
 setuptools.setup(
     name='mserver',
     version='0.0.1',
@@ -21,16 +26,10 @@ setuptools.setup(
         'Environment :: Web Environment',
         'Topic :: Multimedia :: Sound/Audio',
     ],
-
-
+    install_requires=install_requires,
     include_package_data=True,
-    install_requires=[
-        'flask',
-    ],
-    setup_requires=[
-        'pytest-runner',
-    ],
-    tests_require=[
-        'pytest',
-    ],
+    package_data={
+        '': ['*.txt'],
+        'doc': ['*'], 'webapp': ['*']
+    }
 )

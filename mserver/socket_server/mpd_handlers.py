@@ -28,7 +28,7 @@ mpd_event_handlers = {
 }
 
 
-def listen_mpd():
+def listen_mpd(*args, **kwargs):
     def callback(event):
         mpd_event_handlers.get(event)()
 
