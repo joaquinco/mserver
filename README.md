@@ -1,4 +1,4 @@
-# Music web server
+# Music Web Server
 
 Web server that works as a shared frontend to Music Player Daemon.
 
