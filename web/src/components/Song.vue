@@ -1,36 +1,29 @@
 <template>
-  <div>
-    <div class="d-flex flex-row song-row justify-content-start align-items-center"
-      :class="{'song-clickable': canSelect}">
-      <strong class="song-position">{{getSongPosition(song)}}</strong>
-      <div class="d-flex flex-row justify-content-between song-info" @click="onSelect()">
-        <div class="d-flex flex-column" :class="{'not-available': !song.available}">
-          <span class="title">{{song.title}}</span>
-          <span class="artist" v-if="song.artist">{{song.artist}}</span>
-        </div>
-      </div>
-      <span class="duration">{{song.duration}}</span>
-      <span class="icon icon-actions noselect" v-show="hasOtherActions" @click="toggleShowActions()"></span>
+  <div class="song">
+    <div class="song__body" :class="{'song--clickable': canSelect, 'song--not-available': !song.available}">
+      <strong class="song__position">{{getSongPosition(song)}}</strong>
+      <span class="song__name" @click="onSelect()">{{song.title}}</span>
+      <span class="song__duration">{{song.duration}}</span>
+      <span class="icon song__actions-icon" v-show="hasOtherActions" @click="toggleShowActions()"></span>
     </div>
-    <div v-if="actionsVisible">
-      <div class="d-flex flex-row justify-content-center align-items-center">
-        <button
-          class='action-button'
-          v-for="action in otherActions"
-          @click.prevent="onSongAction(action.name)"
-          type="button"
-          :key="action.name">
-          {{action.label}}
-        </button>
-      </div>
+    <div class="song__actions" v-if="actionsVisible">
+      <button
+        class='song__action-button'
+        v-for="action in otherActions"
+        @click.prevent="onSongAction(action.name)"
+        type="button"
+        :key="action.name">
+        {{action.label}}
+      </button>
     </div>
   </div>
 </template>
 
 <script>
-const POSSTIBLE_OTHER_ACTIONS = [
+const POSSIBLE_OTHER_ACTIONS = [
   { name: 'remove', label: 'Quitar', validator: song => true },
-  { name: 'download', label: 'Download', validator: song => !song.available }
+  { name: 'download', label: 'Solo descargar', validator: song => !song.available },
+  { name: 'playnext', label: 'Reproducir siguiente', validator: song => song.available }
 ]
 
 export default {
@@ -65,7 +58,7 @@ export default {
       return this.otherActions.length
     },
     otherActions() {
-      var ret = POSSTIBLE_OTHER_ACTIONS.filter(
+      var ret = POSSIBLE_OTHER_ACTIONS.filter(
         obj => this.actions.includes(obj.name) && obj.validator(this.song)
       )
       return ret
@@ -113,60 +106,59 @@ export default {
 }
 </script>
 
-<style scoped>
-.song-row {
-  padding: 10px 10px 10px 0;
-  border-bottom: 1px solid rgba(178, 178, 178, 0.23);
-}
+<style lang="scss" scoped>
+.song {
+  .song__body {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
 
-.song-clickable {
-  cursor: pointer;
-}
+  &--clickable {
+    .song__name {
+      cursor: pointer;
+    }
 
-.song-clickable:hover {
-  background: linear-gradient(90deg, white, rgba(193, 193, 193, 0.26), white);
-}
+    .song__body {
+      &:active {
+        background: linear-gradient(90deg, white, rgba(193, 193, 193, 0.1), white);
+      }
+    }
+  }
 
-.song-clickable:active {
-  background: linear-gradient(90deg, white, rgba(193, 193, 193, 0.1), white);
-}
+  &--not-available {
+    .song__name {
+      opacity: 0.6;
+    }
+  }
 
-.song-info {
-  flex: 1;
-}
+  .song__position {
+    margin-right: 10px
+  }
 
-.not-available {
-  opacity: 0.6;
-}
+  .song__name {
+    flex: 1;
+    font-size: 0.8em;
+    text-overflow: clip;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
 
-.song-row:last-child {
-  border-bottom: none;
-}
+  .song__actions-icon {
+    content: url("/static/icons/more.svg");
+  }
 
-.artist,
-.title {
-  text-overflow: clip;
-}
+  .song__actions {
+    border-top: 1px solid rgba(178, 178, 178, 0.23);
+    display: flex;
+    flex: row;
+    justify-content: space-around;
+  }
 
-.title {
-  font-size: 0.8em;
-}
-
-.artist {
-  font-size: 0.6em;
-  color: #b2b2b2;
-}
-
-.icon-actions {
-  content: url("/static/icons/more.svg");
-}
-
-.action-button {
-  border: none;
-  padding: 0 10px;
-  margin: 0;
-}
-.song-position {
-  margin: 0 10px;
+  .song__action-button {
+    border: none;
+    padding: 0 10px;
+    margin: 0;
+  }
 }
 </style>

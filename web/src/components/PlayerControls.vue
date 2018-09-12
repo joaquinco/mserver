@@ -17,7 +17,7 @@
       <Volume class='volume-wrapper' @change='onVolumeChange' :value='status.volume'/>
       <div class='d-flex flex-row justify-content-around player-other-buttons'>
         <span class='text-toggle' :class='{disbled: !isRepeatOn}' @click='toggleRepeat()'>Repetir</span>
-        <span class='text-toggle' :class='{disbled: !isShuffleOn}' @click='toggleShuffle()'>Shuffle</span>
+        <span class='text-toggle' :class='{disbled: !isShuffleOn}' @click='toggleShuffle()'>Aleatorio</span>
       </div>
       <!-- Progress bar -->
     </div>
