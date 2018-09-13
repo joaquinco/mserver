@@ -59,14 +59,16 @@ def _get_song(source, search_id, user_id):
     return song
 
 
-def add(source, search_id, user_id):
+def add(source, search_id, user_id, play_next=False):
     """
     Adds a song to playlist
     """
     song = _get_song(source, search_id, user_id)
 
-    print(song.path)
-    mpd_utils.add(song.path)
+    if play_next:
+        mpd_utils.cmd('insert', song.path)
+    else:
+        mpd_utils.add(song.path)
 
     socketio.emit('player.song_added', marshal(song, song_list_marshal))
 

@@ -2,7 +2,7 @@
   <div class="w-100 d-flex flex-column align-items-center">
     <SongList :songs='songs' v-if="songsExist" songActions='select,remove'
             @song-selected="onSongSelected" :isSongHighlighted="isSongCurrent"/>
-    <h4 v-if="!songsExist">Agregá canciones gil</h4>
+    <h4 v-if="!songsExist">Agregá canciones</h4>
   </div>
 </template>
 

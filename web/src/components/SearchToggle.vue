@@ -23,7 +23,7 @@
           <SongList v-if="value.length"
             :songs="value"
             @song-selected="onSongSelected"
-            songActions='select,download'/>
+            songActions='select,download,playnext'/>
         </div>
       </div>
     </div>
@@ -74,7 +74,8 @@ export default {
       'clearSearchResults',
       'setSearchSources',
       'downloadSong',
-      'addSong'
+      'addSong',
+      'addSongNext'
     ]),
     globalSearch() {
       this.clearResults()
@@ -172,8 +173,7 @@ export default {
       alert(error)
     },
     onSongSelected({ song, action }) {
-      console.log(song, action)
-      let actions = { download: this.downloadSong, select: this.addSong }
+      let actions = { download: this.downloadSong, select: this.addSong, playnext: this.addSongNext }
       actions[action](song)
     }
   }

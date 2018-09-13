@@ -1,3 +1,5 @@
+from functools import partial
+
 from flask_jwt import current_identity
 from flask_jwt import jwt_required
 
@@ -5,7 +7,7 @@ from mserver import mpd_utils, tasks
 from mserver.application import socketio
 from mserver.player import playlist
 from mserver.socket_server.utils import emit
-from mserver.socket_server.decorators import emit_socket_error
+
 
 def on_connect():
     if current_identity:
@@ -18,13 +20,16 @@ def on_disconnect():
     emit('user.left', {'message': '{} disconnected'.format(current_identity.username)}, broadcast=True)
 
 
-def add_song_to_playlist(data):
+def add_song_to_playlist(data, play_next=False):
     source = data.get('source')
     search_id = data.get('search_id')
 
     user_id = current_identity.id
 
-    tasks.song_add.delay(source, search_id, user_id)
+    tasks.song_add.delay(source, search_id, user_id, play_next)
+
+
+add_next_song_to_playlist = partial(add_song_to_playlist, play_next=True)
 
 
 def just_download_song(data):
@@ -81,6 +86,7 @@ events = [
 
     # Other more complex
     ('player.add_song', True, add_song_to_playlist),
+    ('player.add_song_next', True, add_next_song_to_playlist),
     ('player.download_song', True, just_download_song),
 ]
 

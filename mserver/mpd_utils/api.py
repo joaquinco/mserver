@@ -1,6 +1,6 @@
 import datetime
 
-from mpd import MPDClient
+from .client import MServerMPDClient
 
 from mserver.settings import MPD_SERVER_CONF
 from utils.functional import compose
@@ -44,7 +44,7 @@ def _normalize_mpd_response(method):
 
 class _MPDClientWrapper(object):
     def __init__(self, *args, **kwargs):
-        self.client = MPDClient(*args, **kwargs)
+        self.client = MServerMPDClient(*args, **kwargs)
 
     def connect(self):
         self.client.connect(MPD_SERVER_CONF.get('host'), MPD_SERVER_CONF.get('port'))
@@ -199,3 +199,9 @@ def delete(conn, pos):
 def setvol(conn, vol):
     """Sets volume"""
     conn.setvol(vol)
+
+
+@_with_mpd_client
+def cmd(conn, cmd_name, *args):
+    """Calls arbitrary command"""
+    return getattr(conn, cmd_name)(*args)
