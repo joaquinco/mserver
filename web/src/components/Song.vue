@@ -22,8 +22,16 @@
 <script>
 const POSSIBLE_OTHER_ACTIONS = [
   { name: 'remove', label: 'Quitar', validator: song => true },
-  { name: 'download', label: 'Solo descargar', validator: song => !song.available },
-  { name: 'playnext', label: 'Reproducir siguiente', validator: song => song.available }
+  {
+    name: 'download',
+    label: 'Solo descargar',
+    validator: song => !song.available
+  },
+  {
+    name: 'playnext',
+    label: 'Reproducir siguiente',
+    validator: song => song.available
+  }
 ]
 
 export default {
@@ -121,7 +129,12 @@ export default {
 
     .song__body {
       &:active {
-        background: linear-gradient(90deg, white, rgba(193, 193, 193, 0.1), white);
+        background: linear-gradient(
+          90deg,
+          white,
+          rgba(193, 193, 193, 0.1),
+          white
+        );
       }
     }
   }
@@ -133,7 +146,7 @@ export default {
   }
 
   .song__position {
-    margin-right: 10px
+    margin-right: 10px;
   }
 
   .song__name {
