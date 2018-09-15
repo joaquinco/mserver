@@ -3,7 +3,7 @@
     <div class="d-flex flex-column container-sm">
       <div class="d-flex flex-row align-items-center">
         <form @submit.prevent="globalSearch()" class="d-flex flex-row align-items-center col">
-          <input class="w-100" type=search v-model="query" placeholder="Buscar" @focus="onSearchFocus"/>
+          <input class="w-100 search-input" type=search v-model="query" placeholder="Buscar" @focus="onSearchFocus"/>
           <a v-if="searchActive" class="close ml-2" href="" @click.prevent.stop="cancelSearch">Cancelar</a>
         </form>
         <NotificationsButton v-if="!searchActive"/>
@@ -173,7 +173,11 @@ export default {
       alert(error)
     },
     onSongSelected({ song, action }) {
-      let actions = { download: this.downloadSong, select: this.addSong, playnext: this.addSongNext }
+      let actions = {
+        download: this.downloadSong,
+        select: this.addSong,
+        playnext: this.addSongNext
+      }
       actions[action](song)
     }
   }
@@ -192,7 +196,7 @@ export default {
   margin-bottom: 0;
 }
 
-input {
+.search-input {
   border-radius: 10px;
   margin-bottom: 0;
   height: 34px;

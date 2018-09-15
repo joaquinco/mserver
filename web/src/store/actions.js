@@ -78,16 +78,26 @@ const actions = {
     )
     commit('setSearchResults', { source: song.source, results: remainingSongs })
   },
+  setSongAsAdded({ state, commit }, { source, search_id }) {
+    const searchedSongs = state.search.results[source]
+    const newSearchList = searchedSongs.map(song => {
+      if (song.search_id === search_id) {
+        return { ...song, isAlreadySelected: true }
+      }
+      return song
+    })
+    commit('setSearchResults', { source: source, results: newSearchList })
+  },
   downloadSong({ state }, song) {
     state.comm.socket.emit('player.download_song', song)
   },
   addSong({ state, dispatch }, song) {
     state.comm.socket.emit('player.add_song', song)
-    dispatch('removeSongFromSearchList', song)
+    dispatch('setSongAsAdded', song)
   },
   addSongNext({ state, dispatch }, song) {
     state.comm.socket.emit('player.add_song_next', song)
-    dispatch('removeSongFromSearchList', song)
+    dispatch('setSongAsAdded', song)
   },
   refreshPlaylist({ state, commit }) {
     state.comm.api.playlist.get().then(response => {

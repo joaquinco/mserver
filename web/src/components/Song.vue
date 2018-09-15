@@ -1,6 +1,9 @@
 <template>
   <div class="song">
-    <div class="song__body" :class="{'song--clickable': canSelect, 'song--not-available': !song.available}">
+    <div
+      class="song__body"
+      :class="{'song--clickable': canSelect, 'song--not-available': !song.available, 'song--already-added': song.isAlreadySelected}"
+      >
       <strong class="song__position">{{getSongPosition(song)}}</strong>
       <span class="song__name" @click="onSelect()">{{song.title}}</span>
       <span class="song__duration">{{song.duration}}</span>
@@ -60,10 +63,10 @@ export default {
   },
   computed: {
     canSelect() {
-      return this.actions.includes('select')
+      return this.actions.includes('select') && !this.song.isAlreadySelected
     },
     hasOtherActions() {
-      return this.otherActions.length
+      return this.otherActions.length && !this.song.isAlreadySelected
     },
     otherActions() {
       var ret = POSSIBLE_OTHER_ACTIONS.filter(
@@ -80,6 +83,10 @@ export default {
       this.onSongAction('select')
     },
     onSongAction(action) {
+      if (this.song.isAlreadySelected) {
+        return
+      }
+
       let event = {
         action,
         song: this.song,
@@ -142,6 +149,22 @@ export default {
   &--not-available {
     .song__name {
       opacity: 0.6;
+    }
+  }
+
+  &--already-added {
+    position: relative;
+
+    .song__name {
+      opacity: 0.2;
+    }
+
+    &::after {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      position: absolute;
+      content: "Agregada";
     }
   }
 
