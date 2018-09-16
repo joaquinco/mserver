@@ -1,5 +1,5 @@
 <template>
-<div class='notifications' :class='{visible}'>
+<div class='notifications' v-if='visible'>
   <div class='d-flex flex-column justify-content-start' v-if='visible'>
     <div class='notification-header d-flex flex-row justify-content-between mx-4'>
       <strong class='mr-4'>Notificaciones</strong>
@@ -42,6 +42,13 @@ export default {
   right: 10px;
   top: 10px;
   z-index: 3;
+  background-color: white;
+  box-shadow: 0px 0px 10px #919191;
+  padding: 10px 0;
+  overflow-y: auto;
+  max-height: 100%;
+  top: 0;
+  right: 0;
 }
 .toggle {
   border-radius: 10px;
@@ -55,18 +62,9 @@ export default {
 .toggle:hover {
   font-weight: bold;
 }
-.visible {
-  background-color: white;
-  box-shadow: 0px 0px 10px #919191;
-  padding: 10px 0;
-  overflow-y: auto;
-  max-height: 100%;
-  top: 0;
-  right: 0;
-}
 
 @media (max-width: 576px) {
-  .visible {
+  .notifications {
     width: 100vw;
   }
 }
