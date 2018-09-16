@@ -37,9 +37,9 @@ def generate_search_query(term, category=MUSIC_CATEGORYID, order=ORDER, duration
         'order': order,
         'part': 'id,snippet',
         'type': 'video',
-        'videoDuration': duration,
+        # 'videoDuration': duration,
         'key': API_KEY,
-        'videoCategoryId': category
+        # 'videoCategoryId': category
     }
 
     return qs

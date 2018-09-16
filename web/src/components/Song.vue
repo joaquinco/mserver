@@ -3,11 +3,11 @@
       class="song"
       :class="{'song--clickable': canSelect, 'song--not-available': !song.available, 'song--already-added': song.isAlreadySelected}"
   >
-    <div class="song__body">
+    <div class="song__body" @click="onSelect()">
       <strong class="song__position">{{getSongPosition(song)}}</strong>
-      <span class="song__name" @click="onSelect()">{{song.title}}</span>
+      <span class="song__name">{{song.title}}</span>
       <span class="song__duration">{{song.duration}}</span>
-      <span class="icon song__actions-icon" v-show="hasOtherActions" @click="toggleShowActions()"></span>
+      <span class="icon song__actions-icon" v-show="hasOtherActions" @click.stop="toggleShowActions()"></span>
     </div>
     <div class="song__actions" v-if="actionsVisible">
       <button
@@ -135,19 +135,8 @@ export default {
   }
 
   &--clickable {
-    .song__name {
-      cursor: pointer;
-    }
-
     .song__body {
-      &:active {
-        background: linear-gradient(
-          90deg,
-          white,
-          rgba(193, 193, 193, 0.1),
-          white
-        );
-      }
+      cursor: pointer;
     }
   }
 
