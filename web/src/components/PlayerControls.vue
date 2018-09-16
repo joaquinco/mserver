@@ -3,6 +3,7 @@
     <ApiError :errorResponse="error"/>
     <div v-show='loaded && !error' class='d-flex flex-column align-items-center w-100'>
       <p class='song-title mb-0'>{{currentSongTitle}}</p>
+      <span>{{currentSongPosition}}</span>
       <div  class='d-flex flex-row justify-content-center player-controls'>
         <button class='button button-left' @click.prevent='previous()'>
           <span class='prev'></span>
@@ -43,7 +44,8 @@ export default {
       api: state => state.comm.api,
       socket: state => state.comm.socket,
       current: state => state.playlist.current,
-      status: state => state.player.status
+      status: state => state.player.status,
+      stats: state => state.player.stats
     }),
     isPlaying() {
       return this.status.state === 'play'
@@ -55,7 +57,21 @@ export default {
       return this.status.state === 'pause'
     },
     currentSongTitle() {
-      return this.current.title || '...'
+      const { song } = this.status
+      return song && this.current.title || '...'
+    },
+    currentSongPosition() {
+      const { song, playlistlength } = this.status
+
+      let songPos = '-'
+
+      let playlistLengthInt = playlistlength && parseInt(playlistlength) || 0
+
+      if (song) {
+        songPos = parseInt(song) + 1
+      }
+
+      return `${songPos}/${playlistLengthInt > 0 ? playlistLengthInt : '-'}`
     },
     isShuffleOn() {
       return this.status && this.status.random

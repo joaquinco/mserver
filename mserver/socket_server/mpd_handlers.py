@@ -17,6 +17,7 @@ def emit_full_player_state(broadcast=False):
 
 
 def emit_playlist_changed(broadcast=True):
+    emit_player_status(broadcast=broadcast)
     emit('player.playlist_changed', broadcast=broadcast)
 
 
