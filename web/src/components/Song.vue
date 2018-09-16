@@ -19,6 +19,7 @@
         {{action.label}}
       </button>
     </div>
+    <div class="song__overlay"><span>Agregada</span></div>
   </div>
 </template>
 
@@ -129,6 +130,10 @@ export default {
     align-items: center;
   }
 
+  .song__overlay {
+    display: none;
+  }
+
   &--clickable {
     .song__name {
       cursor: pointer;
@@ -162,17 +167,18 @@ export default {
       opacity: 0.2;
     }
 
-    &::after {
+    .song__overlay {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
       top: 0;
       left: 0;
       position: absolute;
-      font-weight: bold;
-      letter-spacing: 2px;
       height: 100%;
       width: 100%;
-      text-align: center;
-      vertical-align: middle;
-      content: "Agregada";
+      font-weight: bold;
+      letter-spacing: 2px;
     }
   }
 
