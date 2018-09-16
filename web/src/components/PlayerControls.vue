@@ -58,14 +58,14 @@ export default {
     },
     currentSongTitle() {
       const { song } = this.status
-      return song && this.current.title || '...'
+      return song ? this.current.title : '...'
     },
     currentSongPosition() {
       const { song, playlistlength } = this.status
 
       let songPos = '-'
 
-      let playlistLengthInt = playlistlength && parseInt(playlistlength) || 0
+      let playlistLengthInt = playlistlength ? parseInt(playlistlength) : 0
 
       if (song) {
         songPos = parseInt(song) + 1
