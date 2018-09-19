@@ -12,9 +12,15 @@ def format_int_duration(value):
 
 
 def mpd_convert_to_song(data, available=True):
+    """
+    Converts an mpd song result to a mserver Song.
+    """
+    field_override = ['id', 'title']
 
     mpd_song = copy.deepcopy(data)
-    mpd_song.pop('id', None)
+
+    [mpd_song.pop(field, None) for field in field_override]
+
     file = mpd_song.pop('file')
     time = mpd_song.pop('time', None)
     duration = time and format_int_duration(int(time))
