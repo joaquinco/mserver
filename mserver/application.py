@@ -58,13 +58,18 @@ def setup_logging(app):
 
     get_log_file = partial(os.path.join, settings.LOG_DIR)
 
-    root = logging.getLogger()
-    root.addHandler(RotatingFileHandler(get_log_file('general.log')))
-    root.setLevel(settings.LOG_LEVEL)
+    log_formatter = logging.Formatter('%(asctime)s %(message)s')
 
-    for entry in settings.LOGGERS:
+    loggers = [None] + settings.LOGGERS
+
+    for entry in loggers:
         logger = logging.getLogger(entry)
-        logger.addHandler(RotatingFileHandler(get_log_file('{0}.log'.format(entry))))
+
+        handler = RotatingFileHandler(get_log_file('{0}.log'.format(entry or 'general')))
+
+        handler.setFormatter(log_formatter)
+
+        logger.addHandler(handler)
         logger.setLevel(settings.LOG_LEVEL)
 
     app.logger.addHandler(RotatingFileHandler(get_log_file('mserver.log')))
@@ -109,9 +114,10 @@ def handle_user_exception_again(e):
 
 
 def get_socketio(app=None):
-    kwargs = dict(message_queue=settings.SOCKETIO_REDIS_URL)
+    kwargs = dict(message_queue=settings.SOCKETIO_REDIS_URL, logger=logging.getLogger('mserver.socketio'))
     if app:
         kwargs['async_mode'] = app.config['SOCKETIO_ASYNC_MODE']
+
     return SocketIO(app, **kwargs)
 
 

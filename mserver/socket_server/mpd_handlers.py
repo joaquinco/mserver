@@ -6,11 +6,6 @@ from mserver.socket_server.handlers import emit_player_status, emit_player_curre
 from mserver.socket_server.utils import emit
 
 
-@socketio.on_error()
-def error_handler(e):
-    print('Error encountered ' + str(e))
-
-
 def emit_full_player_state(broadcast=False):
     emit_player_status(broadcast=broadcast)
     emit_player_currentsong(broadcast=broadcast)

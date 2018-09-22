@@ -1,9 +1,8 @@
 import datetime
 
-from .client import MServerMPDClient
-
 from mserver.settings import MPD_SERVER_CONF
 from utils.functional import compose
+from .client import create_mpd_client
 
 
 def _mpd_bool(value):
@@ -44,7 +43,7 @@ def _normalize_mpd_response(method):
 
 class _MPDClientWrapper(object):
     def __init__(self, *args, **kwargs):
-        self.client = MServerMPDClient(*args, **kwargs)
+        self.client = create_mpd_client(*args, **kwargs)
 
     def connect(self):
         self.client.connect(MPD_SERVER_CONF.get('host'), MPD_SERVER_CONF.get('port'))
@@ -56,6 +55,9 @@ class _MPDClientWrapper(object):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.client.close()
         self.client.disconnect()
+
+    def __getattr__(self, item):
+        return getattr(self.client, item)
 
 
 def get_client():
@@ -106,6 +108,19 @@ def add(conn, file):
     Adds song to current playlist
     """
     conn.add(file)
+
+
+@_with_mpd_client
+def insert(conn, file):
+    """Add a song to play next"""
+
+    currentpos = conn.currentsong().get('pos')
+
+    if currentpos:
+        pos = int(currentpos)
+        conn.addid(file, pos + 1)
+    else:
+        conn.add(file)
 
 
 @_with_mpd_client

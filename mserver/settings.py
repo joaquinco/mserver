@@ -25,7 +25,7 @@ for directory in [MUSIC_DIR, LOG_DIR]:
         os.mkdir(directory)
 
 LOGGERS = [
-    'mpd', 'mpd_listener', 'celery.task'
+    'mpd', 'mpd_listener', 'celery.task', 'mserver', 'mserver.socketio'
 ]
 
 JWT_AUTH_URL_RULE = None

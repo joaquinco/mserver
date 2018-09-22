@@ -1,8 +1,20 @@
-from mpd.base import mpd_commands, MPDClient, mpd_command_provider
+import logging
+
+from mpd.base import MPDClient
+
+logger = logging.getLogger('mpd')
 
 
-@mpd_command_provider
-class MServerMPDClient(MPDClient):
-    @mpd_commands('insert')
-    def nop(self, lines):
-        pass
+def create_mpd_client(*args, **kwargs):
+    client = MPDClient(*args, **kwargs)
+
+    _customize(client)
+
+    return client
+
+
+def _customize(c):
+    """
+    Add commands to mpd client
+    """
+    pass

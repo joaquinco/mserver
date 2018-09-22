@@ -1,9 +1,9 @@
 from flask_restful import marshal
 
 from mserver import mpd_utils
+from mserver.application import socketio
 from mserver.database import db
 from mserver.marshals import song_list_marshal, dummy_song_playlist_list_marshal
-from mserver.application import socketio
 from mserver.player import search
 from mserver.player.utils import mpd_convert_to_song
 
@@ -66,7 +66,7 @@ def add(source, search_id, user_id, play_next=False):
     song = _get_song(source, search_id, user_id)
 
     if play_next:
-        mpd_utils.cmd('insert', song.path)
+        mpd_utils.insert(song.path)
     else:
         mpd_utils.add(song.path)
 
@@ -84,7 +84,8 @@ def get_current_song():
     """
     Returns current song
     """
-    return mpd_convert_to_song(mpd_utils.currentsong())
+    currsong = mpd_utils.currentsong()
+    return currsong and mpd_convert_to_song(currsong)
 
 
 def get_current_song_marshaled():

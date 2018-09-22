@@ -4,6 +4,8 @@ import traceback
 from mserver.application import socketio
 from mserver.exceptions import MServerException
 
+logger = logging.getLogger('mserver')
+
 
 def emit_socket_error(error_key):
     """
@@ -17,7 +19,8 @@ def emit_socket_error(error_key):
             try:
                 return wrapped(*args, **kwargs)
             except Exception as e:
-                logging.error('Socket error: %s', traceback.print_exc())
+                logger.error(traceback.print_exc())
+
                 context = {}
                 if isinstance(e, MServerException):
                     context = e.context
@@ -26,4 +29,5 @@ def emit_socket_error(error_key):
         wrapper.__name__ = wrapped.__name__
 
         return wrapper
+
     return decorator
