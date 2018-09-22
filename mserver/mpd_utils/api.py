@@ -57,9 +57,6 @@ class _MPDClientWrapper(object):
         self.client.close()
         self.client.disconnect()
 
-    def __getattr__(self, item):
-        return getattr(self.client, item)
-
 
 def get_client():
     """
@@ -90,14 +87,9 @@ def playlist(conn):
     """
     Returns songs of current playlist.
 
-    Each song is {'file': 'File name'}
+    Each song is {'file': 'File name', ...}
     """
-    ret = []
-    for index, item in enumerate(conn._parse_database(conn.playlist())):
-        item['pos'] = index
-        ret.append(item)
-
-    return ret
+    return conn.playlistinfo()
 
 
 @_with_mpd_client
