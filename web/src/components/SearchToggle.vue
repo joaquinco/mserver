@@ -112,19 +112,28 @@ export default {
     },
     onSearchFocus() {
       if (!this.searchActive) {
-        this.toggleBodyScroll()
+        this.toggleBodyScrollV2(true)
       }
       this.searchActive = true
     },
     cancelSearch() {
       this.searchActive = this.searched = false
       this.query = ''
-      this.toggleBodyScroll()
+      this.toggleBodyScrollV2(false)
       this.clearSearchResults()
     },
     clearResults() {
       this.clearSearchResults()
       this.resetSourceSearched(this.searchSources)
+    },
+    toggleBodyScrollV2(isAdd) {
+      let elem = document.getElementsByTagName('body')[0]
+      const className = 'overflow-hidden'
+      if (isAdd) {
+        elem.classList.add(className)
+      } else {
+        elem.classList.remove(className)
+      }
     },
     toggleBodyScroll() {
       let elem = document.getElementsByTagName('body')[0]
