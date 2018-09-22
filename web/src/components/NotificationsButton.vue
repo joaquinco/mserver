@@ -30,7 +30,6 @@ export default {
 <style scoped>
 .icon-notification {
   content: url("/static/icons/info.svg");
-  padding: 1px 0;
 }
 
 .notification-wrapper {

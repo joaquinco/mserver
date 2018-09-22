@@ -1,8 +1,8 @@
 <template>
-  <div class="w-100 d-flex flex-column align-items-center">
+  <div class="w-100 d-flex flex-column">
+    <h2 v-if="!songsExist" class="w-100 center-text">Agregá canciones</h2>
     <SongList :songs='songs' v-if="songsExist" songActions='select,remove'
             @song-selected="onSongSelected" :isSongHighlighted="isSongCurrent"/>
-    <h4 v-if="!songsExist">Agregá canciones</h4>
   </div>
 </template>
 
@@ -15,7 +15,7 @@ export default {
   components: { SongList },
   data() {
     return {
-      loading: false,
+      loaded: false,
       error: null
     }
   },
@@ -36,10 +36,14 @@ export default {
   methods: {
     ...mapMutations(['setCurrentPlaylistSongs']),
     fetchPlaylistSongs() {
-      this.api.playlist.get().then(response => {
-        this.setCurrentPlaylistSongs(response.data)
+      if (this.songs.length) {
         this.loaded = true
-      })
+      } else {
+        this.api.playlist.get().then(response => {
+          this.setCurrentPlaylistSongs(response.data)
+          this.loaded = true
+        })
+      }
     },
     onSongSelected({ song, action }) {
       if (action === 'select') {

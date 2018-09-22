@@ -1,6 +1,6 @@
 <template>
   <div class='container-sm d-flex flex-column justfy-content-around'>
-    <SearchToggle class='pt-3 search-toggle'/>
+    <Header class='pt-3' title='Playlist'/>
     <Playlist class="player-content mt-3"/>
     <PlayerControls class='player-controls'/>
     <Notifications/>
@@ -8,8 +8,8 @@
 </template>
 <script>
 import { mapState } from 'vuex'
+import Header from '@/components/Header'
 import PlayerControls from '@/components/PlayerControls'
-import SearchToggle from '@/components/SearchToggle'
 import Playlist from '@/components/Playlist'
 import Notifications from '@/components/Notifications'
 
@@ -17,9 +17,9 @@ export default {
   name: 'Player',
   components: {
     PlayerControls,
-    SearchToggle,
     Playlist,
-    Notifications
+    Notifications,
+    Header
   },
   computed: {
     ...mapState({
@@ -41,7 +41,6 @@ export default {
 .player-content {
   flex: 1;
   padding-bottom: 160px;
-  padding-top: 50px;
 }
 
 .player-controls {

@@ -185,6 +185,7 @@ export default {
 
   .song__actions-icon {
     content: url("/static/icons/more.svg");
+    padding: 7px 1px;
   }
 
   .song__actions {

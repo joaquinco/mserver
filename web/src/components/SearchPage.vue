@@ -1,16 +1,16 @@
 <template>
-  <div class="container-search" :class="{'search-fullpage': searchActive}">
+  <div class="container-search pt-3">
     <div class="d-flex flex-column container-sm">
       <div class="d-flex flex-row align-items-center">
         <form @submit.prevent="globalSearch()" class="d-flex flex-row align-items-center col">
-          <input class="w-100 search-input" type=search v-model="query" placeholder="Buscar" @focus="onSearchFocus"/>
-          <a v-if="searchActive" class="close ml-2" href="" @click.prevent.stop="cancelSearch">Cancelar</a>
+          <input class="w-100 search-input" type=search v-model="query" placeholder="Buscar"/>
+          <router-link class="close ml-2" to="/player">Cancelar</router-link>
         </form>
-        <NotificationsButton v-if="!searchActive"/>
       </div>
-      <div v-if="searchActive" class="search-results d-flex flex-column mt-4">
+      <div class="search-results d-flex flex-column mt-4">
         <div v-if="loadingSources">Cargando fuentes...</div>
         <LoadingLine :is-loading="globalSearching"/>
+        <h3 v-if='saerchedQuery && searched && !globalSearching'>Q: {{saerchedQuery}}</h3>
         <div v-for="(value, key) in searchResults" v-if="!globalSearching && searched" :key="key">
           <div class="d-flex flex-row justify-content-between">
             <h5 class="source-title">Desde {{key}}</h5>
@@ -39,12 +39,12 @@ import LoadingButton from '@/components/LoadingButton'
 import NotificationsButton from '@/components/NotificationsButton'
 
 export default {
-  name: 'SearchToggle',
+  name: 'SearchPage',
   components: { LoadingLine, SongList, LoadingButton, NotificationsButton },
   data() {
     return {
       query: '',
-      searchActive: false,
+      saerchedQuery: '',
       loadingSources: false,
       error: null,
       globalSearching: false,
@@ -83,6 +83,8 @@ export default {
       this.globalSearching = true
     },
     search(source) {
+      this.saerchedQuery = this.query
+
       let params = { query: this.query }
       if (source) {
         params.source = source
@@ -110,35 +112,14 @@ export default {
         executeAlso(this.onApiError, always)
       )
     },
-    onSearchFocus() {
-      if (!this.searchActive) {
-        this.toggleBodyScrollV2(true)
-      }
-      this.searchActive = true
-    },
     cancelSearch() {
-      this.searchActive = this.searched = false
+      this.searched = false
       this.query = ''
-      this.toggleBodyScrollV2(false)
       this.clearSearchResults()
     },
     clearResults() {
       this.clearSearchResults()
       this.resetSourceSearched(this.searchSources)
-    },
-    toggleBodyScrollV2(isAdd) {
-      let elem = document.getElementsByTagName('body')[0]
-      const className = 'overflow-hidden'
-      if (isAdd) {
-        elem.classList.add(className)
-      } else {
-        elem.classList.remove(className)
-      }
-    },
-    toggleBodyScroll() {
-      let elem = document.getElementsByTagName('body')[0]
-      const className = 'overflow-hidden'
-      elem.classList.toggle(className)
     },
     fetchSearchSources() {
       this.loadingSources = true
@@ -193,10 +174,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .container-search {
   background: white;
-  position: fixed;
   width: 100%;
   left: 0;
 }
@@ -209,12 +189,6 @@ export default {
   border-radius: 10px;
   margin-bottom: 0;
   height: 34px;
-}
-
-.search-fullpage {
-  height: 100vh;
-  overflow-y: auto;
-  z-index: 100;
 }
 
 .search-results {
