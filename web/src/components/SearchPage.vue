@@ -3,7 +3,7 @@
     <div class="d-flex flex-column container-sm">
       <div class="d-flex flex-row align-items-center">
         <form @submit.prevent="globalSearch()" class="d-flex flex-row align-items-center col">
-          <input class="w-100 search-input" type=search v-model="query" placeholder="Buscar"/>
+          <input class="w-100 search-input" type=search v-model="query" placeholder="Buscar" id='input-search'/>
           <router-link class="close ml-2" to="/player">Cancelar</router-link>
         </form>
       </div>
@@ -67,6 +67,8 @@ export default {
     } else {
       this.onSourcesLoaded(this.searchSources)
     }
+
+    this.focusInput()
   },
   methods: {
     ...mapMutations(['setSearchResults']),
@@ -111,11 +113,6 @@ export default {
         }, always),
         executeAlso(this.onApiError, always)
       )
-    },
-    cancelSearch() {
-      this.searched = false
-      this.query = ''
-      this.clearSearchResults()
     },
     clearResults() {
       this.clearSearchResults()
@@ -169,6 +166,9 @@ export default {
         playnext: this.addSongNext
       }
       actions[action](song)
+    },
+    focusInput() {
+      document.getElementById('input-search').focus()
     }
   }
 }
