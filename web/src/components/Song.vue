@@ -6,8 +6,10 @@
     <div class="song__body" @click="onSelect()">
       <strong class="song__position">{{getSongPosition(song)}}</strong>
       <span class="song__name">{{song.title}}</span>
-      <span class="song__duration">{{song.duration}}</span>
-      <span class="icon song__actions-icon" v-show="hasOtherActions" @click.stop="toggleShowActions()"></span>
+      <span @click.stop="toggleShowActions()" class="song__toggle-actions">
+        <span class="song__duration">{{song.duration}}</span>
+        <span class="icon song__actions-icon" v-show="hasOtherActions"></span>
+      </span>
     </div>
     <div class="song__actions" v-if="actionsVisible">
       <button
@@ -124,24 +126,24 @@ export default {
 
 <style lang="scss" scoped>
 .song {
-  .song__body {
+  &__body {
     display: flex;
     flex-direction: row;
     align-items: center;
   }
 
-  .song__overlay {
+  &__overlay {
     display: none;
   }
 
   &--clickable {
-    .song__body {
+    &__body {
       cursor: pointer;
     }
   }
 
   &--not-available {
-    .song__name {
+    &__name {
       opacity: 0.6;
     }
   }
@@ -149,14 +151,14 @@ export default {
   &--already-added {
     position: relative;
 
-    .song__name,
-    .song__position,
-    .song__duration,
-    .song__actions-icon {
+    &__name,
+    &__position,
+    &__duration,
+    &__actions-icon {
       opacity: 0.2;
     }
 
-    .song__overlay {
+    &__overlay {
       display: flex;
       flex-direction: row;
       justify-content: center;
@@ -171,11 +173,11 @@ export default {
     }
   }
 
-  .song__position {
+  &__position {
     margin-right: 10px;
   }
 
-  .song__name {
+  &__name {
     flex: 1;
     font-size: 0.8em;
     text-overflow: clip;
@@ -183,22 +185,28 @@ export default {
     padding-bottom: 10px;
   }
 
-  .song__actions-icon {
+  &__actions-icon {
     content: url("/static/icons/more.svg");
     padding: 7px 1px;
   }
 
-  .song__actions {
+  &__actions {
     border-top: 1px solid rgba(178, 178, 178, 0.23);
     display: flex;
     flex: row;
     justify-content: space-around;
   }
 
-  .song__action-button {
+  &__action-button {
     border: none;
     padding: 0 10px;
     margin: 0;
+  }
+
+  &__toggle-actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
 }
 </style>

@@ -1,9 +1,11 @@
 <template>
   <div class='header'>
+    <div class='container-sm header__content'>
       <h1 class='header__title'>{{title}}</h1>
       <div class='header__actions'>
         <router-link to='/search'><span class='header__entry icon icon-search'></span></router-link>
         <NotificationsButton class='header__entry'/>
+      </div>
     </div>
   </div>
 </template>
@@ -26,22 +28,29 @@ export default {
 
 <style lang='scss' scoped>
 .header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  box-shadow: 0px 0px 5px #919191;
+  padding-top: 10px;
+  padding-bottom: 10px;
 
-  &__entry {
-    margin-left: 10px;
-    margin-right: 10px;
+  &__content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
   }
 
   &__title {
+    flex: 1;
+    margin-bottom: 0;
+  }
 
+  &__entry {
+    margin-left: 10px;
   }
 
   &__actions {
     display: flex;
     flex-direction: row;
+    align-items: center;
   }
 }
 

@@ -1,11 +1,14 @@
 <template>
-  <div class='container-sm d-flex flex-column justfy-content-around'>
-    <Header class='pt-3' title='Playlist'/>
-    <Playlist class="player-content mt-3"/>
-    <PlayerControls class='player-controls'/>
-    <Notifications/>
+  <div>
+    <Header title='Playlist'/>
+    <div class='container-sm d-flex flex-column justfy-content-around'>
+      <Playlist class="player-content"/>
+      <PlayerControls class='player-controls'/>
+      <Notifications/>
+    </div>
   </div>
 </template>
+
 <script>
 import { mapState } from 'vuex'
 import Header from '@/components/Header'

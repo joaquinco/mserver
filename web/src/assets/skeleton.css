@@ -47,22 +47,20 @@
 /* For devices larger than 400px */
 @media (min-width: 400px) {
   .container-sm {
-    width: 80%;
-    padding: 0;
+    width: 100%;
   }
   .container {
-    width: 85%;
-    padding: 0;
+    width: 100%;
   }
 }
 
 /* For devices larger than 550px */
 @media (min-width: 550px) {
   .container-sm {
-    width: 70%;
+    width: 80%;
   }
   .container {
-    width: 80%;
+    width: 85%;
   }
   .column,
   .columns {
