@@ -3,7 +3,7 @@
     <div class='container-sm header__content'>
       <h1 class='header__title'>{{title}}</h1>
       <div class='header__actions'>
-        <router-link to='/search'><span class='header__entry icon icon-search'></span></router-link>
+        <router-link to='/search' class='header__entry'><div class='icon icon-search'></div></router-link>
         <NotificationsButton class='header__entry'/>
       </div>
     </div>
