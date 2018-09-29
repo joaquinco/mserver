@@ -137,13 +137,13 @@ export default {
   }
 
   &--clickable {
-    &__body {
+    .song__body {
       cursor: pointer;
     }
   }
 
   &--not-available {
-    &__name {
+    .song__name {
       opacity: 0.6;
     }
   }
@@ -151,14 +151,14 @@ export default {
   &--already-added {
     position: relative;
 
-    &__name,
-    &__position,
-    &__duration,
-    &__actions-icon {
+    .song__name,
+    .song__position,
+    .song__duration,
+    .song__actions-icon {
       opacity: 0.2;
     }
 
-    &__overlay {
+    .song__overlay {
       display: flex;
       flex-direction: row;
       justify-content: center;
