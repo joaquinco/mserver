@@ -188,6 +188,13 @@ def get_song_from_ytid(ytid):
     return Song(source=THIS_SOURCE, search_id=ytid, title=title)
 
 
+def _safe_transform(song_title):
+    """
+    Removes uncofortable characters from song title so it can be used as filename
+    """
+    return song_title.replace('/', '-')
+
+
 def youtube_download(search_id):
     """
     Download content from youtube.
@@ -198,6 +205,8 @@ def youtube_download(search_id):
 
     snippet = item.get('snippet', {})
     title = snippet.get('title', '').strip()
+
+    title = _safe_transform(title)
 
     filename_base = os.path.join(download_dir, title)
     filename = '{0}.{1}'.format(filename_base, AUDIO_FORMAT_EXTENSION)
