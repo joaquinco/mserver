@@ -4,18 +4,21 @@
     <div v-show='loaded && !error' class='d-flex flex-column align-items-center w-100'>
       <p class='song-title mb-0'>{{currentSongTitle}}</p>
       <span>{{currentSongPosition}}</span>
-      <div  class='d-flex flex-row justify-content-center player-controls'>
-        <button class='button button-left' @click.prevent='previous()'>
-          <span class='prev'></span>
-        </button>
-        <button class='button button-center' @click.prevent='playPause()'>
-          <span :class='{play: isPaused, pause: isPlaying, stop: isStoped}'></span>
-        </button>
-        <button class='button button-right' @click.prevent='next()'>
-          <span class='next'></span>
-        </button>
+      <div class="d-flex flex-row justify-content-around align-items-center w-100">
+        <span class='icon icon--sm player-settings'/>
+        <div class='d-flex flex-row justify-content-center player-controls'>
+          <button class='button button-left' @click.prevent='previous()'>
+            <span class='prev'></span>
+          </button>
+          <button class='button button-center' @click.prevent='playPause()'>
+            <span :class='{play: isPaused, pause: isPlaying, stop: isStoped}'></span>
+          </button>
+          <button class='button button-right' @click.prevent='next()'>
+            <span class='next'></span>
+          </button>
+        </div>
+        <VolumeV2 class='volume-wrapper' @change='onVolumeChange' :value='status.volume'/>
       </div>
-      <Volume class='volume-wrapper' @change='onVolumeChange' :value='status.volume'/>
       <div class='d-flex flex-row justify-content-around player-other-buttons'>
         <span class='text-toggle' :class='{disbled: !isRepeatOn}' @click='toggleRepeat()'>Repetir</span>
         <span class='text-toggle' :class='{disbled: !isShuffleOn}' @click='toggleShuffle()'>Aleatorio</span>
@@ -28,11 +31,11 @@
 <script>
 import { mapState, mapMutations } from 'vuex'
 import ApiError from '@/components/ApiError'
-import Volume from '@/components/Volume'
+import VolumeV2 from '@/components/VolumeV2'
 
 export default {
   name: 'PlayerControls',
-  components: { ApiError, Volume },
+  components: { ApiError, VolumeV2 },
   data() {
     return {
       loaded: false,
@@ -128,6 +131,7 @@ export default {
 }
 .player-controls {
   box-sizing: border-box;
+  align-items: center;
 }
 
 .button {
@@ -192,13 +196,14 @@ export default {
 .text-toggle:hover {
   opacity: 0.7;
 }
-
+.volume-wrapper {
+  display: inline-flex;
+}
+.player-settings {
+  content: url('/static/icons/player-configuration.svg');
+  border-radius: 0;
+}
 .text-toggle.disbled {
   text-decoration: line-through;
-}
-
-.volume-wrapper {
-  max-width: 200px;
-  width: 68%;
 }
 </style>

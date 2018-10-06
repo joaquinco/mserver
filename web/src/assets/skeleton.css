@@ -592,6 +592,9 @@ there.
   padding: 0;
   border-radius: 100%;
 }
+.icon--sm {
+  height: 20px;
+}
 .icon:active,
 .icon:hover {
   background-color: rgba(178, 178, 178, 0.1);
