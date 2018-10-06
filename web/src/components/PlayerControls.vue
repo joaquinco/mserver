@@ -4,7 +4,7 @@
     <div v-show='loaded && !error' class='d-flex flex-column align-items-center w-100'>
       <p class='song-title mb-0'>{{currentSongTitle}}</p>
       <span>{{currentSongPosition}}</span>
-      <div class="d-flex flex-row justify-content-around align-items-center w-100">
+      <div class="d-flex flex-row justify-content-around align-items-center player-controls-wrapper">
         <span class='icon icon--sm player-settings'/>
         <div class='d-flex flex-row justify-content-center player-controls'>
           <button class='button button-left' @click.prevent='previous()'>
@@ -129,6 +129,16 @@ export default {
   box-shadow: 0px 0px 5px #919191;
   width: 100%;
 }
+.player-controls-wrapper {
+  width: 50%;
+}
+
+@media (max-width: 800px) {
+  .player-controls-wrapper {
+    width: 100%;
+  }
+}
+
 .player-controls {
   box-sizing: border-box;
   align-items: center;
