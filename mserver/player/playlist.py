@@ -17,6 +17,15 @@ def just_download(source, search_id, user_id):
     socketio.emit('player.song_available', marshal(song, song_list_marshal))
 
 
+def _check_refetch_song(backend, search_id, user_id):
+    """
+    Check if a song should be fetched again.
+    """
+
+    # TODO: check if song is available, if error, if file exists, else redownload.
+    pass
+
+
 def _get_song(source, search_id, user_id):
     """
     Downloads a song if it's not available or being downloaded
