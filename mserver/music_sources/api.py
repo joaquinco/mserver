@@ -13,7 +13,7 @@ class _Sources(object):
 
     @classmethod
     def add(cls, source_class, is_default=False):
-        new_source = source_class(cls.configs.get(source_class.name))
+        new_source = source_class(config=cls.configs.get(source_class.name))
 
         cls.sources[source_class.name] = new_source
         if is_default:
@@ -25,6 +25,17 @@ class _Sources(object):
     def get(cls, name):
         return name and cls.sources.get(name) or cls.default_source
 
+    @classmethod
+    def list_info(cls):
+        """
+        Return list of available sources
+        """
+        if cls.default_source:
+            default_name = cls.default_source.name
+        else:
+            default_name = None
+
+        return [{'name': s.name, 'is_default': s.name == default_name} for s in cls.sources.values()]
 
 def _validate_source_class(klass):
     """
@@ -49,7 +60,7 @@ def init_music_sources(source_modules):
             klass = source_path
 
         _validate_source_class(klass)
-        _Sources.add(klass)(klass)
+        _Sources.add(klass)
 
     _Sources.add(LocalSource, is_default=True)
 
@@ -58,4 +69,11 @@ def get(source_name=None):
     """
     Return music source.
     """
-    _Sources.get(source_name)
+    return _Sources.get(source_name)
+
+
+def list_info():
+    """
+    Return list of available sources
+    """
+    return _Sources.list_info()

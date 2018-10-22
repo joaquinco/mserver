@@ -99,6 +99,9 @@ def do_setup(app):
 
     app.handle_user_exception = handle_user_exception_again
 
+    from mserver.music_sources import init_music_sources
+    init_music_sources(getattr(settings, 'MUSIC_SOURCES_CLASSES', []))
+
 
 def handle_user_exception_again(e):
     """

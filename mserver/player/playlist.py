@@ -4,7 +4,7 @@ from mserver import mpd_utils
 from mserver.application import socketio
 from mserver.database import db
 from mserver.marshals import song_list_marshal, dummy_song_playlist_list_marshal
-from mserver.player import search
+from mserver import music_sources
 from mserver.player.utils import mpd_convert_to_song
 
 
@@ -30,7 +30,7 @@ def _get_song(source, search_id, user_id):
     """
     Downloads a song if it's not available or being downloaded
     """
-    backend = search.get(source)
+    backend = music_sources.get(source)
 
     song = backend.get_song(search_id)
 

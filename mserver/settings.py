@@ -49,8 +49,14 @@ MPD_SERVER_CONF = {
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_DATABASE_URI = 'sqlite:///{}'.format(os.path.join(BASE_DIR, 'mserver.db'))
 
+
+MUSIC_SOURCES_CLASSES = [
+    'mserver.extra.music_sources.youtube.YoutubeSource'
+]
+
 SONG_SOURCES_CONFIG = {
     'youtube': {
-        'api_key': os.getenv('YOUTUBE_API_KEY')
+        'api_key': os.getenv('YOUTUBE_API_KEY'),
+        'download_dir': MUSIC_DIR,
     }
 }

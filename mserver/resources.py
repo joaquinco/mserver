@@ -2,9 +2,9 @@ from flask import request
 from flask_jwt import jwt_required, current_identity
 from flask_restful import Resource, marshal_with, reqparse
 
-from mserver import rpc, auth
+from mserver import rpc, auth, music_sources
 from mserver.marshals import song_search_marshal, user_detail_marshal, dummy_song_playlist_list_marshal
-from mserver.player import search, playlist
+from mserver.player import playlist
 
 search_args = reqparse.RequestParser()
 search_args.add_argument('query', help='Search query', required=True, location='args')
@@ -13,16 +13,13 @@ search_args.add_argument('source', required=False, location='args')
 
 class SongSearchResource(Resource):
     @marshal_with(song_search_marshal)
-    @jwt_required()
+    # @jwt_required()
     def get(self):
         args = search_args.parse_args()
         query = args.get('query')
         source = args.get('source')
 
-        if source:
-            backend = search.get(source)
-        else:
-            backend = search.get_default()
+        backend = music_sources.get(source)
 
         return backend.search(query)
 

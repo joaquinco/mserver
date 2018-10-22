@@ -11,7 +11,7 @@ class LocalSource(MServerMusicSource):
         data.update(dict(source=self.name))
         return mpd_convert_to_song(data)
 
-    def search(self, query):
+    def perform_search(self, query):
         """
         Searches songs on mpd_utils.
         """

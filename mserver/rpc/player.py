@@ -1,5 +1,5 @@
 from mserver import mpd_utils
-from mserver.player.search import list_info as get_search_backends_list
+from mserver.music_sources import list_info as get_search_backends_list
 from .api import register
 
 
