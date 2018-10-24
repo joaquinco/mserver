@@ -17,13 +17,13 @@ class LocalSource(MServerMusicSource):
         """
         return list(map(self._convert_to_song, mpd_utils.search(query)))
 
-    def get_song(search, song_id):
+    def get_song(self, song_id):
         """
         Obtains a single song.
         """
         song = None
 
-        songs = search(song_id)
+        songs = self.perform_search(song_id)
 
         if songs:
             song = songs[0]
