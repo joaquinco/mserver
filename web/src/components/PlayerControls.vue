@@ -2,7 +2,7 @@
   <div class='d-flex flex-column player-controls-container align-items-center'>
     <ApiError :errorResponse="error"/>
     <div v-show='loaded && !error' class='d-flex flex-column align-items-center w-100'>
-      <p class='song-title mb-0'>{{currentSongTitle}}</p>
+      <p class='song-title mb-0' @click='focusCurrentSong()'>{{currentSongTitle}}</p>
       <span>{{currentSongPosition}}</span>
       <div class="d-flex flex-row justify-content-around align-items-center player-controls-wrapper">
         <span class='icon icon--sm player-settings'/>
@@ -118,6 +118,9 @@ export default {
     },
     onVolumeChange(value) {
       this.socket.emit('player.volume', { value })
+    },
+    focusCurrentSong(event) {
+      this.$emit('current-clicked', this.current)
     }
   }
 }
