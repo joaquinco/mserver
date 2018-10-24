@@ -60,6 +60,9 @@ const mutations = {
   },
   setCurrentSong(state, song) {
     state.playlist = { ...state.playlist, current: song }
+    if (document) {
+      document.title = song && song.title ? song.title : 'Música'
+    }
   },
   toggleNotificationTab(state) {
     let notification_tab_visible = !state.views.notification_tab_visible
