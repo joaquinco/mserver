@@ -23,7 +23,7 @@ ISO8601_TIMEDUR_EX = re.compile(r'PT((\d{1,3})H)?((\d{1,3})M)?((\d{1,2})S)?')
 VIDEO_URL_TEMPLATE = Template('https://www.youtube.com/watch?v=$ytid')
 
 
-def generate_search_query(term, category=MUSIC_CATEGORYID, order=ORDER, duration=VIDEO_DURATION, max_results=15,
+def generate_search_query(term, category=MUSIC_CATEGORYID, order=ORDER, duration=VIDEO_DURATION, max_results=25,
                           api_key=None):
     qs = {
         'q': term,
