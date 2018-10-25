@@ -31,4 +31,4 @@ class MServerMusicSource(object):
         """
         songs = self.perform_search(*args, **kwargs)
 
-        return update_song_availability(songs)
+        return update_song_availability(songs, self.name)
