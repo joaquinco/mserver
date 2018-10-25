@@ -33,11 +33,24 @@ export default {
     step: {
       type: Number,
       default: 1
+    },
+    closeOnClickOutside: {
+      default: true
     }
   },
   data () {
     return {
       isOpen: false
+    }
+  },
+  mounted() {
+    if (this.closeOnClickOutside) {
+      window.addEventListener('click', this.onWindowClick)
+    }
+  },
+  destroyed() {
+    if (this.closeOnClickOutside) {
+      window.removeEventListener('click', this.onWindowClick)
     }
   },
   methods: {
@@ -46,6 +59,11 @@ export default {
     },
     onValueChange(value) {
       this.$emit('change', value)
+    },
+    onWindowClick (event) {
+      if (!this.$el.contains(event.target)) {
+        this.isOpen = false
+      }
     }
   }
 }
