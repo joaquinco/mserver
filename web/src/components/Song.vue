@@ -37,6 +37,11 @@ const POSSIBLE_OTHER_ACTIONS = [
     name: 'playnext',
     label: 'Reproducir siguiente',
     validator: song => song.available
+  },
+  {
+    name: 'playnext',
+    label: 'Descargar y reproducir',
+    validator: song => !song.available
   }
 ]
 
