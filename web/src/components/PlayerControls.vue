@@ -1,9 +1,12 @@
 <template>
   <div class='d-flex flex-column player-controls-container align-items-center'>
+    <div class='play-progress' :class="{'transition-ease': progressPercentage > 1}" :style="{width: progressPercentage + '%'}"></div>
     <ApiError :errorResponse="error"/>
     <div v-show='loaded && !error' class='d-flex flex-column align-items-center w-100'>
       <p class='song-title mb-0' @click='focusCurrentSong()'>{{currentSongTitle}}</p>
-      <span>{{currentSongPosition}}</span>
+      <div class='d-flex flex-row justify-content-around w-100'>
+        <span>{{currentSongPosition}}</span>
+      </div>
       <div class="d-flex flex-row justify-content-around align-items-center player-controls-wrapper">
         <span class='icon icon--sm player-settings'/>
         <div class='d-flex flex-row justify-content-center player-controls'>
@@ -23,13 +26,12 @@
         <span class='text-toggle' :class='{disbled: !isRepeatOn}' @click='toggleRepeat()'>Repetir</span>
         <span class='text-toggle' :class='{disbled: !isShuffleOn}' @click='toggleShuffle()'>Aleatorio</span>
       </div>
-      <!-- Progress bar -->
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import ApiError from '@/components/ApiError'
 import VolumeV2 from '@/components/VolumeV2'
 
@@ -48,7 +50,9 @@ export default {
       socket: state => state.comm.socket,
       current: state => state.playlist.current,
       status: state => state.player.status,
-      stats: state => state.player.stats
+      stats: state => state.player.stats,
+      time: state => state.playlist.currentTime,
+      totalTime: state => state.playlist.totalTime
     }),
     isPlaying() {
       return this.status.state === 'play'
@@ -81,13 +85,19 @@ export default {
     },
     isRepeatOn() {
       return this.status && this.status.repeat
+    },
+    progressPercentage () {
+      if (this.time != null && this.totalTime) {
+        return (this.time / this.totalTime) * 100
+      }
+      return 0
     }
   },
   mounted() {
     this.fetchPlayerState()
   },
   methods: {
-    ...mapMutations(['setPlayerStatus']),
+    ...mapActions(['setPlayerStatus']),
     fetchPlayerState() {
       this.api.srpc.player_status.get().then(
         response => {
@@ -132,6 +142,18 @@ export default {
   box-shadow: 0px 0px 5px #919191;
   width: 100%;
 }
+
+.play-progress {
+  border-top: #e46f89 2px solid;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.transition-ease {
+  transition: 1s ease;
+}
+
 .player-controls-wrapper {
   width: 50%;
 }

@@ -28,7 +28,10 @@ const store = new Vuex.Store({
     },
     playlist: {
       songs: [],
-      current: {}
+      current: {},
+      currentTime: null,
+      totalTime: null,
+      _timer: null
     },
     search: {
       sources: [],

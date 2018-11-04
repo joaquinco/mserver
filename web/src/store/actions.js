@@ -103,6 +103,54 @@ const actions = {
     state.comm.api.playlist.get().then(response => {
       commit('setCurrentPlaylistSongs', response.data)
     })
+  },
+  incrementSongTime({ state, commit, dispatch }) {
+    let { currentTime, totalTime } = state.playlist
+
+    if (currentTime != null && totalTime != null) {
+      currentTime += 1
+      totalTime -= 1
+
+      if (totalTime - currentTime < 0) {
+        dispatch('stopTimeUpdater')
+      } else {
+        commit('setCurrentSongTime', { currentTime, totalTime })
+      }
+    }
+  },
+  startTimeUpdater({ state, commit, dispatch }) {
+    dispatch('stopTimeUpdater')
+    commit('setCurrentSongTime')
+
+    const { time } = state.player.status
+
+    if (time) {
+      const parts = time.split(':')
+      let currentTime, totalTime
+
+      try {
+        currentTime = parseInt(parts[0])
+        totalTime = parseInt(parts[1])
+      } catch (err) {
+        commit('setCurrentSongTime', {currentTime: null, totalTime: null})
+      }
+
+      const _timer = setInterval(() => dispatch('incrementSongTime'), 1000)
+      commit('setCurrentSongTime', { currentTime, totalTime, _timer })
+    }
+  },
+  stopTimeUpdater({ state, commit }) {
+    let { _timer } = state.playlist
+    clearInterval(_timer)
+    commit('setCurrentSongTime', { _timer: null })
+  },
+  setPlayerStatus({ commit, dispatch }, data) {
+    commit('setPlayerStatus', data)
+    if (data.status.state === 'play') {
+      dispatch('startTimeUpdater')
+    } else {
+      dispatch('stopTimeUpdater')
+    }
   }
 }
 

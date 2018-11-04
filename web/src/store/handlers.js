@@ -25,7 +25,7 @@ function getMessageFromError(debug, { message, key, detail }) {
   return hrmessage
 }
 
-function handleError({ state, commit }, error) {
+const handleError = ({ state, commit }, error) => {
   let message = getMessageFromError(state.server.debug, error)
   commit('addNotification', { message, error: true })
 }
@@ -39,11 +39,15 @@ const handlers = {
   },
   player_play({ state, commit }, data) {},
   player_pause({ state, commit }, data) {},
-  player_status({ state, commit }, data) {
-    commit('setPlayerStatus', data)
+  player_status({ state, dispatch }, data) {
+    dispatch('setPlayerStatus', data)
   },
-  player_previous({ commit }, song) {},
-  player_next({ state, commit }, song) {},
+  player_previous({ dispatch }, song) {
+    dispatch('startTimeUpdater')
+  },
+  player_next({ dispatch }, song) {
+    dispatch('startTimeUpdater')
+  },
   player_current({ state, commit }, song) {
     commit('setCurrentSong', song)
   },
