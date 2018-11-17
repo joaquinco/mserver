@@ -1,6 +1,6 @@
 <template>
   <div class="w-100 d-flex flex-column">
-    <h2 v-if="!songsExist" class="w-100 center-text">Agregá canciones</h2>
+    <h2 v-if="!songsExist && loaded" class="w-100 center-text">Agregá canciones</h2>
     <SongList :songs='songs' v-if="songsExist" songActions='select,remove'
             @song-selected="onSongSelected" :isSongHighlighted="isSongCurrent"/>
   </div>
