@@ -54,7 +54,14 @@ export default {
 <style scoped>
 .player-content {
   flex: 1;
-  padding-bottom: 160px;
+  padding-top: 80px;
+  padding-bottom: 130px;
+}
+
+@media (max-width: 550px) {
+  .player-content {
+    padding-top: 60px;
+  }
 }
 
 .player-controls {

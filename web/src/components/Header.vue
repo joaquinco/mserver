@@ -1,5 +1,5 @@
 <template>
-  <div class='header'>
+  <div class='header' :class="{'header--fixed':fixed}">
     <div class='container-sm header__content'>
       <h1 class='header__title'>{{title}}</h1>
       <div class='header__actions'>
@@ -21,6 +21,9 @@ export default {
       type: String,
       required: false,
       default: ''
+    },
+    fixed: {
+      default: true
     }
   }
 }
@@ -31,6 +34,15 @@ export default {
   box-shadow: 0px 0px 5px #919191;
   padding-top: 10px;
   padding-bottom: 10px;
+  background-color: white;
+
+  &--fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+  }
 
   &__content {
     display: flex;
@@ -55,6 +67,6 @@ export default {
 }
 
 .icon-search {
-  content: url('/static/icons/search.svg');
+  content: url("/static/icons/search.svg");
 }
 </style>
