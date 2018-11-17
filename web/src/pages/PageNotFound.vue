@@ -1,9 +1,9 @@
 <template>
   <div class='container-sm d-flex flex-column justify-content-center'>
     <h1 class="color-error not-found">404 Not found :(</h1>
-    <p>La ruta {{$route.path}} no es válida</p>
+    <p>La ruta <strong>{{$route.path}}</strong> no es válida</p>
     <div class="d-flex flex-row justify-content-end">
-      <router-link :to="{ name: 'dispatch'}">Sasenme de aquí</router-link>
+      <router-link :to="{ name: 'dispatch'}">Sacame de aquí</router-link>
     </div>
   </div>
 </template>

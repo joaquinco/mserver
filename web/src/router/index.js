@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Dispatcher from '@/components/Dispatcher'
-import Login from '@/components/Login'
-import PageNotFound from '@/components/PageNotFound'
-import Player from '@/components/Player'
-import SearchPage from '@/components/SearchPage'
+import Dispatcher from '@/pages/Dispatcher'
+import Login from '@/pages/Login'
+import PageNotFound from '@/pages/PageNotFound'
+import Player from '@/pages/Player'
+import Search from '@/pages/Search'
 
 Vue.use(Router)
 
@@ -32,7 +32,7 @@ export default new Router({
     {
       path: '/search',
       name: 'search',
-      component: SearchPage
+      component: Search
     },
     {
       path: '*',

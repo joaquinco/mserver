@@ -39,7 +39,7 @@ import LoadingButton from '@/components/LoadingButton'
 import NotificationsButton from '@/components/NotificationsButton'
 
 export default {
-  name: 'SearchPage',
+  name: 'Search',
   components: { LoadingLine, SongList, LoadingButton, NotificationsButton },
   data() {
     return {
