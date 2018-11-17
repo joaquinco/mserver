@@ -11,8 +11,13 @@ const mutations = {
       socket
     }
   },
-  onSocketDisconnected(state, reason) {
-    state.comm = { ...state.comm, error: reason }
+  onSocketConnectionStatusChange(state, reason) {
+    // TODO: Create timer to check connection because after some time socketio will not
+    // reconnect automatically.
+    state.comm = {
+      ...state.comm,
+      error: reason
+    }
   },
   setToken(state, access_token) {
     state.auth.access_token = access_token

@@ -1,5 +1,6 @@
 <template>
   <div class='header' :class="{'header--fixed':fixed}">
+    <slot></slot>
     <div class='container-sm header__content'>
       <h1 class='header__title'>{{title}}</h1>
       <div class='header__actions'>
@@ -32,9 +33,11 @@ export default {
 <style lang='scss' scoped>
 .header {
   box-shadow: 0px 0px 5px #919191;
-  padding-top: 10px;
-  padding-bottom: 10px;
   background-color: white;
+
+  > {
+    transition: 300ms ease-in-out;
+  }
 
   &--fixed {
     position: fixed;
@@ -45,6 +48,8 @@ export default {
   }
 
   &__content {
+    padding-top: 10px;
+    padding-bottom: 10px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;

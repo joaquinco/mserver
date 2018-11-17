@@ -71,8 +71,12 @@ const handlers = {
   player_playlist_changed({ dispatch }, data) {
     dispatch('refreshPlaylist')
   },
-  disconnect({ state, commit }, reason) {
-    commit('onSocketDisconnected', reason)
+  disconnect({ commit, dispatch }, reason) {
+    commit('onSocketConnectionStatusChange', reason)
+    dispatch('setReconnectTimeout')
+  },
+  connect({ commit }) {
+    commit('onSocketConnectionStatusChange', null)
   },
   error: handleError,
   player_song_add_error: handleError,
