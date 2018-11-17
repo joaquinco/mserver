@@ -1,6 +1,6 @@
 <template>
   <div class='d-flex flex-column player-controls-container align-items-center'>
-    <div class='play-progress' :class="{'transition-ease': progressPercentage > 1}" :style="{width: progressPercentage + '%'}"></div>
+    <div class='play-progress' :class="{'transition-ease': isPlaying}" :style="{width: progressPercentage + '%'}"></div>
     <ApiError :errorResponse="error"/>
     <div v-show='loaded && !error' class='d-flex flex-column align-items-center w-100'>
       <p class='song-title mb-0' @click='focusCurrentSong()'>{{currentSongTitle}}</p>
@@ -86,9 +86,9 @@ export default {
     isRepeatOn() {
       return this.status && this.status.repeat
     },
-    progressPercentage () {
+    progressPercentage() {
       if (this.time != null && this.totalTime) {
-        return (this.time / this.totalTime) * 100
+        return this.time / this.totalTime * 100
       }
       return 0
     }
@@ -235,7 +235,7 @@ export default {
   display: inline-flex;
 }
 .player-settings {
-  content: url('/static/icons/player-configuration.svg');
+  content: url("/static/icons/player-configuration.svg");
   border-radius: 0;
 }
 .text-toggle.disbled {

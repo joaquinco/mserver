@@ -109,19 +109,15 @@ const actions = {
 
     if (currentTime != null && totalTime != null) {
       currentTime += 1
-      totalTime -= 1
 
       if (totalTime - currentTime < 0) {
         dispatch('stopTimeUpdater')
       } else {
-        commit('setCurrentSongTime', { currentTime, totalTime })
+        commit('setCurrentSongTime', { currentTime })
       }
     }
   },
-  startTimeUpdater({ state, commit, dispatch }) {
-    dispatch('stopTimeUpdater')
-    commit('setCurrentSongTime')
-
+  setupSongTime({ state, commit }) {
     const { time } = state.player.status
 
     if (time) {
@@ -132,11 +128,19 @@ const actions = {
         currentTime = parseInt(parts[0])
         totalTime = parseInt(parts[1])
       } catch (err) {
-        commit('setCurrentSongTime', {currentTime: null, totalTime: null})
+        commit('setCurrentSongTime', { currentTime: null, totalTime: null })
       }
+      commit('setCurrentSongTime', { currentTime, totalTime })
+    }
+  },
+  startTimeUpdater({ state, commit, dispatch }) {
+    dispatch('stopTimeUpdater')
+    dispatch('setupSongTime')
+    let { totalTime } = state.playlist
 
+    if (totalTime) {
       const _timer = setInterval(() => dispatch('incrementSongTime'), 1000)
-      commit('setCurrentSongTime', { currentTime, totalTime, _timer })
+      commit('setCurrentSongTime', { _timer })
     }
   },
   stopTimeUpdater({ state, commit }) {

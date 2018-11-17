@@ -48,8 +48,9 @@ const handlers = {
   player_next({ dispatch }, song) {
     dispatch('startTimeUpdater')
   },
-  player_current({ state, commit }, song) {
+  player_current({ dispatch, commit }, song) {
     commit('setCurrentSong', song)
+    dispatch('setupSongTime')
   },
   player_song_added({ state, commit, dispatch }, song) {
     let message = `Nueva cancion en lista: ${song.title}`

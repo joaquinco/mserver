@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header title='Playlist'/>
+    <Header title='Lista'/>
     <div class='container-sm d-flex flex-column justfy-content-around'>
       <Playlist class="player-content"/>
       <PlayerControls class='player-controls' @current-clicked='currentSongClicked'/>
