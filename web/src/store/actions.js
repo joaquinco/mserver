@@ -1,4 +1,5 @@
 import handlers from './handlers'
+import config from '@/config'
 
 /* eslint-disable camelcase */
 const actions = {
@@ -154,6 +155,19 @@ const actions = {
       dispatch('startTimeUpdater')
     } else {
       dispatch('stopTimeUpdater')
+    }
+  },
+  setReconnectTimeout({ dispatch }) {
+    setTimeout(
+      () => dispatch('checkReconnect'),
+      config.reconnect_check_interval
+    )
+  },
+  checkReconnect({ state, dispatch }) {
+    const { socket } = state.comm
+    if (!socket.connected) {
+      socket.connect()
+      dispatch('setReconnectTimeout')
     }
   }
 }

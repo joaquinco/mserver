@@ -37,8 +37,6 @@ export default {
   mounted() {
     if (!this.serverChecked) {
       this.connectToServer()
-    } else if (this.socket && this.socket.disconnected) {
-      this.reconnect()
     } else {
       this.onServerUp()
     }

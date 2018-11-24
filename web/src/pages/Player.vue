@@ -1,6 +1,8 @@
 <template>
   <div>
-    <Header title='Lista'/>
+    <Header title='Lista'>
+      <Banner :visible='!isConnected' :text='bannerConnectionError' type='error' ref='bannerRef'/>
+    </Header>
     <div class='container-sm d-flex flex-column justfy-content-around'>
       <Playlist class="player-content"/>
       <PlayerControls class='player-controls' @current-clicked='currentSongClicked'/>
@@ -10,11 +12,12 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import Header from '@/components/Header'
 import PlayerControls from '@/components/PlayerControls'
 import Playlist from '@/components/Playlist'
 import Notifications from '@/components/Notifications'
+import Banner from '@/components/Banner'
 
 export default {
   name: 'Player',
@@ -22,20 +25,25 @@ export default {
     PlayerControls,
     Playlist,
     Notifications,
-    Header
+    Header,
+    Banner
   },
   computed: {
     ...mapState({
-      socket: state => state.comm.socket
-    })
+      socket: state => state.comm.socket,
+      connectionError: state => state.comm.error
+    }),
+    ...mapGetters(['isConnected']),
+    bannerConnectionError() {
+      let message = 'Desconectado'
+      if (this.connectionError) {
+        message += `: ${this.connectionError}`
+      }
+      return message
+    }
   },
   data() {
     return {}
-  },
-  mounted() {
-    this.socket.on('disconnect', reason => {
-      this.$router.push({ name: 'dispatch' })
-    })
   },
   methods: {
     currentSongClicked({ pos }) {
