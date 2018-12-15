@@ -75,8 +75,9 @@ const handlers = {
     commit('onSocketConnectionStatusChange', reason)
     dispatch('setReconnectTimeout')
   },
-  connect({ commit }) {
+  connect({ commit, dispatch }) {
     commit('onSocketConnectionStatusChange', null)
+    dispatch('updatePlayerState')
   },
   error: handleError,
   player_song_add_error: handleError,

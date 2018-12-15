@@ -56,6 +56,8 @@ const actions = {
       }
       socket.on(eventName, method)
     })
+    // Since events are attached after connection we have to manually set this:
+    dispatch('updatePlayerState')
   },
   setUser({ state }, { username, is_superuser }) {
     state.user = { ...state.user, username, is_superuser }
@@ -148,6 +150,19 @@ const actions = {
     let { _timer } = state.playlist
     clearInterval(_timer)
     commit('setCurrentSongTime', { _timer: null })
+  },
+  updatePlayerState({ state, dispatch }) {
+    const { api, socket } = state.comm
+
+    api.srpc.player_status.get().then(
+      ({ data }) => {
+        dispatch('setPlayerStatus', data)
+        socket.emit('player.current')
+      },
+      error => {
+        this.error = error
+      }
+    )
   },
   setPlayerStatus({ commit, dispatch }, data) {
     commit('setPlayerStatus', data)

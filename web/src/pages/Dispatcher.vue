@@ -47,10 +47,10 @@ export default {
     connectToServer() {
       var self = this
       axios.get(urls.rpc.system_status).then(
-        response => {
+        ({ data }) => {
           this.updateServerStatus({
             success: true,
-            data: response.data
+            data
           })
           this.onServerUp()
         },

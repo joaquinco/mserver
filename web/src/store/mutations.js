@@ -12,8 +12,6 @@ const mutations = {
     }
   },
   onSocketConnectionStatusChange(state, reason) {
-    // TODO: Create timer to check connection because after some time socketio will not
-    // reconnect automatically.
     state.comm = {
       ...state.comm,
       error: reason

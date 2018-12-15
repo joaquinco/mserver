@@ -1,8 +1,7 @@
 <template>
   <div class='d-flex flex-column player-controls-container align-items-center'>
     <div class='play-progress' :class="{'transition-ease': isPlaying}" :style="{width: progressPercentage + '%'}"></div>
-    <ApiError :errorResponse="error"/>
-    <div v-show='loaded && !error' class='d-flex flex-column align-items-center w-100'>
+    <div v-show='isConnected' class='d-flex flex-column align-items-center w-100'>
       <p class='song-title mb-0' @click='focusCurrentSong()'>{{currentSongTitle}}</p>
       <div class='d-flex flex-row justify-content-around w-100'>
         <span>{{currentSongPosition}}</span>
@@ -31,19 +30,12 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
-import ApiError from '@/components/ApiError'
+import { mapState, mapGetters } from 'vuex'
 import VolumeV2 from '@/components/VolumeV2'
 
 export default {
   name: 'PlayerControls',
-  components: { ApiError, VolumeV2 },
-  data() {
-    return {
-      loaded: false,
-      error: null
-    }
-  },
+  components: { VolumeV2 },
   computed: {
     ...mapState({
       api: state => state.comm.api,
@@ -54,6 +46,7 @@ export default {
       time: state => state.playlist.currentTime,
       totalTime: state => state.playlist.totalTime
     }),
+    ...mapGetters(['isConnected']),
     isPlaying() {
       return this.status.state === 'play'
     },
@@ -93,23 +86,7 @@ export default {
       return 0
     }
   },
-  mounted() {
-    this.fetchPlayerState()
-  },
   methods: {
-    ...mapActions(['setPlayerStatus']),
-    fetchPlayerState() {
-      this.api.srpc.player_status.get().then(
-        response => {
-          this.setPlayerStatus(response.data)
-          this.loaded = true
-          this.socket.emit('player.current')
-        },
-        error => {
-          this.error = error
-        }
-      )
-    },
     playPause() {
       let event = (this.isPlaying && 'player.pause') || 'player.play'
       this.socket.emit(event)
