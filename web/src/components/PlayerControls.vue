@@ -1,6 +1,6 @@
 <template>
   <div class='d-flex flex-column player-controls-container align-items-center'>
-    <div class='play-progress' :class="{'transition-ease': isPlaying}" :style="{width: progressPercentage + '%'}"></div>
+    <Progress :percentage='progressPercentage'/>
     <div v-show='isConnected' class='d-flex flex-column align-items-center w-100'>
       <p class='song-title mb-0' @click='focusCurrentSong()'>{{currentSongTitle}}</p>
       <div class='d-flex flex-row justify-content-around w-100'>
@@ -32,10 +32,11 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import VolumeV2 from '@/components/VolumeV2'
+import Progress from '@/components/Progress'
 
 export default {
   name: 'PlayerControls',
-  components: { VolumeV2 },
+  components: { VolumeV2, Progress },
   computed: {
     ...mapState({
       api: state => state.comm.api,
@@ -118,17 +119,6 @@ export default {
   background-color: white;
   box-shadow: 0px 0px 5px #919191;
   width: 100%;
-}
-
-.play-progress {
-  border-top: #e46f89 2px solid;
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-
-.transition-ease {
-  transition: 1s ease;
 }
 
 .player-controls-wrapper {
