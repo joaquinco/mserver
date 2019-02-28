@@ -87,6 +87,7 @@ events = [
     # Other more complex
     ('player.add_song', True, add_song_to_playlist),
     ('player.add_song_next', True, add_next_song_to_playlist),
+    ('player.playnow', True, mpd_write_command_wrapper('play', 'playlist_pos')),
     ('player.download_song', True, just_download_song),
 ]
 

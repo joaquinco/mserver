@@ -18,7 +18,7 @@ song_list_marshal = {
 
 dummy_song_playlist_list_marshal = copy.deepcopy(song_list_marshal)
 dummy_song_playlist_list_marshal.update({
-    'pos': fields.Integer
+    'pos': fields.Integer,
 })
 
 song_search_marshal = {
@@ -27,7 +27,9 @@ song_search_marshal = {
     'title': fields.String,
     'duration': fields.String,
     'available': fields.Boolean,
-    'source': fields.String
+    'source': fields.String,
+    'in_playlist': fields.Boolean,
+    'pos': fields.Integer(default=None),
 }
 
 playlist_detail_marshal = {

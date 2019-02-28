@@ -1,13 +1,18 @@
 <template>
   <div class="w-100 d-flex flex-column">
     <h2 v-if="!songsExist && loaded" class="w-100 center-text">Agregá canciones</h2>
-    <SongList :songs='songs' v-if="songsExist" songActions='select,remove'
-            @song-selected="onSongSelected" :isSongHighlighted="isSongCurrent"/>
+    <SongList
+      :songs="songs"
+      v-if="songsExist"
+      songActions="playnow,remove"
+      @song-selected="onSongSelected"
+      :isSongHighlighted="isSongCurrent"
+    />
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
 import SongList from '@/components/SongList'
 
 export default {
@@ -35,6 +40,7 @@ export default {
   },
   methods: {
     ...mapMutations(['setCurrentPlaylistSongs']),
+    ...mapActions(['playSongNow', 'removeSong']),
     fetchPlaylistSongs() {
       if (this.songs.length) {
         this.loaded = true
@@ -46,10 +52,10 @@ export default {
       }
     },
     onSongSelected({ song, action }) {
-      if (action === 'select') {
-        this.socket.emit('player.select', song)
+      if (action === 'playnow') {
+        this.playSongNow(song)
       } else if (action === 'remove') {
-        this.socket.emit('player.remove', song)
+        this.removeSong(song)
       }
     },
     isSongCurrent(song) {

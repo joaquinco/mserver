@@ -1,10 +1,11 @@
 <template>
   <div
-      class="song"
-      :class="{'song--clickable': canSelect, 'song--not-available': !song.available, 'song--already-added': song.isAlreadySelected}"
+    class="song"
+    :class="{'song--clickable': canSelect, 'song--not-available': !song.available, 'song--already-added': song.isAlreadySelected, [`song--${showAs}`]: true}"
   >
     <div class="song__body" @click="onSelect()">
       <strong class="song__position">{{getSongPosition(song)}}</strong>
+      <strong class="song__added" v-show="song.in_playlist">&#10003;</strong>
       <span class="song__name">{{song.title}}</span>
       <span @click.stop="toggleShowActions()" class="song__toggle-actions">
         <span class="song__duration">{{song.duration}}</span>
@@ -13,20 +14,21 @@
     </div>
     <div class="song__actions" v-if="actionsVisible">
       <button
-        class='song__action-button'
+        class="song__action-button"
         v-for="action in otherActions"
         @click.prevent="onSongAction(action.name)"
         type="button"
-        :key="action.name">
-        {{action.label}}
-      </button>
+        :key="action.name"
+      >{{action.label}}</button>
     </div>
-    <div class="song__overlay"><span>Agregada</span></div>
+    <div class="song__overlay">
+      <span>Agregada</span>
+    </div>
   </div>
 </template>
 
 <script>
-const POSSIBLE_OTHER_ACTIONS = [
+const POSSIBLE_ACTIONS = [
   { name: 'remove', label: 'Quitar', validator: song => true },
   {
     name: 'download',
@@ -36,12 +38,22 @@ const POSSIBLE_OTHER_ACTIONS = [
   {
     name: 'playnext',
     label: 'Reproducir siguiente',
-    validator: song => song.available
+    validator: song => song.available && !song.in_playlist
   },
   {
     name: 'playnext',
     label: 'Descargar y reproducir',
     validator: song => !song.available
+  },
+  // {
+  //   name: 'playnow',
+  //   label: 'Reproducir ya',
+  //   validator: song => !song.in_playlist && song.available
+  // },
+  {
+    name: 'add',
+    label: 'Agregar',
+    validator: song => !song.in_playlist
   }
 ]
 
@@ -54,13 +66,22 @@ export default {
     },
     actions: {
       type: String,
-      required: false,
-      default: 'select'
+      required: true
+    },
+    defaultAction: {
+      type: String,
+      required: true
     },
     actionsTimeout: {
       type: Number,
       required: false,
       default: 5 * 1000
+    },
+    showAs: {
+      type: String,
+      required: false,
+      default: 'normal',
+      validator: value => ['normal', 'search'].indexOf(value) !== -1
     }
   },
   data() {
@@ -71,16 +92,18 @@ export default {
   },
   computed: {
     canSelect() {
-      return this.actions.includes('select') && !this.song.isAlreadySelected
+      return !this.song.isAlreadySelected
     },
     hasOtherActions() {
       return this.otherActions.length
     },
     otherActions() {
-      var ret = POSSIBLE_OTHER_ACTIONS.filter(
-        obj => this.actions.includes(obj.name) && obj.validator(this.song)
+      return POSSIBLE_ACTIONS.filter(
+        obj =>
+          this.actions.includes(obj.name) &&
+          obj.validator(this.song) &&
+          obj.name !== this.defaultAction
       )
-      return ret
     }
   },
   methods: {
@@ -88,7 +111,7 @@ export default {
       this.onSongAction('download')
     },
     onSelect() {
-      this.onSongAction('select')
+      this.onSongAction(this.defaultAction)
     },
     onSongAction(action) {
       if (this.song.isAlreadySelected) {
@@ -147,6 +170,18 @@ export default {
     }
   }
 
+  &--search {
+    .song__position {
+      display: none;
+    }
+  }
+
+  &--normal {
+    .song__added {
+      display: none;
+    }
+  }
+
   &--not-available {
     .song__name {
       opacity: 0.6;
@@ -182,6 +217,12 @@ export default {
     margin-right: 10px;
   }
 
+  &__added {
+    position: relative;
+    left: -15px;
+    width: 0;
+  }
+
   &__name {
     flex: 1;
     font-size: 0.8em;
@@ -191,7 +232,7 @@ export default {
   }
 
   &__actions-icon {
-    content: url("/static/icons/more.svg");
+    content: url('/static/icons/more.svg');
     padding: 7px 1px;
   }
 

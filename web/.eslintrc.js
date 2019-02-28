@@ -24,6 +24,6 @@ module.exports = {
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     // prettier does not support this rule as of 06/2018
-    'space-before-function-paren': 'off'
+    'space-before-function-paren': 'off',
   }
 }

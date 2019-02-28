@@ -102,6 +102,12 @@ const actions = {
     state.comm.socket.emit('player.add_song_next', song)
     dispatch('setSongAsAdded', song)
   },
+  playSongNow({ state }, song) {
+    state.comm.socket.emit('player.select', song)
+  },
+  removeSong({ state }, song) {
+    state.comm.socket.emit('player.remove', song)
+  },
   refreshPlaylist({ state, commit }) {
     state.comm.api.playlist.get().then(response => {
       commit('setCurrentPlaylistSongs', response.data)

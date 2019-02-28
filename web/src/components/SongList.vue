@@ -3,10 +3,13 @@
     <Song
       :class="{'current-song': isSongHighlighted(song)}"
       :actions="songActions"
+      :default-action="defaultSongAction"
       v-for="song in songs"
       :song="song"
       :key="song.search_key || song.pos"
-      @song-selected="onSongEvent"/>
+      @song-selected="onSongEvent"
+      :showAs="listType"
+    />
   </div>
 </template>
 
@@ -25,10 +28,19 @@ export default {
       type: String,
       required: false
     },
+    defaultSongAction: {
+      type: String,
+      required: false,
+      default: 'playnow'
+    },
     isSongHighlighted: {
       type: Function,
       required: false,
       default: () => false
+    },
+    listType: {
+      type: String,
+      required: false
     }
   },
   data() {

@@ -1,7 +1,6 @@
 from functools import partial
 
 from mserver import mpd_utils
-from mserver.application import socketio
 from mserver.socket_server.handlers import emit_player_status, emit_player_currentsong
 from mserver.socket_server.utils import emit
 

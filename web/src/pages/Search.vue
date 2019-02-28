@@ -3,27 +3,41 @@
     <div class="d-flex flex-column container-sm">
       <div class="d-flex flex-row align-items-center">
         <form @submit.prevent="globalSearch()" class="d-flex flex-row align-items-center col">
-          <input class="w-100 search-input" type=search v-model="query" placeholder="Buscar" id='input-search'/>
+          <input
+            class="w-100 search-input"
+            type="search"
+            v-model="query"
+            placeholder="Buscar"
+            id="input-search"
+          >
           <router-link class="close ml-2" to="/player">Cancelar</router-link>
         </form>
       </div>
       <div class="search-results d-flex flex-column mt-4">
         <div v-if="loadingSources">Cargando fuentes...</div>
         <LoadingLine :is-loading="globalSearching"/>
-        <h3 v-if='saerchedQuery && searched && !globalSearching'>Q: {{saerchedQuery}}</h3>
+        <h3 v-if="saerchedQuery && searched && !globalSearching">Q: {{saerchedQuery}}</h3>
         <div v-for="(value, key) in searchResults" v-if="!globalSearching && searched" :key="key">
           <div class="d-flex flex-row justify-content-between">
             <h5 class="source-title">Desde {{key}}</h5>
             <LoadingButton
               v-if="!value.length && !sourceSearched[key]"
               :is-loading="sourceSearching[key]"
-              @click.native="search(key)">Buscar</LoadingButton>
+              @click.native="search(key)"
+            >Buscar</LoadingButton>
           </div>
-          <p v-if="!value.length && sourceSearched[key]" class="center-text no-results">No hay resultados</p>
-          <SongList v-if="value.length"
+          <p
+            v-if="!value.length && sourceSearched[key]"
+            class="center-text no-results"
+          >No hay resultados</p>
+          <SongList
+            listType="search"
+            v-if="value.length"
             :songs="value"
             @song-selected="onSongSelected"
-            songActions='select,download,playnext'/>
+            songActions="add,download,playnext,playnow"
+            defaultSongAction="add"
+          />
         </div>
       </div>
     </div>
@@ -77,7 +91,8 @@ export default {
       'setSearchSources',
       'downloadSong',
       'addSong',
-      'addSongNext'
+      'addSongNext',
+      'playSongNow'
     ]),
     globalSearch() {
       this.clearResults()
@@ -160,12 +175,20 @@ export default {
       alert(error)
     },
     onSongSelected({ song, action }) {
+      console.log(action)
       let actions = {
         download: this.downloadSong,
-        select: this.addSong,
+        add: this.addSongOrPlayNow,
         playnext: this.addSongNext
       }
       actions[action](song)
+    },
+    addSongOrPlayNow(song) {
+      if (song.in_playlist) {
+        this.playSongNow(song)
+      } else {
+        this.addSong(song)
+      }
     },
     focusInput() {
       document.getElementById('input-search').focus()
