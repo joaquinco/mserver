@@ -9,6 +9,7 @@
             v-model="query"
             placeholder="Buscar"
             id="input-search"
+            :disabled="loadingSources"
           >
           <router-link class="close ml-2" to="/player">Cancelar</router-link>
         </form>
@@ -19,7 +20,7 @@
         <h3 v-if="saerchedQuery && searched && !globalSearching">Q: {{saerchedQuery}}</h3>
         <div v-for="(value, key) in searchResults" v-if="!globalSearching && searched" :key="key">
           <div class="d-flex flex-row justify-content-between">
-            <h5 class="source-title">Desde {{key}}</h5>
+            <h5 class="source-title">{{searchSourcesByName[key].readable_name}}</h5>
             <LoadingButton
               v-if="!value.length && !sourceSearched[key]"
               :is-loading="sourceSearching[key]"
@@ -45,7 +46,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions } from 'vuex'
+import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
 import { executeAlso } from '@/utils'
 import LoadingLine from '@/components/LoadingLine'
 import SongList from '@/components/SongList'
@@ -73,7 +74,8 @@ export default {
       searchSources: state => state.search.sources,
       searchResults: state => state.search.results,
       api: state => state.comm.api
-    })
+    }),
+    ...mapGetters(['searchSourcesByName'])
   },
   mounted() {
     if (!this.searchSources.length) {

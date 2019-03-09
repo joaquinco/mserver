@@ -4,10 +4,9 @@ from .abstract import MServerMusicSource
 from .exceptions import NotFoundError
 
 
-class LocalSource(MServerMusicSource):
-    name = 'local'
-    readable_name = 'Disponibles'
-    ordering = 1
+class PlaylistSource(MServerMusicSource):
+    name = 'playlist'
+    readable_name = 'En lista'
 
     def _convert_to_song(self, data):
         data.update(dict(source=self.name))
@@ -17,7 +16,7 @@ class LocalSource(MServerMusicSource):
         """
         Searches songs on mpd_utils.
         """
-        return list(map(self._convert_to_song, mpd_utils.search(query)))
+        return list(map(self._convert_to_song, mpd_utils.cmd('playlistsearch', 'file', query)))
 
     def get_song(self, song_id):
         """

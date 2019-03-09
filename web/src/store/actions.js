@@ -68,10 +68,10 @@ const actions = {
     })
   },
   setSearchSources({ state, commit }, sources) {
-    state.search.sources = sources
-    commit('setSearchSources', sources)
-    sources.forEach(source => {
-      commit('setSearchResults', { source: source.name, results: [] })
+    let sortedSources = sources.sort((a, b) => a.ordering - b.ordering)
+    commit('setSearchSources', sortedSources)
+    sources.forEach(({ name }) => {
+      commit('setSearchResults', { source: name, results: [] })
     })
   },
   removeSongFromSearchList({ state, commit }, song) {

@@ -8,6 +8,8 @@ from .youtube_utils import generate_search_query, get_songs_from_result, get_ite
 
 class YoutubeSource(MServerMusicSource):
     name = SOURCE_NAME
+    readable_name = 'Desde youtube'
+    ordering = 10
 
     def get_song(self, ytid, *args, **kwargs):
         song = db.session.query(Song).filter_by(source=self.name, search_id=ytid).scalar()

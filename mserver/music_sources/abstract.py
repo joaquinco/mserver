@@ -2,10 +2,18 @@ from .utils import update_song_availability
 
 
 class MServerMusicSource(object):
+    # Internal reference name
     name = None
+    # Displayed name
+    readable_name = None
+    # Ordering when showing it in FE. Lower is more to the top.
+    ordering = 0
 
     def __init__(self, *args, **kwargs):
         self.config = kwargs.pop('config', {})
+
+    def to_dict(self):
+        return {k: getattr(self, k) for k in ['name', 'ordering', 'readable_name']}
 
     def get_song(self, *args, **kwargs):
         """

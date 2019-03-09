@@ -2,6 +2,8 @@ from mserver import settings
 from utils.modules import import_object
 from .abstract import MServerMusicSource
 from .local import LocalSource
+from .playlist import PlaylistSource
+
 
 CONFIGS = getattr(settings, 'SONG_SOURCES_CONFIG', {})
 
@@ -35,7 +37,8 @@ class _Sources(object):
         else:
             default_name = None
 
-        return [{'name': s.name, 'is_default': s.name == default_name} for s in cls.sources.values()]
+        return [dict(is_default=s.name == default_name, **s.to_dict()) for s in cls.sources.values()]
+
 
 def _validate_source_class(klass):
     """
@@ -62,7 +65,8 @@ def init_music_sources(source_modules):
         _validate_source_class(klass)
         _Sources.add(klass)
 
-    _Sources.add(LocalSource, is_default=True)
+    _Sources.add(PlaylistSource, is_default=True)
+    _Sources.add(LocalSource)
 
 
 def get(source_name=None):
