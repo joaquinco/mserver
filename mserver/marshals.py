@@ -14,6 +14,7 @@ song_list_marshal = {
     'album': fields.String,
     'duration': fields.String,
     'available': fields.Boolean,
+    'id': fields.String,
 }
 
 dummy_song_playlist_list_marshal = copy.deepcopy(song_list_marshal)
@@ -28,7 +29,7 @@ song_search_marshal = {
     'duration': fields.String,
     'available': fields.Boolean,
     'source': fields.String,
-    'in_playlist': fields.Boolean,
+    'id': fields.String,
     'pos': fields.Integer(default=None),
 }
 

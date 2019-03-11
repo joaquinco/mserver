@@ -80,7 +80,7 @@ events = [
     ('player.pause', True, mpd_write_command_wrapper('pause')),
     ('player.random', True, mpd_write_command_wrapper('random', 'value')),
     ('player.repeat', True, mpd_write_command_wrapper('repeat', 'value')),
-    ('player.select', True, mpd_write_command_wrapper('play', 'pos')),
+    ('player.playid', True, mpd_write_command_wrapper('playid', 'id')),
     ('player.remove', True, mpd_write_command_wrapper('delete', 'pos')),
     ('player.volume', True, mpd_write_command_wrapper('setvol', 'value')),
 

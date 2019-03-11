@@ -13,7 +13,7 @@ search_args.add_argument('source', required=False, location='args')
 
 class SongSearchResource(Resource):
     @marshal_with(song_search_marshal)
-    # @jwt_required()
+    @jwt_required()
     def get(self):
         args = search_args.parse_args()
         query = args.get('query')

@@ -1,11 +1,10 @@
 <template>
   <div
     class="song"
-    :class="{'song--clickable': canSelect, 'song--not-available': !song.available, 'song--already-added': song.isAlreadySelected, [`song--${showAs}`]: true}"
+    :class="{'song--clickable': canSelect, 'song--not-available': !song.available, 'song--already-added': song.isAlreadySelected}"
   >
     <div class="song__body" @click="onSelect()">
       <strong class="song__position">{{getSongPosition(song)}}</strong>
-      <strong class="song__added" v-show="song.in_playlist">&#10003;</strong>
       <span class="song__name">{{song.title}}</span>
       <span @click.stop="toggleShowActions()" class="song__toggle-actions">
         <span class="song__duration">{{song.duration}}</span>
@@ -28,32 +27,38 @@
 </template>
 
 <script>
+import { isInt } from '@/utils'
+
 const POSSIBLE_ACTIONS = [
-  { name: 'remove', label: 'Quitar', validator: song => true },
+  {
+    name: 'remove',
+    label: 'Quitar',
+    validator: song => isInt(song.pos)
+  },
   {
     name: 'download',
     label: 'Solo descargar',
     validator: song => !song.available
   },
   {
-    name: 'playnext',
+    name: 'playNext',
     label: 'Reproducir siguiente',
-    validator: song => song.available && !song.in_playlist
+    validator: song => song.available && !isInt(song.pos)
   },
   {
-    name: 'playnext',
+    name: 'playNext',
     label: 'Descargar y reproducir',
     validator: song => !song.available
   },
   // {
-  //   name: 'playnow',
+  //   name: 'play',
   //   label: 'Reproducir ya',
-  //   validator: song => !song.in_playlist && song.available
+  //   validator: song => !isInt(song.pos) && song.available
   // },
   {
     name: 'add',
     label: 'Agregar',
-    validator: song => !song.in_playlist
+    validator: song => !isInt(song.pos)
   }
 ]
 
@@ -69,19 +74,15 @@ export default {
       required: true
     },
     defaultAction: {
-      type: String,
-      required: true
+      required: true,
+      validator: value => {
+        return ['string', 'function'].indexOf(typeof value) !== -1
+      }
     },
     actionsTimeout: {
       type: Number,
       required: false,
       default: 5 * 1000
-    },
-    showAs: {
-      type: String,
-      required: false,
-      default: 'normal',
-      validator: value => ['normal', 'search'].indexOf(value) !== -1
     }
   },
   data() {
@@ -110,8 +111,14 @@ export default {
     onDownload() {
       this.onSongAction('download')
     },
+    getDefaultSongAction() {
+      if (typeof this.defaultAction === 'string') {
+        return this.defaultAction
+      }
+      return this.defaultAction(this.song)
+    },
     onSelect() {
-      this.onSongAction(this.defaultAction)
+      this.onSongAction(this.getDefaultSongAction())
     },
     onSongAction(action) {
       if (this.song.isAlreadySelected) {
@@ -167,18 +174,6 @@ export default {
   &--clickable {
     .song__body {
       cursor: pointer;
-    }
-  }
-
-  &--search {
-    .song__position {
-      display: none;
-    }
-  }
-
-  &--normal {
-    .song__added {
-      display: none;
     }
   }
 

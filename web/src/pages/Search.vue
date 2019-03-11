@@ -32,12 +32,11 @@
             class="center-text no-results"
           >No hay resultados</p>
           <SongList
-            listType="search"
             v-if="value.length"
             :songs="value"
             @song-selected="onSongSelected"
-            songActions="add,download,playnext,playnow"
-            defaultSongAction="add"
+            songActions="add,remove,download,playNext,play"
+            :defaultSongAction="defaultSongAction"
           />
         </div>
       </div>
@@ -47,7 +46,7 @@
 
 <script>
 import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
-import { executeAlso } from '@/utils'
+import { executeAlso, isInt } from '@/utils'
 import LoadingLine from '@/components/LoadingLine'
 import SongList from '@/components/SongList'
 import LoadingButton from '@/components/LoadingButton'
@@ -88,14 +87,7 @@ export default {
   },
   methods: {
     ...mapMutations(['setSearchResults']),
-    ...mapActions([
-      'clearSearchResults',
-      'setSearchSources',
-      'downloadSong',
-      'addSong',
-      'addSongNext',
-      'playSongNow'
-    ]),
+    ...mapActions(['clearSearchResults', 'setSearchSources', 'onSongAction']),
     globalSearch() {
       this.clearResults()
       this.search()
@@ -176,24 +168,14 @@ export default {
       this.error = error
       alert(error)
     },
-    onSongSelected({ song, action }) {
-      console.log(action)
-      let actions = {
-        download: this.downloadSong,
-        add: this.addSongOrPlayNow,
-        playnext: this.addSongNext
-      }
-      actions[action](song)
-    },
-    addSongOrPlayNow(song) {
-      if (song.in_playlist) {
-        this.playSongNow(song)
-      } else {
-        this.addSong(song)
-      }
+    onSongSelected(params) {
+      this.onSongAction(params)
     },
     focusInput() {
       document.getElementById('input-search').focus()
+    },
+    defaultSongAction(song) {
+      return isInt(song.pos) ? 'play' : 'add'
     }
   }
 }

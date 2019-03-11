@@ -8,7 +8,6 @@
       :song="song"
       :key="song.search_key || song.pos"
       @song-selected="onSongEvent"
-      :showAs="listType"
     />
   </div>
 </template>
@@ -29,18 +28,13 @@ export default {
       required: false
     },
     defaultSongAction: {
-      type: String,
       required: false,
-      default: 'playnow'
+      default: 'play'
     },
     isSongHighlighted: {
       type: Function,
       required: false,
       default: () => false
-    },
-    listType: {
-      type: String,
-      required: false
     }
   },
   data() {

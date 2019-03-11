@@ -4,7 +4,7 @@
     <SongList
       :songs="songs"
       v-if="songsExist"
-      songActions="playnow,remove"
+      songActions="play,remove"
       @song-selected="onSongSelected"
       :isSongHighlighted="isSongCurrent"
     />
@@ -40,7 +40,7 @@ export default {
   },
   methods: {
     ...mapMutations(['setCurrentPlaylistSongs']),
-    ...mapActions(['playSongNow', 'removeSong']),
+    ...mapActions(['onSongAction']),
     fetchPlaylistSongs() {
       if (this.songs.length) {
         this.loaded = true
@@ -51,12 +51,8 @@ export default {
         })
       }
     },
-    onSongSelected({ song, action }) {
-      if (action === 'playnow') {
-        this.playSongNow(song)
-      } else if (action === 'remove') {
-        this.removeSong(song)
-      }
+    onSongSelected(params) {
+      this.onSongAction(params)
     },
     isSongCurrent(song) {
       return song.pos === this.current.pos

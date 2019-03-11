@@ -1,6 +1,26 @@
 import handlers from './handlers'
 import config from '@/config'
 
+const socketioEvents = [
+  'player.status',
+  'player.play',
+  'player.pause',
+  'player.next',
+  'player.previous',
+  'player.current',
+  'player.song_added',
+  'player.song_available',
+  'player.song_downloading',
+  'player.playlist_changed',
+  'user.joined',
+  'user.left',
+  'disconnect',
+  // Errors
+  'error',
+  'player.song_add_error',
+  'player.song_download_error'
+]
+
 /* eslint-disable camelcase */
 const actions = {
   ...handlers,
@@ -22,27 +42,8 @@ const actions = {
   },
   initComm({ state, commit, dispatch }, { api, socket }) {
     commit('setComm', { api, socket })
-    const events = [
-      'player.status',
-      'player.play',
-      'player.pause',
-      'player.next',
-      'player.previous',
-      'player.current',
-      'player.song_added',
-      'player.song_available',
-      'player.song_downloading',
-      'player.playlist_changed',
-      'user.joined',
-      'user.left',
-      'disconnect',
-      // Errors
-      'error',
-      'player.song_add_error',
-      'player.song_download_error'
-    ]
     var debug = state.server.debug
-    events.forEach(eventName => {
+    socketioEvents.forEach(eventName => {
       let actionHandlerName = eventName.split('.').join('_')
 
       let method = data => {
@@ -67,7 +68,7 @@ const actions = {
       commit('setSearchResults', { source: source.name, results: [] })
     })
   },
-  setSearchSources({ state, commit }, sources) {
+  setSearchSources({ commit }, sources) {
     let sortedSources = sources.sort((a, b) => a.ordering - b.ordering)
     commit('setSearchSources', sortedSources)
     sources.forEach(({ name }) => {
@@ -98,15 +99,19 @@ const actions = {
     state.comm.socket.emit('player.add_song', song)
     dispatch('setSongAsAdded', song)
   },
-  addSongNext({ state, dispatch }, song) {
+  removeSong({ state }, song) {
+    state.comm.socket.emit('player.remove', song)
+  },
+  playNextSong({ state, dispatch }, song) {
     state.comm.socket.emit('player.add_song_next', song)
     dispatch('setSongAsAdded', song)
   },
-  playSongNow({ state }, song) {
-    state.comm.socket.emit('player.select', song)
+  playSong({ state }, song) {
+    state.comm.socket.emit('player.playid', song)
   },
-  removeSong({ state }, song) {
-    state.comm.socket.emit('player.remove', song)
+  onSongAction({ dispatch }, { action, song }) {
+    console.log(action, song)
+    dispatch(`${action}Song`, song)
   },
   refreshPlaylist({ state, commit }) {
     state.comm.api.playlist.get().then(response => {

@@ -16,6 +16,8 @@ const formatTime = seconds => {
   return `${zeroPad(min)}:${zeroPad(sec)}`
 }
 
+const isInt = value => typeof value === 'number'
+
 const oneOfValidator = (...values) => value => values.indexOf(value) !== -1
 
-export { executeAlso, keepMaxLength, formatTime, oneOfValidator }
+export { executeAlso, keepMaxLength, formatTime, oneOfValidator, isInt }

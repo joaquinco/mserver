@@ -137,6 +137,14 @@ def play(conn, pos=None):
 
 
 @_with_mpd_client
+def playid(conn, id):
+    """
+    Play song by id
+    """
+    conn.playid(id)
+
+
+@_with_mpd_client
 def pause(conn):
     """
     Stops playing.
