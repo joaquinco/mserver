@@ -1,29 +1,27 @@
 <template>
-  <div class='d-flex flex-column player-controls-container align-items-center'>
-    <Progress :percentage='progressPercentage'/>
-    <div v-show='isConnected' class='d-flex flex-column align-items-center w-100'>
-      <p class='song-title mb-0' @click='focusCurrentSong()'>{{currentSongTitle}}</p>
-      <div class='d-flex flex-row justify-content-around w-100'>
+  <div class="d-flex flex-column player-controls-container align-items-center">
+    <Progress :percentage="progressPercentage"/>
+    <div v-show="isConnected" class="d-flex flex-column align-items-center w-100">
+      <p class="song-title mb-0" @click="focusCurrentSong()">{{currentSongTitle}}</p>
+      <div class="d-flex flex-row justify-content-around w-100">
         <span>{{currentSongPosition}}</span>
       </div>
-      <div class="d-flex flex-row justify-content-around align-items-center player-controls-wrapper">
-        <span class='icon icon--sm player-settings'/>
-        <div class='d-flex flex-row justify-content-center player-controls'>
-          <button class='button button-left' @click.prevent='previous()'>
-            <span class='prev'></span>
+      <div
+        class="d-flex flex-row justify-content-around align-items-center player-controls-wrapper"
+      >
+        <router-link to="/config" class="icon icon--sm player-settings"></router-link>
+        <div class="d-flex flex-row justify-content-center player-controls">
+          <button class="button button-left" @click.prevent="previous()">
+            <span class="prev"></span>
           </button>
-          <button class='button button-center' @click.prevent='playPause()'>
-            <span :class='{play: isPaused, pause: isPlaying, stop: isStoped}'></span>
+          <button class="button button-center" @click.prevent="playPause()">
+            <span :class="{play: isPaused, pause: isPlaying, stop: isStoped}"></span>
           </button>
-          <button class='button button-right' @click.prevent='next()'>
-            <span class='next'></span>
+          <button class="button button-right" @click.prevent="next()">
+            <span class="next"></span>
           </button>
         </div>
-        <VolumeV2 class='volume-wrapper' @change='onVolumeChange' :value='status.volume'/>
-      </div>
-      <div class='d-flex flex-row justify-content-around player-other-buttons'>
-        <span class='text-toggle' :class='{disbled: !isRepeatOn}' @click='toggleRepeat()'>Repetir</span>
-        <span class='text-toggle' :class='{disbled: !isShuffleOn}' @click='toggleShuffle()'>Aleatorio</span>
+        <VolumeV2 class="volume-wrapper" @change="onVolumeChange" :value="status.volume"/>
       </div>
     </div>
   </div>
@@ -74,15 +72,9 @@ export default {
 
       return `${songPos}/${playlistLengthInt > 0 ? playlistLengthInt : '-'}`
     },
-    isShuffleOn() {
-      return this.status && this.status.random
-    },
-    isRepeatOn() {
-      return this.status && this.status.repeat
-    },
     progressPercentage() {
       if (this.time != null && this.totalTime) {
-        return this.time / this.totalTime * 100
+        return (this.time / this.totalTime) * 100
       }
       return 0
     }
@@ -97,12 +89,6 @@ export default {
     },
     previous() {
       this.socket.emit('player.previous')
-    },
-    toggleRepeat() {
-      this.socket.emit('player.repeat', { value: !this.isRepeatOn })
-    },
-    toggleShuffle() {
-      this.socket.emit('player.random', { value: !this.isShuffleOn })
     },
     onVolumeChange(value) {
       this.socket.emit('player.volume', { value })
@@ -162,23 +148,23 @@ export default {
 }
 
 .prev {
-  content: url("/static/icons/prev.svg");
+  content: url('/static/icons/prev.svg');
 }
 
 .next {
-  content: url("/static/icons/next.svg");
+  content: url('/static/icons/next.svg');
 }
 
 .play {
-  content: url("/static/icons/play.svg");
+  content: url('/static/icons/play.svg');
 }
 
 .pause {
-  content: url("/static/icons/pause.svg");
+  content: url('/static/icons/pause.svg');
 }
 
 .stop {
-  content: url("/static/icons/stop.svg");
+  content: url('/static/icons/stop.svg');
 }
 
 .player-other-buttons {
@@ -202,7 +188,7 @@ export default {
   display: inline-flex;
 }
 .player-settings {
-  content: url("/static/icons/player-configuration.svg");
+  content: url('/static/icons/player-configuration.svg');
   border-radius: 0;
 }
 .text-toggle.disbled {

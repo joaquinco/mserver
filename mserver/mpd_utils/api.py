@@ -203,6 +203,14 @@ def repeat(conn, value):
 
 
 @_with_mpd_client
+def consume(conn, value):
+    """
+    Activates/deactivates consume
+    """
+    conn.consume(value and 1 or 0)
+
+
+@_with_mpd_client
 def delete(conn, pos):
     """
     Deletes song from playlist

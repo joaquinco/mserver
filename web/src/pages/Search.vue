@@ -21,11 +21,11 @@
         <div v-for="(value, key) in searchResults" v-if="!globalSearching && searched" :key="key">
           <div class="d-flex flex-row justify-content-between">
             <h5 class="source-title">{{searchSourcesByName[key].readable_name}}</h5>
-            <LoadingButton
+            <Button
               v-if="!value.length && !sourceSearched[key]"
               :is-loading="sourceSearching[key]"
               @click.native="search(key)"
-            >Buscar</LoadingButton>
+            >Buscar</Button>
           </div>
           <p
             v-if="!value.length && sourceSearched[key]"
@@ -49,12 +49,12 @@ import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
 import { executeAlso, isInt } from '@/utils'
 import LoadingLine from '@/components/LoadingLine'
 import SongList from '@/components/SongList'
-import LoadingButton from '@/components/LoadingButton'
+import Button from '@/components/Button'
 import NotificationsButton from '@/components/NotificationsButton'
 
 export default {
   name: 'Search',
-  components: { LoadingLine, SongList, LoadingButton, NotificationsButton },
+  components: { LoadingLine, SongList, Button, NotificationsButton },
   data() {
     return {
       query: '',

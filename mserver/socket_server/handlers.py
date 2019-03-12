@@ -50,7 +50,10 @@ def emit_player_currentsong(broadcast=False):
 
 
 def mpd_write_command_wrapper(command_name, data_key=None):
-    fn = getattr(mpd_utils, command_name)
+    if hasattr(mpd_utils, command_name):
+        fn = getattr(mpd_utils, command_name)
+    else:
+        fn = partial(mpd_utils.cmd, command_name)
 
     def wrapped(data=None):
         params = ()
@@ -80,9 +83,13 @@ events = [
     ('player.pause', True, mpd_write_command_wrapper('pause')),
     ('player.random', True, mpd_write_command_wrapper('random', 'value')),
     ('player.repeat', True, mpd_write_command_wrapper('repeat', 'value')),
+    ('player.consume', True, mpd_write_command_wrapper('consume', 'value')),
+    ('player.crossfade', True, mpd_write_command_wrapper('crossfade', 'value')),
     ('player.playid', True, mpd_write_command_wrapper('playid', 'id')),
     ('player.remove', True, mpd_write_command_wrapper('delete', 'pos')),
     ('player.volume', True, mpd_write_command_wrapper('setvol', 'value')),
+    ('player.updatedb', True, mpd_write_command_wrapper('update')),
+    ('player.clear', True, mpd_write_command_wrapper('clear')),
 
     # Other more complex
     ('player.add_song', True, add_song_to_playlist),

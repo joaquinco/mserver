@@ -1,5 +1,7 @@
 <template>
-  <button :disabled="isLoading"><slot>Button Label</slot></button>
+  <button :disabled="isLoading">
+    <slot>Button Label</slot>
+  </button>
 </template>
 
 <script>
@@ -8,7 +10,8 @@ export default {
   props: {
     isLoading: {
       type: Boolean,
-      required: true
+      required: false,
+      default: false
     }
   }
 }

@@ -402,3 +402,13 @@ button:disabled {
 .clickable {
   cursor: pointer;
 }
+
+.content-with-header {
+  padding-top: 80px;
+}
+
+@media (max-width: 550px) {
+  .content-with-header {
+    padding-top: 60px;
+  }
+}

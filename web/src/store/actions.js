@@ -118,6 +118,20 @@ const actions = {
       commit('setCurrentPlaylistSongs', response.data)
     })
   },
+  updateDB({ state }) {
+    state.comm.socket.emit('player.updatedb')
+  },
+  toggleMPDConfiguration({ state }, configuration_name) {
+    state.comm.socket.emit(`player.${configuration_name}`, {
+      value: !state.player.status[configuration_name]
+    })
+  },
+  clearPlaylist({ state }) {
+    state.comm.socket.emit('player.clear')
+  },
+  setCrossfade({ state }, value) {
+    state.comm.socket.emit('player.crossfade', { value })
+  },
   incrementSongTime({ state, commit, dispatch }) {
     let { currentTime, totalTime } = state.playlist
 

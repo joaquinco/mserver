@@ -1,23 +1,25 @@
 <template>
   <div>
-    <Header title='Lista'>
-      <Banner :visible='!isConnected' :text='bannerConnectionError' type='error' ref='bannerRef'/>
+    <Header title="Lista">
+      <router-link to="/search">
+        <div class="icon icon-search"></div>
+      </router-link>
+      <NotificationsButton class="ml-3"/>
     </Header>
-    <div class='container-sm d-flex flex-column justfy-content-around'>
+    <div class="container-sm d-flex flex-column justfy-content-around content-with-header">
       <Playlist class="player-content"/>
-      <PlayerControls class='player-controls' @current-clicked='currentSongClicked'/>
+      <PlayerControls class="player-controls" @current-clicked="currentSongClicked"/>
       <Notifications/>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
 import Header from '@/components/Header'
 import PlayerControls from '@/components/PlayerControls'
 import Playlist from '@/components/Playlist'
 import Notifications from '@/components/Notifications'
-import Banner from '@/components/Banner'
+import NotificationsButton from '@/components/NotificationsButton'
 
 export default {
   name: 'Player',
@@ -26,21 +28,7 @@ export default {
     Playlist,
     Notifications,
     Header,
-    Banner
-  },
-  computed: {
-    ...mapState({
-      socket: state => state.comm.socket,
-      connectionError: state => state.comm.error
-    }),
-    ...mapGetters(['isConnected']),
-    bannerConnectionError() {
-      let message = 'Desconectado'
-      if (this.connectionError) {
-        message += `: ${this.connectionError}`
-      }
-      return message
-    }
+    NotificationsButton
   },
   data() {
     return {}
@@ -62,19 +50,16 @@ export default {
 <style scoped>
 .player-content {
   flex: 1;
-  padding-top: 80px;
   padding-bottom: 130px;
-}
-
-@media (max-width: 550px) {
-  .player-content {
-    padding-top: 60px;
-  }
 }
 
 .player-controls {
   position: fixed;
   bottom: 0;
   left: 0;
+}
+
+.icon-search {
+  content: url('/static/icons/search.svg');
 }
 </style>

@@ -5,6 +5,7 @@ import Login from '@/pages/Login'
 import PageNotFound from '@/pages/PageNotFound'
 import Player from '@/pages/Player'
 import Search from '@/pages/Search'
+import Configuration from '@/pages/Configuration'
 
 Vue.use(Router)
 
@@ -33,6 +34,11 @@ export default new Router({
       path: '/search',
       name: 'search',
       component: Search
+    },
+    {
+      path: '/config',
+      name: 'configuration',
+      component: Configuration
     },
     {
       path: '*',

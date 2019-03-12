@@ -1,22 +1,22 @@
 <template>
-  <div class='header' :class="{'header--fixed':fixed}">
-    <slot></slot>
-    <div class='container-sm header__content'>
-      <h1 class='header__title'>{{title}}</h1>
-      <div class='header__actions'>
-        <router-link to='/search' class='header__entry'><div class='icon icon-search'></div></router-link>
-        <NotificationsButton class='header__entry'/>
+  <div class="header" :class="{'header--fixed':fixed}">
+    <Banner :visible="!isConnected" :text="bannerConnectionError" type="error"/>
+    <div class="container-sm header__content">
+      <h1 class="header__title">{{title}}</h1>
+      <div class="header__actions">
+        <slot></slot>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import NotificationsButton from '@/components/NotificationsButton'
+import { mapGetters, mapState } from 'vuex'
+import Banner from '@/components/Banner'
 
 export default {
   name: 'Header',
-  components: { NotificationsButton },
+  components: { Banner },
   props: {
     title: {
       type: String,
@@ -25,6 +25,19 @@ export default {
     },
     fixed: {
       default: true
+    }
+  },
+  computed: {
+    ...mapState({
+      connectionError: state => state.comm.error
+    }),
+    ...mapGetters(['isConnected']),
+    bannerConnectionError() {
+      let message = 'Desconectado'
+      if (this.connectionError) {
+        message += `: ${this.connectionError}`
+      }
+      return message
     }
   }
 }
@@ -69,9 +82,5 @@ export default {
     flex-direction: row;
     align-items: center;
   }
-}
-
-.icon-search {
-  content: url("/static/icons/search.svg");
 }
 </style>
